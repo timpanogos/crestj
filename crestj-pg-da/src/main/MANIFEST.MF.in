@@ -1,0 +1,7 @@
+Specification-Title: Interface Repository Validator
+Specification-Version: 1.0
+Specification-Vendor: EMIT Networking Consortium
+Implementation-Title: com.pew.emitdo.repository
+Implementation-Version: @EMIT_BUILD_DOTTED@
+Build-Date: @EMIT_BUILD_DATE@
+Implementation-Vendor: EMIT Networking Consortium

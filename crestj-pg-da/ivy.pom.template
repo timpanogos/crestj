@@ -1,0 +1,49 @@
+${ivy.pom.license}
+${ivy.pom.header}
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>${ivy.pom.groupId}</groupId>
+  <artifactId>${ivy.pom.artifactId}</artifactId>
+  <packaging>${ivy.pom.packaging}</packaging>
+  <version>${ivy.pom.version}</version>
+  <name>${name}</name>
+  <description>${ivy.pom.description}</description>
+  <url>${ivy.pom.url}</url>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.3</version>
+        <configuration>
+          <source>${ant.build.javac.source}</source>
+          <target>${ant.build.javac.target}</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <licenses>
+    <license>
+      <name>${ivyfile.info.license.name}</name>
+      <url>${ivyfile.info.license.url}</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>${vendor.name}</name>
+      <email>${vendor.email}</email>
+      <organization>${vendor.name}</organization>
+      <organizationUrl>${vendor.url}</organizationUrl>
+    </developer>
+  </developers>
+  <scm>
+    <connection>${scm.connection}</connection>
+    <developerConnection>${scm.devconnection}</developerConnection>
+    <url>${scm.url}</url>
+  </scm>
+
+</project>

@@ -1,0 +1,19 @@
+<wicket:panel>	
+		<div class="expandableToggler menuOption"><h4 class="optionHeader">Allocate Interface Identifier &#9662;</h4></div>
+		<div class="expandablePanel defaultHidden" wicket:id="expandablePanel">
+			<form wicket:id="allocateForm">
+				<table class="search" cellpadding="5px">
+			        <tr wicket:id="selectedOptions">
+						<td class="formLabel"><span wicket:id="optionLabel"></span></td>
+						<td><select wicket:id="optionValues"></select></td>
+					</tr>
+					<tr>
+				        <td colspan="2" class="mnuSubmitContainer">							
+					        <button type="submit" wicket:id="submit" class="submit mnuSubmit">Allocate</button>
+					        <span style="display: none;" wicket:id="confirmAllocate"></span>		
+				        </td>
+			        </tr>
+		        </table>
+			</form>
+		</div>
+</wicket:panel>
