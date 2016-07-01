@@ -13,33 +13,10 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package org.opendof.tools.repository.interfaces.da;
+package com.ccc.crestj.da;
 
-@SuppressWarnings({ "serial", "javadoc" })
-public class AlreadyExistsException extends Exception
+@SuppressWarnings("javadoc")
+public interface DataAccessor
 {
-    public AlreadyExistsException()
-    {
-        super();
-    }
-
-    public AlreadyExistsException(String message)
-    {
-        super(message);
-    }
-
-    public AlreadyExistsException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
-
-    public AlreadyExistsException(Throwable cause)
-    {
-        super(cause);
-    }
-
-    protected AlreadyExistsException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
-    {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+    public void deleteSubmitter(String submitterEmail) throws Exception;
 }

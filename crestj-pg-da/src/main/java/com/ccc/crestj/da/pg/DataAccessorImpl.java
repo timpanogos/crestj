@@ -13,33 +13,17 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package org.opendof.tools.repository.interfaces.da;
+package com.ccc.crestj.da.pg;
 
-@SuppressWarnings({ "serial", "javadoc" })
-public class SubmitterException extends Exception
+import com.ccc.crestj.da.DataAccessor;
+
+@SuppressWarnings("javadoc")
+public class DataAccessorImpl implements DataAccessor
 {
-    public SubmitterException()
-    {
-        super();
-    }
 
-    public SubmitterException(String message)
-    {
-        super(message);
-    }
-
-    public SubmitterException(String message, Throwable cause)
-    {
-        super(message, cause);
-    }
-
-    public SubmitterException(Throwable cause)
-    {
-        super(cause);
-    }
-
-    protected SubmitterException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace)
-    {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
+	@Override
+	public void deleteSubmitter(String submitterEmail) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

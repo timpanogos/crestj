@@ -13,7 +13,6 @@
 	<name>CCC crestj repository builder</name>
 	<modules>
 		<module>crestj-da</module>
-		<module>eveapi</module>
 		<module>nee-d</module>
 		<module>crestj-pg-da</module>
 		<module>crestj-servlet</module>

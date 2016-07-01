@@ -12,7 +12,7 @@ import com.beimin.eveapi.response.pilot.CharacterSheetResponse;
 import com.beimin.eveapi.response.shared.ContractBidsResponse;
 import com.beimin.eveapi.response.shared.ContractItemsResponse;
 import com.beimin.eveapi.response.shared.ContractsResponse;
-import com.pslcl.chad.app.RequestThrottle;
+import com.ccc.tools.RequestThrottle;
 
 public class Need
 {
