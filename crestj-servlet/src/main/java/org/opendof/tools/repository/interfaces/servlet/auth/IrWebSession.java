@@ -19,7 +19,7 @@ import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 
 @SuppressWarnings("javadoc")
 public class IrWebSession extends AuthenticatedWebSession
@@ -30,7 +30,7 @@ public class IrWebSession extends AuthenticatedWebSession
     public IrWebSession(Request request)
     {
         super(request);
-        clientInfo = ((InterfaceRepository)getApplication()).getClientInformation();
+        clientInfo = ((NeedServer)getApplication()).getClientInformation();
         setClientInfo(clientInfo);
         if(isDeveloper())
             clientInfo.setAuthenticated(true);

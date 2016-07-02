@@ -1,0 +1,41 @@
+div.wicket-modal div.w_blue div.w_left,
+div.wicket-modal div.w_blue div.w_right {
+	background-image: none; 
+	_background-image: none;
+}
+
+
+div.wicket-modal div.w_blue div.w_top,
+div.wicket-modal div.w_blue div.w_bottom,
+div.wicket-modal div.w_blue div.w_topLeft,
+div.wicket-modal div.w_blue div.w_topRight,
+div.wicket-modal div.w_blue div.w_bottomRight,
+div.wicket-modal div.w_blue div.w_bottomLeft,
+div.wicket-modal div.w_blue a.w_close {
+	background-image: none; 
+	_background-image: none;
+}
+
+
+div.wicket-modal div.w_silver div.w_left,
+div.wicket-modal div.w_silver div.w_right {
+	background-image: none; 
+	_background-image: none;
+}
+
+
+div.wicket-modal div.w_silver div.w_top,
+div.wicket-modal div.w_silver div.w_bottom,
+div.wicket-modal div.w_silver div.w_topLeft,
+div.wicket-modal div.w_silver div.w_topRight,
+div.wicket-modal div.w_silver div.w_bottomRight,
+div.wicket-modal div.w_silver div.w_bottomLeft {
+	background-image: none; 
+	_background-image: none;
+}
+
+
+div.wicket-modal div.w_silver a.w_close {
+	background-image: url('frame-gray-1-alpha.png'); 
+	_background-image: url('frame-gray-1-ie.png');
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>  
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">    
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>  
+    </appender>  
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${opendof.tools.log-file-path}</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${opendof.tools.log-file-base}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <!-- keep 7 days' worth of history -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %-5level [%thread] %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender> 
+
+	<logger name="org.apach" level="info"/>
+	<logger name="com.zaxxer" level="warn"/>
+
+    <root level="info">
+        <appender-ref ref="stdout" />
+        <appender-ref ref="file" />
+    </root>
+</configuration>
+

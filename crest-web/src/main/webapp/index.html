@@ -1,0 +1,46 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Interface Repository</title>
+<script src="dynamic_URLs.js" type="text/javascript">
+	</script>
+<link rel="stylesheet" type="text/css" href="main.css">
+</link>
+<link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" /> 
+</head>
+
+<body onLoad="onLoadFunction()">
+
+<!-- start .container  -->
+<div class="container"> 
+  
+  <!-- start .header -->
+  <div class="header"> <a href="#" id="home_url"><img class="logo"/></a> 
+    <!-- end .header --> 
+  </div>
+  
+  <div class="opendof_title">Interface Repository</div>
+  
+  <!-- start .content  -->
+  <div class="content">  
+	<a href="/interface?cmd=ListAll"><button class="submit">Browse Repository</button></a><br /> <br />     
+    
+    <form method="get" action="interface">
+      <!-- The cmd values must match the RequestData.CommandType enum names exactly -->      
+      <input type="hidden" name="cmd" value="GetInterface" checked/>
+      <input type="hidden" name="trans" value="html" checked/>  
+      <button type="submit" value="Submit" class="submit">View Interface</button>    
+      <input class="mainInput" type="text" name="iid" maxlength="100" size="40"	value="[1:{01}]" />      
+    </form>
+    <!-- end .content  --> 
+    </div>
+  <div class="footer">
+    <p></p>
+    <!-- end .footer --> 
+  </div>
+  
+  <!-- end .container  --> 
+</div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+	    <groupId>org.opendof.tools-interface-repository</groupId>
+	    <artifactId>builder</artifactId>
+	    <version>2.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>interface-repository-web</artifactId>
+	<packaging>war</packaging>
+	<name>OpenDOF Interface Repository WAR</name>
+	<dependencies>
+		<dependency>
+			<groupId>org.opendof.tools-interface-repository</groupId>
+			<artifactId>interface-repository-servlet</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-dbcp</artifactId>
+			<version>8.0.23</version>
+		</dependency>
+	</dependencies>
+
+    <build>
+        <finalName>ROOT</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+    </build>
+</project>

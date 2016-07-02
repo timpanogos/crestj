@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+    <WatchedResource>WEB-INF/web.xml</WatchedResource>
+    <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+	<Resource name="jdbc/interfacerepository" auth="Container" type="javax.sql.DataSource"
+		maxTotal="100" maxIdle="30" maxWaitMillis="10000" username="YOUR-USER"
+		password="YOUR-USER-PASS" driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://DB-URL:3306/DB-NAME?characterEncoding=UTF-8"/>
+</Context>

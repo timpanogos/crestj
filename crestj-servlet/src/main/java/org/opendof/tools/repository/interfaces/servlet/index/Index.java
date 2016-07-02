@@ -25,7 +25,7 @@ import org.opendof.tools.repository.interfaces.core.AuthenticatedUser;
 import org.opendof.tools.repository.interfaces.core.CoreController;
 import org.opendof.tools.repository.interfaces.da.InterfaceData;
 import org.opendof.tools.repository.interfaces.da.NotFoundException;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.auth.ClientInformation;
 import org.opendof.tools.repository.interfaces.servlet.browse.Browse;
 import org.opendof.tools.repository.interfaces.servlet.definition.Definition;
@@ -48,7 +48,7 @@ public class Index extends WebPage{
 	private static Logger log = LoggerFactory.getLogger(Index.class);
 
 	public Index(){		
-		Properties properties = (Properties) ((InterfaceRepository) getApplication()).getServletContext().getAttribute(CoreController.PropertiesKey);
+		Properties properties = (Properties) ((NeedServer) getApplication()).getServletContext().getAttribute(CoreController.PropertiesKey);
 		
 		headerPanel = new HeaderPanel("headerPanel");
 		footerPanel = new FooterPanel("footerPanel");
@@ -73,7 +73,7 @@ public class Index extends WebPage{
 		add(new BookmarkablePageLink<>("browse", Browse.class));		
 		
 		gcseDiv = new WebMarkupContainer("gcseDiv");
-		String cx = properties.getProperty(InterfaceRepository.GoogleCSEcxKey);
+		String cx = properties.getProperty(NeedServer.GoogleCSEcxKey);
 		StringBuilder sb = new StringBuilder();
 		sb.append("<script>");
 		sb.append("(function() {");
@@ -95,7 +95,7 @@ public class Index extends WebPage{
 	}
 	
 	private CoreController getCore(){
-		return ((InterfaceRepository)getApplication()).getCoreController();
+		return ((NeedServer)getApplication()).getCoreController();
 	}
 	
 	private ClientInformation getClientInformation(){

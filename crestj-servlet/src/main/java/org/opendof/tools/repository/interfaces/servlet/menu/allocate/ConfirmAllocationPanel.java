@@ -8,7 +8,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opendof.tools.repository.interfaces.core.CoreController;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.definition.Definition;
 import org.opendof.tools.repository.interfaces.servlet.menu.allocate.AllocateInterfaceOptionPanel.AllocateOptionsForm;
 
@@ -62,7 +62,7 @@ public class ConfirmAllocationPanel extends Panel{
 	}
 	
 	private CoreController getCore(){
-		return ((InterfaceRepository)getApplication()).getCoreController();
+		return ((NeedServer)getApplication()).getCoreController();
 	}
 
 	public String getInterfaceId() {

@@ -25,7 +25,7 @@ import org.opendof.tools.repository.interfaces.da.DataAccessor;
 import org.opendof.tools.repository.interfaces.da.ImmutableException;
 import org.opendof.tools.repository.interfaces.da.InterfaceData;
 import org.opendof.tools.repository.interfaces.da.SubmitterData;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.auth.ClientInformation;
 import org.opendof.tools.repository.interfaces.servlet.definition.Definition;
 import org.opendof.tools.repository.interfaces.servlet.index.Index;
@@ -186,7 +186,7 @@ public class ManageInterfacePanel extends Panel {
 	}
 	
 	private CoreController getCore(){
-		return ((InterfaceRepository)getApplication()).getCoreController();
+		return ((NeedServer)getApplication()).getCoreController();
 	}
 	
 	private ClientInformation getClientInformation(){

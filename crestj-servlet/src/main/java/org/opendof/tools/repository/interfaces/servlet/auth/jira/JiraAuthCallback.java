@@ -22,7 +22,7 @@ import org.apache.wicket.authroles.authentication.pages.SignOutPage;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.auth.LoginPage;
 import org.opendof.tools.repository.interfaces.servlet.auth.UserAuthenticationHandler;
 import org.opendof.tools.repository.interfaces.servlet.auth.jira.rest.JiraRestClient;
@@ -35,7 +35,7 @@ public class JiraAuthCallback extends WebPage
 
     public JiraAuthCallback(final PageParameters parameters)
     {
-        InterfaceRepository.logRequest((HttpServletRequest) getRequest().getContainerRequest());
+        NeedServer.logRequest((HttpServletRequest) getRequest().getContainerRequest());
         JiraClientInfo clientInfo = (JiraClientInfo) WebSession.get().getClientInfo();
         try
         {

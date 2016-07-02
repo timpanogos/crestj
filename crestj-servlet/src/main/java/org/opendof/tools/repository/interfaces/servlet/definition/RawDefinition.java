@@ -11,7 +11,7 @@ import org.opendof.tools.repository.interfaces.core.AuthenticatedUser;
 import org.opendof.tools.repository.interfaces.core.CoreController;
 import org.opendof.tools.repository.interfaces.core.XMLTranslator;
 import org.opendof.tools.repository.interfaces.da.InterfaceData;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.auth.ClientInformation;
 import org.opendof.tools.repository.interfaces.servlet.index.Index;
 import org.slf4j.Logger;
@@ -79,7 +79,7 @@ public class RawDefinition extends WebPage {
 
 	
 	private CoreController getCore(){
-		return ((InterfaceRepository)getApplication()).getCoreController();
+		return ((NeedServer)getApplication()).getCoreController();
 	}
 	
 	private void parseParameters(PageParameters parameters){

@@ -11,7 +11,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opendof.tools.repository.interfaces.core.CoreController;
 import org.opendof.tools.repository.interfaces.core.XMLTranslator;
 import org.opendof.tools.repository.interfaces.da.InterfaceData;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.definition.Definition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class InterfaceOptionPanel extends Panel {
 	}
 	
 	private CoreController getCore(){
-		return ((InterfaceRepository)getApplication()).getCoreController();
+		return ((NeedServer)getApplication()).getCoreController();
 	}
 	
 	private class TranslationDropDownChoice extends DropDownChoice<String>{

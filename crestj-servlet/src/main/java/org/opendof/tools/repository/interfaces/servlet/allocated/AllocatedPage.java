@@ -21,7 +21,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opendof.tools.repository.interfaces.core.AuthenticatedUser;
 import org.opendof.tools.repository.interfaces.core.CoreController;
 import org.opendof.tools.repository.interfaces.da.InterfaceData;
-import org.opendof.tools.repository.interfaces.servlet.InterfaceRepository;
+import org.opendof.tools.repository.interfaces.servlet.NeedServer;
 import org.opendof.tools.repository.interfaces.servlet.auth.ClientInformation;
 import org.opendof.tools.repository.interfaces.servlet.definition.Definition;
 import org.opendof.tools.repository.interfaces.servlet.menu.ViewAllocatedPanel;
@@ -91,7 +91,7 @@ public class AllocatedPage extends WebPage {
 	}
 	
 	private CoreController getCore(){
-		return ((InterfaceRepository)getApplication()).getCoreController();
+		return ((NeedServer)getApplication()).getCoreController();
 	}
 	
 	private ClientInformation getClientInformation(){

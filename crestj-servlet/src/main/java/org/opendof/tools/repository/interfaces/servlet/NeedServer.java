@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings("javadoc")
-public class InterfaceRepository extends AuthenticatedWebApplication
+public class NeedServer extends AuthenticatedWebApplication
 {
     private static final String LogFilePathKey = "opendof.tools.log-file-path";
     private static final String LogFileBaseKey = "opendof.tools.log-file-base";
@@ -51,7 +51,7 @@ public class InterfaceRepository extends AuthenticatedWebApplication
     private volatile CoreController core;
     private volatile OAuthUserAuthenticator authenticator;
     
-    public InterfaceRepository()
+    public NeedServer()
     {
         System.setProperty(LogFilePathKey, LogFilePathDefault);
         System.setProperty(LogFileBaseKey, LogFileBaseDefault);
@@ -276,7 +276,7 @@ public class InterfaceRepository extends AuthenticatedWebApplication
 //        public Collection<Part> getParts() throws IOException, ServletException;
 //        public Part getPart(String name) throws IOException, ServletException;
 //        public <T extends HttpUpgradeHandler> T  upgrade(Class<T> handlerClass)
-        LoggerFactory.getLogger(InterfaceRepository.class).debug(format.toString());
+        LoggerFactory.getLogger(NeedServer.class).debug(format.toString());
     }
     
     public static void logCookie(Cookie cookie, TabToLevel format)
