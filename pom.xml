@@ -16,5 +16,6 @@
 		<module>nee-d</module>
 		<module>crestj-pg-da</module>
 		<module>crestj-servlet</module>
+		<module>crestj-web</module>
 	</modules>
 </project>
