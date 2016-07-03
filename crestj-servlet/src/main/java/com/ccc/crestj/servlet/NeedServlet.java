@@ -53,6 +53,7 @@ public class NeedServlet extends AuthenticatedWebApplication
     
     public static final String OauthLoginUrlKey = "ccc.crestj.oauth.eve.login-url";
     public static final String OauthTokenUrlKey = "ccc.crestj.oauth.eve.token-url";
+    public static final String OauthVerifyUrlKey = "ccc.crestj.oauth.eve.verify-url";
     public static final String OauthCallbackUrlKey = "ccc.crest.oauth.eve.callback-url";
     public static final String OauthClientIdKey = "ccc.crest.oauth.eve.client-key";
     public static final String OauthClientSecretKey = "ccc.crest.oauth.eve.client-secret";
@@ -61,8 +62,9 @@ public class NeedServlet extends AuthenticatedWebApplication
     
     public static final String NeedServletConfigDefault = "etc/opt/ccc/crest/need/need.properties";
     public final static String OauthImplClassDefault = EveAuthenticator.class.getName();
-    public static final String OauthLoginUrlDefault = "ccc.crestj.oauth.eve.login-url";
-    public static final String OauthTokenUrlDefault = "ccc.crestj.oauth.eve.token-url";
+    public static final String OauthLoginUrlDefault = "https://login.eveonline.com/oauth/authorize";
+    public static final String OauthTokenUrlDefault = "https://login.eveonline.com/oauth/token";
+    public static final String OauthVerifyUrlDefault = "https://login.eveonline.com/oauth/verify";
     
     public final static String OauthScopeDefault = "publicData";
     public static final String CopyrightYearKey = "ccc.crest.copyright-year";

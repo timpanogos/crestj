@@ -128,9 +128,11 @@ https://login.eveonline.com/oauth/authorize/?
         return oauth20Service.getAccessToken(code);
     }
 
-    public void addAuthenticatedUser(HttpServletRequest request, HttpServletResponse response, String email, String displayName)
+    public OAuth2AccessToken refreshAccessToken(String refresh)
     {
-        // TODO
+        if (isOauth10a)
+            throw new IllegalArgumentException("This method only supports OAuth20Service, try the other getAccessToken method.");
+        return oauth20Service.refreshAccessToken(refresh);
     }
 
     public static class AuthenticateUserData

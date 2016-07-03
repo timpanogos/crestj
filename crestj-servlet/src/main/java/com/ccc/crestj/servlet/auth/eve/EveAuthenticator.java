@@ -37,6 +37,7 @@ public class EveAuthenticator implements OAuthUserAuthenticator
 
     private volatile String loginUrl;
     private volatile String tokenUrl;
+    private volatile String verifyUrl;
     private volatile String clientSecret;
     private volatile String clientId;
     private volatile String scope;
@@ -51,6 +52,7 @@ public class EveAuthenticator implements OAuthUserAuthenticator
     {
         loginUrl = properties.getProperty(NeedServlet.OauthLoginUrlKey);
         tokenUrl = properties.getProperty(NeedServlet.OauthTokenUrlKey);
+        verifyUrl = properties.getProperty(NeedServlet.OauthVerifyUrlKey);
         clientId = properties.getProperty(NeedServlet.OauthClientIdKey);
         clientSecret = properties.getProperty(NeedServlet.OauthClientSecretKey);
         List<Entry<String, String>> scopes = PropertiesHelper.getPropertiesForBaseKey(NeedServlet.OauthScopeKey, properties);
@@ -59,6 +61,8 @@ public class EveAuthenticator implements OAuthUserAuthenticator
             loginUrl = NeedServlet.OauthLoginUrlDefault;
         if (tokenUrl == null)
             tokenUrl = NeedServlet.OauthTokenUrlDefault;
+        if (verifyUrl == null)
+            verifyUrl = NeedServlet.OauthVerifyUrlDefault;
         if (clientId == null)
             throw new IllegalArgumentException("Missing property " + NeedServlet.OauthClientIdKey);
         if (clientSecret == null)

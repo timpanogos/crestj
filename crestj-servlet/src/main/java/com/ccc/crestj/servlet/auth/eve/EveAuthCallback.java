@@ -15,6 +15,9 @@
 */
 package com.ccc.crestj.servlet.auth.eve;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.wicket.RestartResponseAtInterceptPageException;
@@ -27,12 +30,17 @@ import org.slf4j.LoggerFactory;
 import com.ccc.crestj.servlet.NeedServlet;
 import com.ccc.crestj.servlet.auth.LoginPage;
 import com.ccc.crestj.servlet.auth.UserAuthenticationHandler;
+import com.github.scribejava.core.model.OAuth2AccessToken;
 
 @SuppressWarnings("javadoc")
 public class EveAuthCallback extends WebPage
 {
     private static final long serialVersionUID = 1L;
 
+    //TODO: centralize with a threadpool or somesuch ... no cleanup here right now
+    // what about multiple users? how to scale the refresh?
+    private Timer timer = new Timer();
+    
     public EveAuthCallback(final PageParameters parameters)
     {
         NeedServlet.logRequest((HttpServletRequest) getRequest().getContainerRequest());
@@ -43,16 +51,41 @@ public class EveAuthCallback extends WebPage
             clientInfo.setCode(parameters.get("code").toString());
             clientInfo.setState(parameters.get("state").toString());
             clientInfo.validateState();
-//            clientInfo.setOauthVerifier(parameters.get("oauth_verifier").toString());
             clientInfo.setAccessToken(handler.getAccessToken(clientInfo.getCode()));
             clientInfo.setAuthenticated(true);
-//            JiraRestClient.getSessionInfo(clientInfo);
-//            JiraRestClient.get(clientInfo, RestSessionApi);
+            long expiresIn = ((OAuth2AccessToken)clientInfo.getAccessToken()).getExpiresIn();
+            expiresIn *= 1000;
+            expiresIn -= 30 * 1000; // give it 30 seconds pre-expire
+            timer.scheduleAtFixedRate(new RefreshTask(handler, clientInfo), expiresIn, expiresIn);
         } catch (Exception e)
         {
             LoggerFactory.getLogger(getClass()).info("OAuth authentication phase 2 failed", e);
             throw new RestartResponseAtInterceptPageException(SignOutPage.class);
         }
         throw new RestartResponseAtInterceptPageException(LoginPage.class);
+    }
+    
+    private class RefreshTask extends TimerTask
+    {
+        private final UserAuthenticationHandler handler;
+        private final EveClientInfo clientInfo;
+        
+        private RefreshTask(UserAuthenticationHandler handler, EveClientInfo clientInfo)
+        {
+            this.handler = handler;
+            this.clientInfo = clientInfo;
+        }
+        
+        @Override
+        public void run()
+        {
+            try
+            {
+                clientInfo.setAccessToken(handler.refreshAccessToken(((OAuth2AccessToken)clientInfo.getAccessToken()).getRefreshToken()));
+            }catch(Exception e)
+            {
+                LoggerFactory.getLogger(getClass()).error("Refresh Access Token failed", e);
+            }
+        }
     }
 }
