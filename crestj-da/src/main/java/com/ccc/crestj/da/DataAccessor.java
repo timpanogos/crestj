@@ -1,5 +1,5 @@
 /*
-**  Copyright (c) 2010-2015, Panasonic Corporation.
+**  Copyright (c) 2016, Cascade Computer Consulting.
 **
 **  Permission to use, copy, modify, and/or distribute this software for any
 **  purpose with or without fee is hereby granted, provided that the above
@@ -16,7 +16,6 @@
 package com.ccc.crestj.da;
 
 @SuppressWarnings("javadoc")
-public interface DataAccessor
+public interface DataAccessor extends com.ccc.tools.da.DataAccessor
 {
-    public void deleteSubmitter(String submitterEmail) throws Exception;
 }
