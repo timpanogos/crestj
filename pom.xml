@@ -6,16 +6,16 @@
 		<version>1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ccc.crestj</groupId>
+	<groupId>com.ccc.crest</groupId>
 	<artifactId>builder</artifactId>
 	<version>1.0</version>
 	<packaging>pom</packaging>
-	<name>CCC crestj repository builder</name>
+	<name>CCC crest repository builder</name>
 	<modules>
-		<module>crestj-da</module>
+		<module>crest-da</module>
+		<module>crest-pg-da</module>
+		<module>crest-servlet</module>
+		<module>crest-web</module>
 		<module>nee-d</module>
-		<module>crestj-pg-da</module>
-		<module>crestj-servlet</module>
-		<module>crestj-web</module>
 	</modules>
 </project>

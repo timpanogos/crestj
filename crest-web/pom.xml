@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.ccc.crest</groupId>
+		<artifactId>builder</artifactId>
+		<version>1.0</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>crest-web</artifactId>
+	<packaging>war</packaging>
+	<name>CCC Crest WAR</name>
+	<dependencies>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>crest-da</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>crest-pg-da</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>crest-servlet</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>nee-d</artifactId>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>ROOT</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+	</build>
+</project>
