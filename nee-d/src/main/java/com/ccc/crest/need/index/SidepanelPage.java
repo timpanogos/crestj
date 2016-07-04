@@ -1,4 +1,4 @@
-package com.ccc.crest.need.allocated;
+package com.ccc.crest.need.index;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
@@ -6,40 +6,37 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Aut
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.need.menu.ViewAllocatedPanel;
-import com.ccc.crest.need.menu.allocate.AllocateInterfaceOptionPanel;
 import com.ccc.crest.need.template.FooterPanel;
 import com.ccc.crest.need.template.HeaderPanel;
-import com.ccc.crest.servlet.auth.CrestClientInformation;
 
 @AuthorizeInstantiation("ADMIN")
-public class AllocatedPage extends WebPage
+public class SidepanelPage extends WebPage
 {
     private static final long serialVersionUID = 1244571370667267003L;
     private Component headerPanel;
     private Component footerPanel;
     private MarkupContainer sidePanel;
 
-    private static Logger log = LoggerFactory.getLogger(AllocatedPage.class);
+    private static Logger log = LoggerFactory.getLogger(SidepanelPage.class);
 
-    public AllocatedPage()
+    public SidepanelPage()
     {
         headerPanel = new HeaderPanel("headerPanel");
         footerPanel = new FooterPanel("footerPanel");
         sidePanel = new WebMarkupContainer("sidePanel");
-        AllocateInterfaceOptionPanel reservePanel = new AllocateInterfaceOptionPanel("allocateInterfaceOptionPanel");
-        sidePanel.add(reservePanel);
-        ViewAllocatedPanel viewAllocatedPanel = new ViewAllocatedPanel("viewAllocatedPanel");
-        sidePanel.add(viewAllocatedPanel);
-
-        viewAllocatedPanel.setVisible(getClientInformation().isAuthenticated());
-        reservePanel.setVisible(getClientInformation().isAuthenticated());
-        sidePanel.setVisible(getClientInformation().isAuthenticated());
+        add(new Label("message", "Hello World!"));
+//        AllocateInterfaceOptionPanel reservePanel = new AllocateInterfaceOptionPanel("allocateInterfaceOptionPanel");
+//        sidePanel.add(reservePanel);
+//        ViewAllocatedPanel viewAllocatedPanel = new ViewAllocatedPanel("viewAllocatedPanel");
+//        sidePanel.add(viewAllocatedPanel);
+//
+//        viewAllocatedPanel.setVisible(getClientInformation().isAuthenticated());
+//        reservePanel.setVisible(getClientInformation().isAuthenticated());
+//        sidePanel.setVisible(getClientInformation().isAuthenticated());
 
         // AuthenticatedUser authUser = null;
         // if(getClientInformation().isAuthenticated())
@@ -75,11 +72,10 @@ public class AllocatedPage extends WebPage
         // navigator.setVisible(interfaces.size() > maxItemsPerPage);
         // browseTable.add(navigator);
 
-        add(browseTable);
-
-        Label emptyMessage = new Label("emptyMessage", new Model<String>("You do not have any allocated interfaces."));
-        add(emptyMessage);
-
+//        add(browseTable);
+//
+//        Label emptyMessage = new Label("emptyMessage", new Model<String>("You do not have any allocated interfaces."));
+//        add(emptyMessage);
         // browseTable.setVisible(!interfaces.isEmpty());
         // emptyMessage.setVisible(interfaces.isEmpty());
     }
@@ -88,10 +84,10 @@ public class AllocatedPage extends WebPage
     // return ((NeedServer)getApplication()).getCoreController();
     // }
 
-    private CrestClientInformation getClientInformation()
-    {
-        return (CrestClientInformation) WebSession.get().getClientInfo();
-    }
+//    private CrestClientInformation getClientInformation()
+//    {
+//        return (CrestClientInformation) WebSession.get().getClientInfo();
+//    }
 
 //    private class InterfaceDataView extends DataView<InterfaceData>
 //    {

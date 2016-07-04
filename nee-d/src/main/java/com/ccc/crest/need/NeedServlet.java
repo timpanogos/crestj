@@ -20,15 +20,9 @@ import java.util.Enumeration;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.need.allocated.AllocatedPage;
-import com.ccc.crest.need.browse.Browse;
-import com.ccc.crest.need.definition.Definition;
-import com.ccc.crest.need.definition.LegacyDefinition;
-import com.ccc.crest.need.definition.RawDefinition;
 import com.ccc.crest.need.index.Index;
 import com.ccc.crest.servlet.CrestServlet;
 import com.ccc.tools.TabToLevel;
@@ -57,17 +51,9 @@ public class NeedServlet extends CrestServlet
     }
 
     @Override
-    protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionImplClass()
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     protected Class<? extends WebPage> getSignInPageImplClass()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return super.getSignInPageClass();
     }
     
     @Override
@@ -80,12 +66,12 @@ public class NeedServlet extends CrestServlet
     public void init(StringBuilder sb)
     {
         super.init(sb);
-        mountPage("/browse", Browse.class);
-        mountPage("/interface", Definition.class);
-        mountPage("/interface-repository/interface", LegacyDefinition.class);
-        mountPage("/interface/raw", RawDefinition.class);
-        mountPage("/allocated", AllocatedPage.class);
-        log.info(sb.toString());
+//        mountPage("/browse", Index.class);
+//        mountPage("/interface", Definition.class);
+//        mountPage("/interface-repository/interface", LegacyDefinition.class);
+//        mountPage("/interface/raw", RawDefinition.class);
+//        mountPage("/allocated", AllocatedPage.class);
+//        log.info(sb.toString());
 	}
 
     @Override

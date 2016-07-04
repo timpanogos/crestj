@@ -15,144 +15,25 @@
 */
 package com.ccc.crest.servlet.auth;
 
-import org.apache.wicket.request.cycle.RequestCycle;
-
-import com.github.scribejava.core.model.OAuthConfig;
-import com.github.scribejava.core.model.Token;
+import com.ccc.crest.json.OauthVerifyData;
+import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
 
 @SuppressWarnings("javadoc")
-public class CrestClientInfo extends CrestClientInformation 
+public class CrestClientInfo extends Base20ClientInfo
 {
-    private static final long serialVersionUID = 1L;
+    private OauthVerifyData verifyData;
     
-    private String code;
-    private String state;
-    private Token accessToken;
-    private String loginBaseUrl;    // from config
-    private String loginUrl;        // totally filled out from scribejava
-    private String tokenUrl;
-    private OAuthConfig oauthConfig;
-    
-    public CrestClientInfo(RequestCycle requestCycle)
+    public CrestClientInfo()
     {
-        super(requestCycle);
     }
 
-    public void validateState() throws Exception
+    public synchronized OauthVerifyData getVerifyData()
     {
-        if (oauthConfig.getState().equals(state))
-            return;
-        throw new Exception("unexpected oauth state returned");
-    }
-    
-    public synchronized String getLoginUrl()
-    {
-        return loginUrl;
+        return verifyData;
     }
 
-    public synchronized void setLoginUrl(String loginUrl)
+    public synchronized void setVerifyData(OauthVerifyData verifyData)
     {
-        this.loginUrl = loginUrl;
-    }
-
-//    public synchronized String getOauthVerifier()
-//    {
-//        return oauthVerifier;
-//    }
-//
-//    public synchronized void setOauthVerifier(String oauthVerifier)
-//    {
-//        this.oauthVerifier = oauthVerifier;
-//    }
-
-    public synchronized OAuthConfig getOauthConfig()
-    {
-        return oauthConfig;
-    }
-
-    public synchronized void setOauthConfig(OAuthConfig oauthConfig)
-    {
-        this.oauthConfig = oauthConfig;
-    }
-
-    
-//    public synchronized String getOauthToken()
-//    {
-//        return oauthToken;
-//    }
-//
-//    public synchronized void setOauthToken(String oauthToken)
-//    {
-//        this.oauthToken = oauthToken;
-//    }
-
-    public synchronized Token getAccessToken()
-    {
-        return accessToken;
-    }
-
-    public synchronized void setAccessToken(Token accessToken)
-    {
-        this.accessToken = accessToken;
-    }
-
-    public synchronized String getLoginBaseUrl()
-    {
-        return loginBaseUrl;
-    }
-
-    public synchronized void setLoginBaseUrl(String loginBaseUrl)
-    {
-        this.loginBaseUrl = loginBaseUrl;
-    }
-    
-    public synchronized String getTokenUrl()
-    {
-        return tokenUrl;
-    }
-
-    public synchronized void setTokenUrl(String tokenUrl)
-    {
-        this.tokenUrl = tokenUrl;
-    }
-    
-//    public synchronized String getConsumerKey()
-//    {
-//        return consumerKey;
-//    }
-//
-//    public synchronized void setConsumerKey(String consumerKey)
-//    {
-//        this.consumerKey = consumerKey;
-//    }
-//
-//    public synchronized String getPrivateHash()
-//    {
-//        return privateHash;
-//    }
-//
-//    public synchronized void setPrivateHash(String privateHash)
-//    {
-//        this.privateHash = privateHash;
-//    }
-
-    public synchronized String getCode()
-    {
-        return code;
-    }
-
-    public synchronized void setCode(String code)
-    {
-        this.code = code;
-    }
-
-    public synchronized String getState()
-    {
-        return state;
-    }
-
-    public synchronized void setState(String state)
-    {
-        this.state = state;
+        this.verifyData = verifyData;
     }
 }

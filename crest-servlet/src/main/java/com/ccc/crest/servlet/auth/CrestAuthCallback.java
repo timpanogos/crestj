@@ -17,8 +17,6 @@ package com.ccc.crest.servlet.auth;
 
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
@@ -29,43 +27,38 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.authroles.authentication.pages.SignOutPage;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.json.OauthVerifyData;
 import com.ccc.crest.servlet.CrestServlet;
-import com.ccc.tools.servlet.OAuthServlet;
-import com.ccc.tools.servlet.UserAuthenticationHandler;
+import com.ccc.tools.servlet.OauthServlet;
+import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
+import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
+import com.ccc.tools.servlet.login.Auth20Callback;
+import com.ccc.tools.servlet.login.LoginPage;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 @SuppressWarnings("javadoc")
-public class CrestAuthCallback extends WebPage
+public class CrestAuthCallback extends Auth20Callback
 {
-    private static final long serialVersionUID = 1L;
-
-    // TODO: centralize with a threadpool or somesuch ... no cleanup here right
-    // now
-    // what about multiple users? how to scale the refresh?
-    // also need to cancel it in logout
-    private Timer timer = new Timer();
-
-    public CrestAuthCallback(final PageParameters parameters)
+    private static final long serialVersionUID = 4563195900276611276L;
+    
+    public CrestAuthCallback(PageParameters parameters) throws Exception
     {
-        CrestClientInfo clientInfo = (CrestClientInfo) WebSession.get().getClientInfo();
+        super(parameters);
+        SessionClientInfo sessionClientInfo = (SessionClientInfo) WebSession.get().getClientInfo();
+        handleCallback(parameters, sessionClientInfo);
+    }
+
+    @Override
+    protected void handleCallback(PageParameters parameters, SessionClientInfo sessionClientInfo) throws Exception
+    {
+        super.handleCallback(parameters, sessionClientInfo);
         try
         {
-            UserAuthenticationHandler handler = UserAuthenticationHandler.getInstance();
-            clientInfo.setCode(parameters.get("code").toString());
-            clientInfo.setState(parameters.get("state").toString());
-            clientInfo.validateState();
-            clientInfo.setAccessToken(handler.getAccessToken(clientInfo.getCode()));
-            clientInfo.setAuthenticated(true);
-            long expiresIn = ((OAuth2AccessToken) clientInfo.getAccessToken()).getExpiresIn();
-            expiresIn *= 1000;
-            expiresIn -= 30 * 1000; // give it 30 seconds pre-expire
-            timer.scheduleAtFixedRate(new RefreshTask(handler, clientInfo), expiresIn, expiresIn);
+            CrestClientInfo clientInfo = (CrestClientInfo) sessionClientInfo.getOauthClientInfo();
             getVerifyData(clientInfo);
         } catch (Exception e)
         {
@@ -74,10 +67,10 @@ public class CrestAuthCallback extends WebPage
         }
         throw new RestartResponseAtInterceptPageException(LoginPage.class);
     }
-
-    private void getVerifyData(CrestClientInfo clientInfo) throws Exception
+    
+    private void getVerifyData(Base20ClientInfo clientInfo) throws Exception
     {
-        Properties properties = ((OAuthServlet)getApplication()).getFileProperties();
+        Properties properties = ((OauthServlet)getApplication()).getFileProperties();
         String verifyUrl = properties.getProperty(CrestServlet.OauthVerifyUrlKey, CrestServlet.OauthVerifyUrlDefault);
         String userAgent = properties.getProperty(CrestServlet.UserAgentKey, CrestServlet.UserAgentDefault);
 //        CloseableHttpClient httpclient = HttpClients.createDefault();
@@ -98,36 +91,11 @@ public class CrestAuthCallback extends WebPage
             InputStream is = entity1.getContent();
             String json = IOUtils.toString(is, "UTF-8");
             is.close();
-            clientInfo.setVerifyData(OauthVerifyData.getOauthVerifyData(json));
+            ((CrestClientInfo)clientInfo).setVerifyData(OauthVerifyData.getOauthVerifyData(json));
             EntityUtils.consume(entity1);
         } finally
         {
             response1.close();
-        }
-    }
-
-    private class RefreshTask extends TimerTask
-    {
-        private final UserAuthenticationHandler handler;
-        private final CrestClientInfo clientInfo;
-
-        private RefreshTask(UserAuthenticationHandler handler, CrestClientInfo clientInfo)
-        {
-            this.handler = handler;
-            this.clientInfo = clientInfo;
-        }
-
-        @Override
-        public void run()
-        {
-            try
-            {
-                clientInfo.setAccessToken(handler.refreshAccessToken(((OAuth2AccessToken) clientInfo.getAccessToken()).getRefreshToken()));
-            } catch (Exception e)
-            {
-                timer.cancel();
-                LoggerFactory.getLogger(getClass()).error("Refresh Access Token failed", e);
-            }
         }
     }
 }

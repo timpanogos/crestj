@@ -20,17 +20,16 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 
-import org.apache.wicket.request.cycle.RequestCycle;
-
 import com.ccc.crest.servlet.CrestServlet;
 import com.ccc.tools.PropertiesHelper;
-import com.ccc.tools.servlet.OAuthUserAuthenticator;
+import com.ccc.tools.servlet.OauthUserAuthenticator;
+import com.ccc.tools.servlet.ScribeApi20Impl;
 import com.ccc.tools.servlet.UserAuthenticationHandler;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuthService;
 
 @SuppressWarnings("javadoc")
-public class CrestAuthenticator implements OAuthUserAuthenticator
+public class CrestAuthenticator implements OauthUserAuthenticator
 {
     public static final String CallbackMount = "/oauth/eve";
 
@@ -101,7 +100,7 @@ public class CrestAuthenticator implements OAuthUserAuthenticator
                 .state("secret"+ new Random().nextInt(999_99))
                 .callback(callbackUrl)
                 .grantType("authorization_code")
-                .build(new CrestScribeAPI(loginUrl, tokenUrl));
+                .build(new ScribeApi20Impl(loginUrl, tokenUrl));
         //@formatter:on
     }
 
@@ -117,14 +116,9 @@ public class CrestAuthenticator implements OAuthUserAuthenticator
         return CrestAuthCallback.class;
     }
 
-    @Override
-    public CrestClientInformation getClientInformation()
-    {
-        CrestClientInfo info = new CrestClientInfo(RequestCycle.get());
-        info.setLoginUrl(loginUrl);
-        info.setTokenUrl(tokenUrl);
-//        info.setConsumerKey(clientId);
-//        info.setPrivateHash(clientSecret);
-        return info;
-    }
+//    @Override
+//    public SessionClientInfo getClientInformation()
+//    {
+//        return clientInfo;
+//    }
 }

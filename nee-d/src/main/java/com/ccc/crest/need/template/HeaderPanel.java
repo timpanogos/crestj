@@ -22,9 +22,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 import com.ccc.crest.need.index.Index;
-import com.ccc.crest.servlet.auth.CrestClientInformation;
-import com.ccc.crest.servlet.auth.LoginPage;
-import com.ccc.crest.servlet.auth.LogoutPage;
+import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
+import com.ccc.tools.servlet.login.LoginPage;
+import com.ccc.tools.servlet.logout.LogoutPage;
 
 @SuppressWarnings("javadoc")
 public class HeaderPanel extends Panel
@@ -39,8 +40,10 @@ public class HeaderPanel extends Panel
     {
         super(id);
 
-        CrestClientInformation clientInformation = getClientInformation();
-        String user = clientInformation.isAuthenticated() ? clientInformation.getVerifyData().CharacterName : null;
+        SessionClientInfo sessionClientInfo = (SessionClientInfo) getWebSession().getClientInfo();
+        CrestClientInfo clientInfo = (CrestClientInfo) sessionClientInfo.getOauthClientInfo();
+
+        String user = sessionClientInfo.isAuthenticated() ? clientInfo.getVerifyData().CharacterName : null;
 
         login = new BookmarkablePageLink<Object>("login", LoginPage.class);
         logout = new BookmarkablePageLink<Object>("logout", LogoutPage.class);
@@ -58,10 +61,5 @@ public class HeaderPanel extends Panel
         add(login);
         add(logoutLabel);
         add(logout);
-    }
-
-    private CrestClientInformation getClientInformation()
-    {
-        return (CrestClientInformation) getWebSession().getClientInfo();
     }
 }

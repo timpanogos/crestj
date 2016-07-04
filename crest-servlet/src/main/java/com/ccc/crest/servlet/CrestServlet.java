@@ -19,13 +19,14 @@ import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSessio
 import org.apache.wicket.markup.html.WebPage;
 
 import com.ccc.crest.servlet.auth.CrestAuthenticator;
-import com.ccc.crest.servlet.auth.CrestSignInPage;
-import com.ccc.crest.servlet.auth.CrestWebSession;
-import com.ccc.crest.servlet.auth.LoginPage;
-import com.ccc.tools.servlet.OAuthServlet;
+import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.tools.servlet.OauthServlet;
+import com.ccc.tools.servlet.OauthWebSession;
+import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
+import com.ccc.tools.servlet.login.LoginPage;
 
 @SuppressWarnings("javadoc")
-public abstract class CrestServlet extends OAuthServlet
+public abstract class CrestServlet extends OauthServlet
 {
     public static final String OauthLoginUrlKey = "ccc.crest.oauth.login-url";
     public static final String OauthTokenUrlKey = "ccc.crest.oauth.token-url";
@@ -61,6 +62,12 @@ public abstract class CrestServlet extends OAuthServlet
     {
         return CrestServletConfigDefault;
     }
+    
+    @Override
+    protected BaseClientInfo getBaseClientInfo()
+    {
+        return new CrestClientInfo();
+    }
 
     @Override
     protected void init(StringBuilder sb)
@@ -71,17 +78,18 @@ public abstract class CrestServlet extends OAuthServlet
     @Override
     protected void onDestroy()
     {
+        super.onDestroy();
     }
     
     @Override
-    protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionClass()
+    protected Class<? extends AbstractAuthenticatedWebSession> getWebSessionImplClass()
     {
-        return CrestWebSession.class;
+        return OauthWebSession.class;
     }
 
     @Override
     protected Class<? extends WebPage> getSignInPageClass()
     {
-        return CrestSignInPage.class;
+        return super.getSignInPageClass();
     }
 }
