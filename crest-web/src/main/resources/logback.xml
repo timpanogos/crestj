@@ -23,7 +23,7 @@
 	<logger name="org.apach" level="info"/>
 	<logger name="com.zaxxer" level="warn"/>
 
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="stdout" />
         <appender-ref ref="file" />
     </root>

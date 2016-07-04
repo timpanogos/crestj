@@ -174,7 +174,7 @@ public class Index extends WebPage
             InterfaceData interfaceData = null;
             AuthenticatedUser authUser = null;
             if (getClientInformation().isAuthenticated())
-                authUser = new AuthenticatedUser(getClientInformation().getCharacterName(), null, null, null);
+                authUser = new AuthenticatedUser(getClientInformation().getVerifyData().CharacterName, null, null, null);
             try
             {
                 interfaceData = null; //getCore().getInterface(authUser, repo, iid, version);

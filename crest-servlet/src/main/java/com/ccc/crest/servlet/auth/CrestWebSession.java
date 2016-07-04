@@ -1,5 +1,5 @@
 /*
-**  Copyright (c) 2010-2015, Panasonic Corporation.
+**  Copyright (c) 2016, Cascade Computer Consulting.
 **
 **  Permission to use, copy, modify, and/or distribute this software for any
 **  purpose with or without fee is hereby granted, provided that the above
@@ -26,8 +26,9 @@ import com.ccc.tools.servlet.BaseClientInformation;
 @SuppressWarnings("javadoc")
 public class CrestWebSession extends AuthenticatedWebSession
 {
-    private static final long serialVersionUID = 1L;
-    private BaseClientInformation clientInfo;
+	private static final long serialVersionUID = -3746714701542229374L;
+	
+	private BaseClientInformation clientInfo;
     
     public CrestWebSession(Request request)
     {

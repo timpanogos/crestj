@@ -11,12 +11,8 @@
 	<name>CCC Crest WAR</name>
 	<dependencies>
 		<dependency>
-			<groupId>com.ccc.crest</groupId>
-			<artifactId>crest-da</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.ccc.crest</groupId>
-			<artifactId>crest-pg-da</artifactId>
+			<groupId>com.ccc</groupId>
+			<artifactId>ccc-tools</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
@@ -25,6 +21,14 @@
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
 			<artifactId>nee-d</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>crest-da</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>crest-pg-da</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

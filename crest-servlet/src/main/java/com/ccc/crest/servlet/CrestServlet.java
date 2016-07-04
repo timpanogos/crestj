@@ -35,6 +35,7 @@ public abstract class CrestServlet extends OAuthServlet
     public static final String OauthClientSecretKey = "ccc.crest.oauth.client-secret";
     public static final String OauthScopeKey = "ccc.crest.scope";
     public static final String CrestUrlKey = "ccc.crest.url";
+    public static final String UserAgentKey = "ccc.crest.user-agent";
     
     public static final String CrestServletConfigDefault = "etc/opt/ccc/crest/crest.properties";
     public final static String OauthImplClassDefault = CrestAuthenticator.class.getName(); //
@@ -43,6 +44,7 @@ public abstract class CrestServlet extends OAuthServlet
     public static final String OauthVerifyUrlDefault = "https://login.eveonline.com/oauth/verify";
     public static final String OauthScopeDefault = "publicData";
     public static final String CrestUrlDefault = "https://crest-tq.eveonline.com";
+    public static final String UserAgentDefault = "cadams@xmission.com";
     
     public CrestServlet()
     {

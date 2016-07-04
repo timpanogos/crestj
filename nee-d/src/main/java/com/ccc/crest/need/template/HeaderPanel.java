@@ -40,7 +40,7 @@ public class HeaderPanel extends Panel
         super(id);
 
         CrestClientInformation clientInformation = getClientInformation();
-        String user = clientInformation.isAuthenticated() ? clientInformation.getCharacterName() : null;
+        String user = clientInformation.isAuthenticated() ? clientInformation.getVerifyData().CharacterName : null;
 
         login = new BookmarkablePageLink<Object>("login", LoginPage.class);
         logout = new BookmarkablePageLink<Object>("logout", LogoutPage.class);
