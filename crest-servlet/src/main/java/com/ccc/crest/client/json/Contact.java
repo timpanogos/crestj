@@ -13,28 +13,23 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.json;
+package com.ccc.crest.client.json;
 
 import java.io.Serializable;
 
-import com.google.gson.Gson;
-
 @SuppressWarnings("javadoc")
-public class OauthVerifyData implements Serializable
+public class Contact implements Serializable
 {
-    private static final long serialVersionUID = -6593143685247227437L;
+    private static final long serialVersionUID = 7850075724802643120L;
     
-    public String CharacterID;
-    public String CharacterName;
-    public String ExpiresOn;
-    public String Scopes;
-    public String TokenType;
-    public String CharacterOwnerHash;
+    public static final int CacheTime = 5 * 60;
     
-    public static OauthVerifyData getOauthVerifyData(String json)
-    {
-        Gson gson = new Gson();
-        return gson.fromJson(json, OauthVerifyData.class); 
-    }
+    public float standing;
+    public Character character;
+    public InnerContact contact;
+    public String href;
+    public String contactType;
+    public boolean watched;
+    public boolean blocked;
 }
 

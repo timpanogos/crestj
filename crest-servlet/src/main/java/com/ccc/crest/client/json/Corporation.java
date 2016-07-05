@@ -13,27 +13,21 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.servlet.auth;
+package com.ccc.crest.client.json;
 
-import com.ccc.crest.client.json.OauthVerify;
-import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
+import java.io.Serializable;
 
 @SuppressWarnings("javadoc")
-public class CrestClientInfo extends Base20ClientInfo
+public class Corporation implements Serializable
 {
-    private OauthVerify verifyData;
+    private static final long serialVersionUID = -7594974838530904387L;
     
-    public CrestClientInfo()
-    {
-    }
-
-    public synchronized OauthVerify getVerifyData()
-    {
-        return verifyData;
-    }
-
-    public synchronized void setVerifyData(OauthVerify verifyData)
-    {
-        this.verifyData = verifyData;
-    }
+    public String name;
+    public boolean isNPC;
+    public String href;
+    public String id_str;
+    public Logo logo;
+    public long id;
+    
 }
+
