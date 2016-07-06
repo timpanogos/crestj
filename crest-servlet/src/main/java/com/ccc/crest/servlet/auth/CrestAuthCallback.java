@@ -31,8 +31,8 @@ import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.client.json.Contacts;
 import com.ccc.crest.client.json.OauthVerify;
+import com.ccc.crest.client.json.character.Contacts;
 import com.ccc.crest.servlet.CrestServlet;
 import com.ccc.tools.servlet.OauthServlet;
 import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
@@ -61,7 +61,8 @@ public class CrestAuthCallback extends Auth20Callback
         {
             CrestClientInfo clientInfo = (CrestClientInfo) sessionClientInfo.getOauthClientInfo();
             getVerifyData(clientInfo);
-Contacts c = Contacts.getContacts((CrestClientInfo)sessionClientInfo.getOauthClientInfo());            
+Contacts.getContacts((CrestClientInfo)sessionClientInfo.getOauthClientInfo(), null);
+System.out.println("look here");
         } catch (Exception e)
         {
             LoggerFactory.getLogger(getClass()).info("OAuth authentication phase 2 failed", e);

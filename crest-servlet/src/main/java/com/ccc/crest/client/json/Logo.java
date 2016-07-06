@@ -17,6 +17,9 @@ package com.ccc.crest.client.json;
 
 import java.io.Serializable;
 
+import com.ccc.tools.TabToLevel;
+import com.google.gson.JsonObject;
+
 @SuppressWarnings("javadoc")
 public class Logo implements Serializable
 {
@@ -25,6 +28,28 @@ public class Logo implements Serializable
     public Href href64x64;
     public Href href128x128;
     public Href href256x256;
+ 
+    public Logo(JsonObject jsonObject)
+    {
+        href32x32 = new Href(jsonObject.get("32x32").getAsJsonObject());
+        href64x64 = new Href(jsonObject.get("64x64").getAsJsonObject());
+        href128x128 = new Href(jsonObject.get("128x128").getAsJsonObject());
+        href256x256 = new Href(jsonObject.get("256x256").getAsJsonObject());
+        System.out.println(jsonObject);
+    }
     
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        format.ttl("logo");
+        format.level.incrementAndGet();
+        format.ttl("href32x32: ", href32x32.toString());
+        format.ttl("href64x64: ", href64x64.toString());
+        format.ttl("href128x128: ", href128x128.toString());
+        format.ttl("href256x256: ", href256x256.toString());
+        format.level.decrementAndGet();
+        return format.toString();
+    }
 }
 

@@ -15,20 +15,7 @@
 */
 package com.ccc.crest.client.json;
 
-import java.io.Serializable;
-
 @SuppressWarnings("javadoc")
-public class Character implements Serializable
+public interface CrestClientData
 {
-    private static final long serialVersionUID = -6928135493367047249L;
-    
-    public String name;
-    public Corporation corporation;
-    public boolean isNPC;
-    public String href;
-    public Href capsuleer;
-    public Logo portrait;
-    public long id;
-    public String id_str;
 }
-

@@ -13,18 +13,23 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.client.json;
+package com.ccc.crest.client.json.character;
 
 import java.io.Serializable;
 
+import com.ccc.crest.client.json.Logo;
+
 @SuppressWarnings("javadoc")
-public class InnerContact implements Serializable
+public class Character implements Serializable
 {
-    private static final long serialVersionUID = -1712533721148862903L;
+    private static final long serialVersionUID = -6928135493367047249L;
     
-    public String id_str;
-    public String href;
     public String name;
+    public Corporation corporation;
+    public boolean isNPC;
+    public String href;
+    public Logo portrait;
     public long id;
+    public String id_str;
 }
 

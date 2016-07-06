@@ -13,27 +13,23 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.client.json;
+package com.ccc.crest.client.json.character;
 
 import java.io.Serializable;
 
-import com.google.gson.JsonObject;
-
 @SuppressWarnings("javadoc")
-public class Href implements Serializable
+public class Item implements Serializable
 {
-    private static final long serialVersionUID = -5316133329636265093L;
+    private static final long serialVersionUID = 7850075724802643120L;
+    
+    public static final int CacheTime = 5 * 60;
+    
+    public float standing;
+    public Character character;
+    public InnerContact contact;
     public String href;
-    
-    public Href(JsonObject jsonObject)
-    {
-        href = jsonObject.get("href").getAsString();
-    }
-    
-    @Override
-    public String toString()
-    {
-        return href == null ? "null" : href;
-    }
+    public String contactType;
+    public boolean watched;
+    public boolean blocked;
 }
 

@@ -15,25 +15,20 @@
 */
 package com.ccc.crest.client.json;
 
-import java.io.Serializable;
+import java.lang.reflect.Type;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Href implements Serializable
+public class LogoDeserializer implements JsonDeserializer<Logo>
 {
-    private static final long serialVersionUID = -5316133329636265093L;
-    public String href;
-    
-    public Href(JsonObject jsonObject)
-    {
-        href = jsonObject.get("href").getAsString();
-    }
-    
     @Override
-    public String toString()
+    public Logo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return href == null ? "null" : href;
+        return new Logo(json.getAsJsonObject());
     }
 }
 

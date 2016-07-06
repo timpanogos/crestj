@@ -19,6 +19,7 @@ import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSessio
 import org.apache.wicket.markup.html.WebPage;
 
 import com.ccc.crest.client.CrestClient;
+import com.ccc.crest.client.json.character.Contacts;
 import com.ccc.crest.servlet.auth.CrestAuthenticator;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.tools.servlet.OauthServlet;

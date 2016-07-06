@@ -15,32 +15,46 @@
 */
 package com.ccc.crest.client;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.CharBuffer;
+import java.util.HashMap;
+import java.util.concurrent.Future;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
+import org.apache.http.nio.IOControl;
+import org.apache.http.nio.client.methods.AsyncCharConsumer;
+import org.apache.http.nio.client.methods.HttpAsyncMethods;
+import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
+import com.ccc.crest.client.json.CrestClientData;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.google.gson.Gson;
 
 @SuppressWarnings("javadoc")
 public class CrestClient
 {
     public static final int CrestGeneralMaxRequestsPerSecond = 150;
     public static final int XmlGeneralMaxRequestsPerSecond = 30;
-    
+
     private static String crestUrl;
     private static String xmlUrl;
     private static String userAgent;
     private static RequestThrottle crestGeneralThrottle;
     private static RequestThrottle xmlGeneralThrottle;
+    private static HashMap<String, RequestThrottle> crestThrottleMap;
 
     private CrestClient(String crestUrl, String xmlUrl, String userAgent)
     {
@@ -51,6 +65,7 @@ public class CrestClient
             this.userAgent = userAgent;
             crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
             xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
+            crestThrottleMap = new HashMap<String, RequestThrottle>();
         }
     }
 
@@ -60,7 +75,7 @@ public class CrestClient
             throw new RuntimeException("someone must call the getClient method that supplies the urls and user agent");
         return crestUrl;
     }
-    
+
     public static CrestClient getClient()
     {
         if (crestUrl == null)
@@ -73,34 +88,49 @@ public class CrestClient
         return new CrestClient(crestUrl, xmlUrl, userAgent);
     }
 
-    
-    //TODO: deal with authentication required or not, go asynch
-    
-    public String getCrest(CrestClientInfo clientInfo, String url, RequestThrottle throttle, String version) throws Exception
+    //@formatter:off
+    public void getCrest(
+                    CrestClientInfo clientInfo, String url, 
+                    Gson gson, Class<? extends CrestClientData> clazz, 
+                    CrestClientCallback callback,
+                    int throttle, String scope, String version) throws Exception
+    //@formatter:on
     {
-//        cmdUri = StrH.insureLeadingSeparator(cmdUri, '/');
-        CloseableHttpClient httpclient = HttpClients.custom().setUserAgent(userAgent).build();
-        String accessToken = ((OAuth2AccessToken)clientInfo.getAccessToken()).getAccessToken();
+        CloseableHttpAsyncClient httpclient = HttpAsyncClients.custom().setUserAgent(userAgent).build();
+        httpclient.start();
+        String accessToken = ((OAuth2AccessToken) clientInfo.getAccessToken()).getAccessToken();
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader("Authorization", "Bearer " + accessToken);
-        if(version != null)
+        if (scope != null)
+            httpGet.addHeader("Scope", scope);
+        if (version != null)
             httpGet.addHeader("Accept", version);
+        RequestThrottle apiThrottle = crestThrottleMap.get(url);
+        if (apiThrottle != null)
+            apiThrottle.waitAsNeeded();
         crestGeneralThrottle.waitAsNeeded();
-//        RequestThrottle throttle = cacheTimerMap.get(cmdUri);
-//        if(throttle != null)
-        throttle.waitAsNeeded();
-        CloseableHttpResponse response1 = httpclient.execute(httpGet);
+
+        //@formatter:off
+        Future<Boolean> future = httpclient.execute(
+                        HttpAsyncMethods.createGet("http://localhost:8080/"), 
+                        new AsynchResponseConsumer(), null);
+        //@formatter:on
+
         try
         {
-            HttpEntity entity1 = response1.getEntity();
-            InputStream is = entity1.getContent();
-            String json = IOUtils.toString(is, "UTF-8");
-            is.close();
-            EntityUtils.consume(entity1);
-            return json;
+            future.get();
+//            HttpResponse response = future.get();
+//            HttpEntity entity = response.getEntity();
+//            InputStream is = entity.getContent();
+//            String json = IOUtils.toString(is, "UTF-8");
+//            is.close();
+//            EntityUtils.consume(entity);
+            if (apiThrottle == null)
+                crestThrottleMap.put(url, new RequestThrottle(throttle));
+//            CrestClientData data = gson.fromJson(json, clazz);
         } finally
         {
-            response1.close();
+            httpclient.close();
         }
     }
 
@@ -126,6 +156,38 @@ public class CrestClient
         } finally
         {
             response1.close();
+        }
+    }
+
+    static class AsynchResponseConsumer extends AsyncCharConsumer<Boolean>
+    {
+        @Override
+        protected void onResponseReceived(final HttpResponse response)
+        {
+            System.out.println("onResponseRecieved");
+        }
+
+        @Override
+        protected void onCharReceived(final CharBuffer buf, final IOControl ioctrl) throws IOException
+        {
+            System.out.println("onCharRecieved");
+            while (buf.hasRemaining())
+            {
+                System.out.print(buf.get());
+            }
+        }
+
+        @Override
+        protected void releaseResources()
+        {
+            System.out.println("releaseResources");
+        }
+
+        @Override
+        protected Boolean buildResult(final HttpContext context)
+        {
+            System.out.println("buioldResult");
+            return Boolean.TRUE;
         }
     }
 }

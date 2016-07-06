@@ -59,6 +59,13 @@ public class NeedServlet extends CrestServlet
     @Override
     public Class<? extends WebPage> getHomePage()
     {
+        try
+        {
+        } catch (Exception e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return Index.class;
     }
 

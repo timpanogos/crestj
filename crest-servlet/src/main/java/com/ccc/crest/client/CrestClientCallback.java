@@ -13,21 +13,9 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.client.json;
-
-import java.io.Serializable;
+package com.ccc.crest.client;
 
 @SuppressWarnings("javadoc")
-public class Corporation implements Serializable
+public interface CrestClientCallback
 {
-    private static final long serialVersionUID = -7594974838530904387L;
-    
-    public String name;
-    public boolean isNPC;
-    public String href;
-    public String id_str;
-    public Logo logo;
-    public long id;
-    
 }
-
