@@ -13,12 +13,40 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.client;
+package com.ccc.crest.servlet;
+
+import java.util.Properties;
 
 import com.ccc.crest.cache.CrestData;
+import com.ccc.crest.cache.DataCache;
+import com.ccc.tools.TabToLevel;
+import com.ccc.tools.servlet.CoreController;
 
 @SuppressWarnings("javadoc")
-public interface CrestResponseCallback
+public class CrestController extends CoreController
 {
-    public void received(CrestData data);
+	private volatile DataCache cache;
+	
+    public void init(Properties properties, TabToLevel format) throws Exception
+    {
+    	super.init(properties, format);
+    	cache = new DataCache();
+    }
+    
+    public void destroy()
+    {
+    	if(cache != null)
+    		cache.clear();
+    	super.destroy();
+    }
+    
+    private class CacheData 
+    {
+    	public final CrestData data;
+    	
+    	private CacheData(CrestData data)
+    	{
+    		this.data = data;
+    	}
+    }
 }

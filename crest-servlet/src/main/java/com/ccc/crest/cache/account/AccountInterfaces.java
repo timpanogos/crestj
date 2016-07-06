@@ -13,12 +13,13 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.client;
-
-import com.ccc.crest.cache.CrestData;
+package com.ccc.crest.cache.account;
 
 @SuppressWarnings("javadoc")
-public interface CrestResponseCallback
+public interface AccountInterfaces
 {
-    public void received(CrestData data);
+	public AccountStatus getAccountStatus();
+	public ApiKeyInfo getApiKeyInfo();
+	public Characters getCharacters();
+	public CallList getCallList();
 }

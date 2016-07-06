@@ -31,8 +31,8 @@ import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
+import com.ccc.crest.cache.CrestData;
 import com.ccc.crest.client.CrestResponseCallback;
-import com.ccc.crest.client.json.CrestData;
 import com.ccc.crest.client.json.OauthVerify;
 import com.ccc.crest.client.json.character.Contacts;
 import com.ccc.crest.servlet.CrestServlet;

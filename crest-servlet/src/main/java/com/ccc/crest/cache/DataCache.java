@@ -13,12 +13,34 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.client;
+package com.ccc.crest.cache;
 
-import com.ccc.crest.cache.CrestData;
+import java.util.HashMap;
 
 @SuppressWarnings("javadoc")
-public interface CrestResponseCallback
+public class DataCache
 {
-    public void received(CrestData data);
+	private final HashMap<String, CacheData> cache;
+
+	public DataCache()
+	{
+		cache = new HashMap<String, CacheData>();
+	}
+	
+    private class CacheData 
+    {
+    	public final CrestData data;
+    	
+    	private CacheData(CrestData data)
+    	{
+    		this.data = data;
+    	}
+    }
+    
+    
+    
+    public void clear()
+    {
+    	cache.clear();
+    }
 }

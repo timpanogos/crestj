@@ -31,7 +31,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import com.ccc.crest.client.json.CrestData;
+import com.ccc.crest.cache.CrestData;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
@@ -106,26 +106,6 @@ public class CrestClient
         RequestThrottle apiThrottle = crestThrottleMap.get(url);
 
         executor.submit((new CrestGetTask(client, get, apiThrottle, gson, crestDataclass, url, throttle, callback)));
-//        if (apiThrottle != null)
-//            apiThrottle.waitAsNeeded();
-//        crestGeneralThrottle.waitAsNeeded();
-//
-//        HttpResponse response = httpclient.execute(httpGet);
-//
-//        try
-//        {
-//            HttpEntity entity = response.getEntity();
-//            InputStream is = entity.getContent();
-//            String json = IOUtils.toString(is, "UTF-8");
-//            is.close();
-//            EntityUtils.consume(entity);
-//            if (apiThrottle == null)
-//                crestThrottleMap.put(url, new RequestThrottle(throttle));
-//            //            CrestClientData data = gson.fromJson(json, clazz);
-//        } finally
-//        {
-//            httpclient.close();
-//        }
     }
 
     public String getXml(CrestClientInfo clientInfo) throws Exception
