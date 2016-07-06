@@ -19,8 +19,8 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.ccc.crest.client.CrestClient;
-import com.ccc.crest.client.CrestClientCallback;
-import com.ccc.crest.client.json.CrestClientData;
+import com.ccc.crest.client.CrestResponseCallback;
+import com.ccc.crest.client.json.CrestData;
 import com.ccc.crest.client.json.Href;
 import com.ccc.crest.client.json.Logo;
 import com.ccc.crest.client.json.LogoDeserializer;
@@ -29,7 +29,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("javadoc")
-public class Contacts implements Serializable, CrestClientData
+public class Contacts implements Serializable, CrestData
 {
     private static final long serialVersionUID = 191050364876160103L;
     private static final String Version = "application/vnd.ccp.eve.Api-v3+json";
@@ -47,7 +47,7 @@ public class Contacts implements Serializable, CrestClientData
     public int totalCount;
     public String pageCount_str;
     
-    public static void getContacts(CrestClientInfo clientInfo, CrestClientCallback callback) throws Exception
+    public static void getContacts(CrestClientInfo clientInfo, CrestResponseCallback callback) throws Exception
     {
         StringBuilder url = new StringBuilder();
         //@formatter:off

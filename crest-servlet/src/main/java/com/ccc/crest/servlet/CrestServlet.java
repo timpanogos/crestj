@@ -19,9 +19,9 @@ import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSessio
 import org.apache.wicket.markup.html.WebPage;
 
 import com.ccc.crest.client.CrestClient;
-import com.ccc.crest.client.json.character.Contacts;
 import com.ccc.crest.servlet.auth.CrestAuthenticator;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.tools.TabToLevel;
 import com.ccc.tools.servlet.OauthServlet;
 import com.ccc.tools.servlet.OauthWebSession;
 import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
@@ -74,13 +74,13 @@ public abstract class CrestServlet extends OauthServlet
     }
 
     @Override
-    protected void init(StringBuilder sb)
+    protected void init(TabToLevel format)
     {
         getApplicationSettings().setAccessDeniedPage(LoginPage.class);
         String crestUrl = properties.getProperty(CrestUrlKey, CrestUrlDefault); 
         String xmlUrl = properties.getProperty(XmlUrlKey, XmlUrlDefault); 
         String userAgent = properties.getProperty(UserAgentKey, UserAgentDefault); 
-        CrestClient.getClient(crestUrl, xmlUrl, userAgent);
+        CrestClient.getClient(crestUrl, xmlUrl, userAgent, coreController.blockingExecutor);
     }
 
     @Override

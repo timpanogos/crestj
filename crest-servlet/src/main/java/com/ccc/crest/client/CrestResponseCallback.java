@@ -15,7 +15,10 @@
 */
 package com.ccc.crest.client;
 
+import com.ccc.crest.client.json.CrestData;
+
 @SuppressWarnings("javadoc")
-public interface CrestClientCallback
+public interface CrestResponseCallback
 {
+    public void received(CrestData data);
 }

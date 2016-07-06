@@ -70,9 +70,9 @@ public class NeedServlet extends CrestServlet
     }
 
     @Override
-    public void init(StringBuilder sb)
+    public void init(TabToLevel format)
     {
-        super.init(sb);
+        super.init(format);
 //        mountPage("/browse", Index.class);
 //        mountPage("/interface", Definition.class);
 //        mountPage("/interface-repository/interface", LegacyDefinition.class);

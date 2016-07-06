@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.Random;
 
 import com.ccc.crest.servlet.CrestServlet;
-import com.ccc.tools.PropertiesHelper;
+import com.ccc.tools.app.PropertiesFile;
 import com.ccc.tools.servlet.OauthUserAuthenticator;
 import com.ccc.tools.servlet.ScribeApi20Impl;
 import com.ccc.tools.servlet.UserAuthenticationHandler;
@@ -53,7 +53,7 @@ public class CrestAuthenticator implements OauthUserAuthenticator
         verifyUrl = properties.getProperty(CrestServlet.OauthVerifyUrlKey);
         clientId = properties.getProperty(CrestServlet.OauthClientIdKey);
         clientSecret = properties.getProperty(CrestServlet.OauthClientSecretKey);
-        List<Entry<String, String>> scopes = PropertiesHelper.getPropertiesForBaseKey(CrestServlet.OauthScopeKey, properties);
+        List<Entry<String, String>> scopes = PropertiesFile.getPropertiesForBaseKey(CrestServlet.OauthScopeKey, properties);
         callbackUrl = properties.getProperty(CrestServlet.OauthCallbackUrlKey);
         if (loginUrl == null)
             loginUrl = CrestServlet.OauthLoginUrlDefault;

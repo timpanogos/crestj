@@ -16,6 +16,6 @@
 package com.ccc.crest.client.json;
 
 @SuppressWarnings("javadoc")
-public interface CrestClientData
+public interface CrestData
 {
 }
