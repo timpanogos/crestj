@@ -18,6 +18,8 @@ package com.ccc.crest.cache;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.slf4j.LoggerFactory;
+
 import com.ccc.crest.cache.account.AccountInterfaces;
 import com.ccc.crest.cache.account.AccountStatus;
 import com.ccc.crest.cache.account.ApiKeyInfo;
@@ -379,6 +381,7 @@ ElapsedTimer.resetElapsedTimers(2, 1);
 System.err.println(msg);
             if(data.isContinueRefresh())
             {
+LoggerFactory.getLogger(getClass()).info("\ncallback, re-issuing request");                
                 CrestClient.getClient().getCrest(requestData);
             }
         }

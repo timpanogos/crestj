@@ -110,6 +110,7 @@ public class CrestClient
         {
             apiThrottle = crestThrottleMap.get(requestData.url);
         }
+LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + accessToken);                
 
         return executor.submit((new CrestGetTask(client, get, requestData, apiThrottle)));
     }
@@ -157,6 +158,7 @@ public class CrestClient
         @Override
         public EveData call() throws Exception
         {
+LoggerFactory.getLogger(getClass()).info("executing, pre-throttle: " + rdata.url);            
             try
             {
                 if (apiThrottle != null)
@@ -168,6 +170,7 @@ public class CrestClient
                     @Override
                     public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException
                     {
+LoggerFactory.getLogger(getClass()).info("handling response: " + response.toString());            
                         Header[] headers = response.getHeaders(CacheControlHeader);
                         boolean found = false;
                         if(headers != null && headers.length > 0)
@@ -187,7 +190,11 @@ public class CrestClient
                             }
                         }
                         if(!found)
+                        {
+                            String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
+                            LoggerFactory.getLogger(getClass()).warn(msg);
                             throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
+                        }
                         int status = response.getStatusLine().getStatusCode();
                         if (status >= 200 && status < 300)
                         {
@@ -197,9 +204,11 @@ public class CrestClient
                         String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
                         LoggerFactory.getLogger(getClass()).warn(msg);
                         throw new ClientProtocolException(msg);
-//TODO: is it enough to just log it here, currently no one is calling get                        
+//TODO: is it enough to just log it here, currently no one is calling get 
+// maybe just re-issue, what about connection down retries?  Need to look at status code ranges to determine which to retry on.
                     }
                 };
+LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);            
                 String json = client.execute(get, responseHandler);
                 EveData data = rdata.gson.fromJson(json, rdata.clazz);
                 if (apiThrottle == null)

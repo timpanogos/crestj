@@ -45,7 +45,7 @@ public class CrestController extends CoreController
     {
     	super.init(properties, format);
     	dataCache = new DataCache();
-    	blockingExecutor.submit(new TestTask());
+//    	blockingExecutor.submit(new TestTask());
     }
     
     @Override
