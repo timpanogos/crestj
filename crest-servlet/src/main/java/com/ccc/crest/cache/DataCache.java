@@ -16,6 +16,7 @@
 package com.ccc.crest.cache;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ccc.crest.cache.account.AccountInterfaces;
 import com.ccc.crest.cache.account.AccountStatus;
@@ -363,6 +364,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
     }
     
     
+private AtomicInteger hits = new AtomicInteger();
     private class DataCacheCallback implements CrestResponseCallback
     {
         @Override
@@ -372,7 +374,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
             {
                 cache.put(requestData.url, new CacheData(data));
             }
-String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle", 2);
+String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle, hit: " + hits.incrementAndGet(), 2);
 ElapsedTimer.resetElapsedTimers(2, 1);
 System.err.println(msg);
             if(data.isContinueRefresh())

@@ -34,6 +34,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.cache.CrestRequestData;
 import com.ccc.crest.cache.EveData;
@@ -193,7 +194,10 @@ public class CrestClient
                             HttpEntity entity = response.getEntity();
                             return entity != null ? EntityUtils.toString(entity) : null;
                         }
-                        throw new ClientProtocolException("Unexpected response status: " + status);
+                        String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
+                        LoggerFactory.getLogger(getClass()).warn(msg);
+                        throw new ClientProtocolException(msg);
+//TODO: is it enough to just log it here, currently no one is calling get                        
                     }
                 };
                 String json = client.execute(get, responseHandler);
