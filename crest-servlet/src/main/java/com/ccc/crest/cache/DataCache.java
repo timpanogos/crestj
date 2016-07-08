@@ -64,6 +64,7 @@ import com.ccc.crest.cache.character.WalletTransactions;
 import com.ccc.crest.client.CrestClient;
 import com.ccc.crest.client.CrestResponseCallback;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.tools.ElapsedTimer;
 
 @SuppressWarnings("javadoc")
 public class DataCache implements AccountInterfaces, CharacterInterfaces
@@ -371,8 +372,13 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
             {
                 cache.put(requestData.url, new CacheData(data));
             }
+String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle", 2);
+ElapsedTimer.resetElapsedTimers(2, 1);
+System.err.println(msg);
             if(data.isContinueRefresh())
+            {
                 CrestClient.getClient().getCrest(requestData);
+            }
         }
     }
 }

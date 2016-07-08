@@ -13,20 +13,13 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.cache;
+package com.ccc.crest.cache.corporation;
 
-import com.ccc.tools.RequestThrottle;
+import com.ccc.crest.cache.SourceFailureException;
+import com.ccc.crest.servlet.auth.CrestClientInfo;
 
 @SuppressWarnings("javadoc")
-public interface EveData
+public interface CorporationInterfaces
 {
-    public void setCacheTimeInSeconds(int seconds);
-    public int getCacheTimeInSeconds();
-    public RequestThrottle getThrottle(int seconds);
-    public long getLastAccessed();
-    public void accessed();
-    public long getLastRefreshed();
-    public void refreshed();
-    public boolean isContinueRefresh();
-    public void setContinueRefresh(boolean value);
+	public AccountBalance getAccountBalance(CrestClientInfo clientInfo) throws SourceFailureException;
 }

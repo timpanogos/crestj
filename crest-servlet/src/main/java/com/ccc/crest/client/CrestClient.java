@@ -40,7 +40,6 @@ import com.ccc.crest.cache.EveData;
 import com.ccc.crest.cache.SourceFailureException;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.tools.RequestThrottle;
-import com.ccc.tools.RequestThrottle.IntervalType;
 import com.ccc.tools.StrH;
 import com.ccc.tools.executor.BlockingExecutor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -68,8 +67,8 @@ public class CrestClient
             CrestClient.crestUrl = StrH.stripTrailingSeparator(crestUrl);
             CrestClient.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
             CrestClient.userAgent = userAgent;
-            crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond, IntervalType.Second);
-            xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond, IntervalType.Second);
+            crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
+            xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
             crestThrottleMap = new HashMap<String, RequestThrottle>();
             CrestClient.executor = executor;
         }
@@ -201,9 +200,13 @@ public class CrestClient
                 EveData data = rdata.gson.fromJson(json, rdata.clazz);
                 if (apiThrottle == null)
                 {
+                    RequestThrottle throttle = data.getThrottle(cacheTime.get());
+                    // The throttle did not exist for the first call, which was needed to even obtain the throttle time.
+                    // hit the new throttle once now to register the initiating call
+                    throttle.waitAsNeeded(); // this will return immediately without blocking and register the first call
                     synchronized (data)
                     {
-                        crestThrottleMap.put(rdata.url, new RequestThrottle(1, IntervalType.getIntervalType(cacheTime.get())));
+                        crestThrottleMap.put(rdata.url, throttle);
                     }
                 }
                 data.setCacheTimeInSeconds(cacheTime.get());

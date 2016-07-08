@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.ccc.crest.cache.character.ContactList;
 import com.ccc.crest.client.json.OauthVerify;
 import com.ccc.crest.servlet.CrestServlet;
+import com.ccc.tools.ElapsedTimer;
 import com.ccc.tools.servlet.OauthServlet;
 import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
 import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
@@ -61,7 +62,14 @@ public class CrestAuthCallback extends Auth20Callback
         {
             CrestClientInfo clientInfo = (CrestClientInfo) sessionClientInfo.getOauthClientInfo();
             getVerifyData(clientInfo);
-ContactList c = ((CrestServlet)getApplication()).getDataCache().getContactList((CrestClientInfo)sessionClientInfo.getOauthClientInfo());            
+ElapsedTimer.resetAllElapsedTimers();
+ElapsedTimer.resetTimer(0);
+ElapsedTimer.resetTimer(1);
+ElapsedTimer.startTimer(0);
+ElapsedTimer.startTimer(1);
+ElapsedTimer.startTimer(2);
+ContactList c = ((CrestServlet)getApplication()).getDataCache().getContactList((CrestClientInfo)sessionClientInfo.getOauthClientInfo());
+System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
 System.out.println("look here");
         } catch (Exception e)
         {

@@ -85,9 +85,8 @@ public class BaseEveData implements Serializable, EveData
 
 
     @Override
-    public RequestThrottle getThrottle()
+    public RequestThrottle getThrottle(int seconds)
     {
-        IntervalType interval = IntervalType.getIntervalType(cacheInSeconds.get());
-        return new RequestThrottle(1, interval);
+        return IntervalType.getRequestThrottle(1, seconds);
     }
 }
