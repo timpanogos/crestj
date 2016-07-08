@@ -12,8 +12,8 @@ import com.beimin.eveapi.response.pilot.CharacterSheetResponse;
 import com.beimin.eveapi.response.shared.ContractBidsResponse;
 import com.beimin.eveapi.response.shared.ContractItemsResponse;
 import com.beimin.eveapi.response.shared.ContractsResponse;
-import com.ccc.tools.RequestThrottle;
 
+@SuppressWarnings("javadoc")
 public class Need
 {
     private static final long NehorId = 95293368;
@@ -29,7 +29,6 @@ public class Need
     
     private EveApi eveApi;
     private final ApiAuthorization auth;
-    private final RequestThrottle requestThrottle;
     
     public Need()
     {
@@ -37,7 +36,6 @@ public class Need
         auth = new ApiAuthorization(timp0KeyId, NehorId, timp0KeyVcode);
         eveApi = new EveApi(auth);
         EveApi.setConnector(new ApiConnector(ApiConnector.EVE_API_URL));
-        requestThrottle = new RequestThrottle(30);
     }
     
     private void run()

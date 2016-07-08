@@ -17,11 +17,11 @@ package com.ccc.crest.need;
 
 import java.util.Properties;
 
+import com.ccc.crest.servlet.CrestController;
 import com.ccc.tools.TabToLevel;
-import com.ccc.tools.servlet.CoreController;
 
 @SuppressWarnings("javadoc")
-public class NeedController extends CoreController
+public class NeedController extends CrestController
 {
     @Override
     public void init(Properties properties, TabToLevel format) throws Exception

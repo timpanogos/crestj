@@ -15,10 +15,11 @@
 */
 package com.ccc.crest.client;
 
-import com.ccc.crest.cache.CrestData;
+import com.ccc.crest.cache.EveData;
+import com.ccc.crest.cache.CrestRequestData;
 
 @SuppressWarnings("javadoc")
 public interface CrestResponseCallback
 {
-    public void received(CrestData data);
+    public void received(CrestRequestData requestData, EveData data);
 }

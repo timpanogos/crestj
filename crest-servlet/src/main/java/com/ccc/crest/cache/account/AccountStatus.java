@@ -15,12 +15,10 @@
 */
 package com.ccc.crest.cache.account;
 
-import java.io.Serializable;
-
-import com.ccc.crest.cache.CrestData;
+import com.ccc.crest.cache.BaseEveData;
 
 @SuppressWarnings("javadoc")
-public class AccountStatus implements Serializable, CrestData
+public class AccountStatus  extends BaseEveData
 {
 }
 

@@ -18,6 +18,7 @@ package com.ccc.crest.servlet;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.markup.html.WebPage;
 
+import com.ccc.crest.cache.DataCache;
 import com.ccc.crest.client.CrestClient;
 import com.ccc.crest.servlet.auth.CrestAuthenticator;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
@@ -53,6 +54,11 @@ public abstract class CrestServlet extends OauthServlet
     
     public CrestServlet()
     {
+    }
+    
+    public DataCache getDataCache()
+    {
+        return ((CrestController)coreController).dataCache;
     }
     
     @Override

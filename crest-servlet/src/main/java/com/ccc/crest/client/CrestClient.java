@@ -19,8 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -31,19 +35,23 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import com.ccc.crest.cache.CrestData;
+import com.ccc.crest.cache.CrestRequestData;
+import com.ccc.crest.cache.EveData;
+import com.ccc.crest.cache.SourceFailureException;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.tools.RequestThrottle;
+import com.ccc.tools.RequestThrottle.IntervalType;
 import com.ccc.tools.StrH;
-import com.ccc.tools.app.executor.BlockingExecutor;
+import com.ccc.tools.executor.BlockingExecutor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
-import com.google.gson.Gson;
 
 @SuppressWarnings("javadoc")
 public class CrestClient
 {
-    public static final int CrestGeneralMaxRequestsPerSecond = 150;
-    public static final int XmlGeneralMaxRequestsPerSecond = 30;
+    private static final String CacheControlHeader = "Cache-Control";
+    private static final String CacheControlMaxAge = "max-age";
+    private static final int CrestGeneralMaxRequestsPerSecond = 150;
+    private static final int XmlGeneralMaxRequestsPerSecond = 30;
 
     private static String crestUrl;
     private static String xmlUrl;
@@ -55,15 +63,15 @@ public class CrestClient
 
     private CrestClient(String crestUrl, String xmlUrl, String userAgent, BlockingExecutor executor)
     {
-        if (this.crestUrl == null)
+        if (CrestClient.crestUrl == null)
         {
-            this.crestUrl = StrH.stripTrailingSeparator(crestUrl);
-            this.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
-            this.userAgent = userAgent;
-            crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
-            xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
+            CrestClient.crestUrl = StrH.stripTrailingSeparator(crestUrl);
+            CrestClient.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
+            CrestClient.userAgent = userAgent;
+            crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond, IntervalType.Second);
+            xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond, IntervalType.Second);
             crestThrottleMap = new HashMap<String, RequestThrottle>();
-            this.executor = executor;
+            CrestClient.executor = executor;
         }
     }
 
@@ -86,26 +94,24 @@ public class CrestClient
         return new CrestClient(crestUrl, xmlUrl, userAgent, executor);
     }
 
-    //@formatter:off
-    public void getCrest(
-                    CrestClientInfo clientInfo, String url, 
-                    Gson gson, Class<? extends CrestData> crestDataclass, 
-                    CrestResponseCallback callback,
-                    int throttle, String scope, String version) throws Exception
-    //@formatter:on
+    public Future<EveData> getCrest(CrestRequestData requestData)
     {
         CloseableHttpClient client = HttpClients.custom().setUserAgent(userAgent).build();
-        String accessToken = ((OAuth2AccessToken) clientInfo.getAccessToken()).getAccessToken();
-        HttpGet get = new HttpGet(url);
+        String accessToken = ((OAuth2AccessToken) requestData.clientInfo.getAccessToken()).getAccessToken();
+        HttpGet get = new HttpGet(requestData.url);
         get.addHeader("Authorization", "Bearer " + accessToken);
-        if (scope != null)
-            get.addHeader("Scope", scope);
-        if (version != null)
-            get.addHeader("Accept", version);
+        if (requestData.scope != null)
+            get.addHeader("Scope", requestData.scope);
+        if (requestData.version != null)
+            get.addHeader("Accept", requestData.version);
         
-        RequestThrottle apiThrottle = crestThrottleMap.get(url);
+        RequestThrottle apiThrottle = null;
+        synchronized (crestThrottleMap)
+        {
+            apiThrottle = crestThrottleMap.get(requestData.url);
+        }
 
-        executor.submit((new CrestGetTask(client, get, apiThrottle, gson, crestDataclass, url, throttle, callback)));
+        return executor.submit((new CrestGetTask(client, get, requestData, apiThrottle)));
     }
 
     public String getXml(CrestClientInfo clientInfo) throws Exception
@@ -133,50 +139,55 @@ public class CrestClient
         }
     }
 
-    private class CrestGetTask implements Callable<CrestData>
+    private class CrestGetTask implements Callable<EveData>
     {
-        private final CloseableHttpClient client;
+        private final CrestRequestData rdata;
         private final HttpGet get;
         private final RequestThrottle apiThrottle;
-        private final Gson gson;
-        private Class<? extends CrestData> crestDataClass;
-        private final String url;
-        private final int throttle;
-        private final CrestResponseCallback callback;
+        private final CloseableHttpClient client;
 
-        //@formatter:off
-        private CrestGetTask(
-                        CloseableHttpClient client, HttpGet get, 
-                        RequestThrottle apiThrottle, 
-                        Gson gson, Class<? extends CrestData> crestDataClass,
-                        String url, int throttle,
-                        CrestResponseCallback callback)
-        //@formatter:on
+        private CrestGetTask(CloseableHttpClient client, HttpGet get, CrestRequestData rdata, RequestThrottle apiThrottle)
         {
-            this.client = client;
+            this.rdata = rdata;
             this.get = get;
             this.apiThrottle = apiThrottle;
-            this.gson = gson;
-            this.crestDataClass = crestDataClass;
-            this.url = url;
-            this.throttle = throttle;
-            this.callback = callback;
+            this.client = client;
         }
 
         @Override
-        public CrestData call() throws Exception
+        public EveData call() throws Exception
         {
             try
             {
                 if (apiThrottle != null)
                     apiThrottle.waitAsNeeded();
                 crestGeneralThrottle.waitAsNeeded();
-
+                final AtomicInteger cacheTime = new AtomicInteger(0);
                 ResponseHandler<String> responseHandler = new ResponseHandler<String>()
                 {
                     @Override
                     public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException
                     {
+                        Header[] headers = response.getHeaders(CacheControlHeader);
+                        boolean found = false;
+                        if(headers != null && headers.length > 0)
+                        {
+                            for(int i=0; i < headers.length; i++)
+                            {
+                                HeaderElement[] headerElements = headers[i].getElements();
+                                for(int j=0; j < headerElements.length; j++)
+                                {
+                                    if(headerElements[i].getName().equals(CacheControlMaxAge))
+                                    {
+                                        cacheTime.set(Integer.parseInt(headerElements[i].getValue()));
+                                        found = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if(!found)
+                            throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
                         int status = response.getStatusLine().getStatusCode();
                         if (status >= 200 && status < 300)
                         {
@@ -187,12 +198,24 @@ public class CrestClient
                     }
                 };
                 String json = client.execute(get, responseHandler);
-                CrestData data = gson.fromJson(json, crestDataClass);
+                EveData data = rdata.gson.fromJson(json, rdata.clazz);
                 if (apiThrottle == null)
-                    crestThrottleMap.put(url, new RequestThrottle(throttle));
-                callback.received(data);
+                {
+                    synchronized (data)
+                    {
+                        crestThrottleMap.put(rdata.url, new RequestThrottle(1, IntervalType.getIntervalType(cacheTime.get())));
+                    }
+                }
+                data.setCacheTimeInSeconds(cacheTime.get());
+                data.refreshed();
+                rdata.setCacheSeconds(cacheTime.get());
+                rdata.callback.received(rdata, data);
                 return data;
-            } finally
+            }catch(Exception e)
+            {
+                throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);            
+            }
+            finally
             {
                 client.close();
             }

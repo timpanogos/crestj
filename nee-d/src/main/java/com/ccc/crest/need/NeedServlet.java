@@ -20,6 +20,7 @@ import java.util.Enumeration;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.html.WebPage;
 import org.slf4j.LoggerFactory;
 
@@ -59,13 +60,6 @@ public class NeedServlet extends CrestServlet
     @Override
     public Class<? extends WebPage> getHomePage()
     {
-        try
-        {
-        } catch (Exception e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         return Index.class;
     }
 
@@ -81,6 +75,12 @@ public class NeedServlet extends CrestServlet
 //        log.info(sb.toString());
 	}
 
+    @Override
+    public void onEvent(IEvent<?> event)
+    {
+        // TODO Auto-generated method stub
+        super.onEvent(event);
+    }
     @Override
     protected void onDestroy()
     {

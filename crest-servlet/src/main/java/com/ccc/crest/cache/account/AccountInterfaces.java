@@ -15,11 +15,14 @@
 */
 package com.ccc.crest.cache.account;
 
+import com.ccc.crest.cache.SourceFailureException;
+import com.ccc.crest.servlet.auth.CrestClientInfo;
+
 @SuppressWarnings("javadoc")
 public interface AccountInterfaces
 {
-	public AccountStatus getAccountStatus();
-	public ApiKeyInfo getApiKeyInfo();
-	public Characters getCharacters();
-	public CallList getCallList();
+	public AccountStatus getAccountStatus(CrestClientInfo clientInfo) throws SourceFailureException;
+	public ApiKeyInfo getApiKeyInfo(CrestClientInfo clientInfo) throws SourceFailureException;
+	public Characters getCharacters(CrestClientInfo clientInfo) throws SourceFailureException;
+	public CallList getCallList(CrestClientInfo clientInfo) throws SourceFailureException;
 }

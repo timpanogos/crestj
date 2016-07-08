@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.Random;
 
 import com.ccc.crest.servlet.CrestServlet;
-import com.ccc.tools.app.PropertiesFile;
+import com.ccc.tools.PropertiesFile;
 import com.ccc.tools.servlet.OauthUserAuthenticator;
 import com.ccc.tools.servlet.ScribeApi20Impl;
 import com.ccc.tools.servlet.UserAuthenticationHandler;

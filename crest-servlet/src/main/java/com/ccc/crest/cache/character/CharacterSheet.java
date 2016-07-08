@@ -15,12 +15,10 @@
 */
 package com.ccc.crest.cache.character;
 
-import java.io.Serializable;
-
-import com.ccc.crest.cache.CrestData;
+import com.ccc.crest.cache.BaseEveData;
 
 @SuppressWarnings("javadoc")
-public class CharacterSheet implements Serializable, CrestData
+public class CharacterSheet  extends BaseEveData
 {
 }
 

@@ -31,10 +31,8 @@ import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.cache.CrestData;
-import com.ccc.crest.client.CrestResponseCallback;
+import com.ccc.crest.cache.character.ContactList;
 import com.ccc.crest.client.json.OauthVerify;
-import com.ccc.crest.client.json.character.Contacts;
 import com.ccc.crest.servlet.CrestServlet;
 import com.ccc.tools.servlet.OauthServlet;
 import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
@@ -63,7 +61,7 @@ public class CrestAuthCallback extends Auth20Callback
         {
             CrestClientInfo clientInfo = (CrestClientInfo) sessionClientInfo.getOauthClientInfo();
             getVerifyData(clientInfo);
-Contacts.getContacts((CrestClientInfo)sessionClientInfo.getOauthClientInfo(), new CrestClientCallback());
+ContactList c = ((CrestServlet)getApplication()).getDataCache().getContactList((CrestClientInfo)sessionClientInfo.getOauthClientInfo());            
 System.out.println("look here");
         } catch (Exception e)
         {
@@ -102,15 +100,5 @@ System.out.println("look here");
         {
             response1.close();
         }
-    }
-    
-    private class CrestClientCallback implements CrestResponseCallback
-    {
-        @Override
-        public void received(CrestData data)
-        {
-            System.out.println(data.toString());
-        }
-        
     }
 }
