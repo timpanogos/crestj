@@ -13,22 +13,29 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.cache;
-
-import com.ccc.tools.RequestThrottle;
+package com.ccc.crest.da;
 
 @SuppressWarnings("javadoc")
-public interface EveData
+public class CapsuleerData
 {
-    public void setCacheTimeInSeconds(int seconds);
-    public int getCacheTimeInSeconds();
-    public RequestThrottle getThrottle(int seconds);
-    public long getLastAccessed();
-    public void accessed();
-    public long getLastRefreshed();
-    public void refreshed();
-    public boolean isContinueRefresh();
-    public void setContinueRefresh(boolean value);
-    public boolean isFromCrest();
-    public void setFromCrest(boolean value);
+    public final String capsuleer;
+    public final long capsuleerId;
+    public final long apiKeyId;
+    public final String apiCode;
+    public final String refreshToken;
+    
+    public CapsuleerData(String name, long userId, long apiKeyId, String apiCode, String refreshToken)
+    {
+        this.capsuleer = name;
+        this.capsuleerId = userId;
+        this.apiKeyId = apiKeyId;
+        this.apiCode = apiCode;
+        this.refreshToken = refreshToken;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "capsuleerId: " + capsuleerId + " capsuleer: " + capsuleer + " keyId: " + apiKeyId + " apiCode: " + (apiCode == null ? "null" : apiCode) + " refreshToken: " + (refreshToken == null ? "null" : refreshToken); 
+    }
 }

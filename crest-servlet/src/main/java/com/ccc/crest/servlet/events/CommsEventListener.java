@@ -13,22 +13,18 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.cache;
+package com.ccc.crest.servlet.events;
 
-import com.ccc.tools.RequestThrottle;
+import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.tools.servlet.events.EventListener;
 
 @SuppressWarnings("javadoc")
-public interface EveData
+public interface CommsEventListener extends EventListener
 {
-    public void setCacheTimeInSeconds(int seconds);
-    public int getCacheTimeInSeconds();
-    public RequestThrottle getThrottle(int seconds);
-    public long getLastAccessed();
-    public void accessed();
-    public long getLastRefreshed();
-    public void refreshed();
-    public boolean isContinueRefresh();
-    public void setContinueRefresh(boolean value);
-    public boolean isFromCrest();
-    public void setFromCrest(boolean value);
+	public void crestUp(CrestClientInfo clientInfo);
+	public void crestDown(CrestClientInfo clientInfo);
+	public void xmlUp(CrestClientInfo clientInfo);
+    public void xmlDown(CrestClientInfo clientInfo);
+	
+	public enum Type{CrestUp, CrestDown, XmlUp, XmlDown}
 }

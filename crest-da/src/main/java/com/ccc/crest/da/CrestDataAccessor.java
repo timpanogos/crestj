@@ -13,22 +13,20 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.cache;
+package com.ccc.crest.da;
 
-import com.ccc.tools.RequestThrottle;
+import java.util.List;
+
+import com.ccc.tools.da.AlreadyExistsException;
+import com.ccc.tools.da.NotFoundException;
 
 @SuppressWarnings("javadoc")
-public interface EveData
+public interface CrestDataAccessor extends com.ccc.tools.da.DataAccessor
 {
-    public void setCacheTimeInSeconds(int seconds);
-    public int getCacheTimeInSeconds();
-    public RequestThrottle getThrottle(int seconds);
-    public long getLastAccessed();
-    public void accessed();
-    public long getLastRefreshed();
-    public void refreshed();
-    public boolean isContinueRefresh();
-    public void setContinueRefresh(boolean value);
-    public boolean isFromCrest();
-    public void setFromCrest(boolean value);
+    public void addCapsuleer(CapsuleerData userData) throws AlreadyExistsException, Exception;
+    public CapsuleerData getCapsuleer(String name) throws NotFoundException, Exception;
+    public void updateCapsuleer(String name, CapsuleerData userData) throws NotFoundException, Exception;
+    public void deleteCapsuleer(String name) throws Exception;
+    public List<CapsuleerData> listCapsuleers() throws Exception;
+    public boolean hasApiKeys(String name) throws Exception;
 }

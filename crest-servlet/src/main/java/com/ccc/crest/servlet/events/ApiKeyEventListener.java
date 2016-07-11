@@ -13,9 +13,15 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crestj.da;
+package com.ccc.crest.servlet.events;
+
+import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.tools.servlet.events.EventListener;
 
 @SuppressWarnings("javadoc")
-public interface DataAccessor extends com.ccc.tools.da.DataAccessor
+public interface ApiKeyEventListener extends EventListener
 {
+	public void needsApiKey(CrestClientInfo clientInfo);
+	
+    public enum Type{NeedsApi}
 }

@@ -31,13 +31,12 @@ import org.apache.wicket.protocol.http.WebSession;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.cache.character.ContactList;
 import com.ccc.crest.client.json.OauthVerify;
 import com.ccc.crest.servlet.CrestServlet;
-import com.ccc.tools.ElapsedTimer;
-import com.ccc.tools.servlet.OauthServlet;
+import com.ccc.tools.servlet.CoreController;
 import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
 import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
+import com.ccc.tools.servlet.events.AuthEventListener;
 import com.ccc.tools.servlet.login.Auth20Callback;
 import com.ccc.tools.servlet.login.LoginPage;
 import com.github.scribejava.core.model.OAuth2AccessToken;
@@ -62,15 +61,7 @@ public class CrestAuthCallback extends Auth20Callback
         {
             CrestClientInfo clientInfo = (CrestClientInfo) sessionClientInfo.getOauthClientInfo();
             getVerifyData(clientInfo);
-ElapsedTimer.resetAllElapsedTimers();
-ElapsedTimer.resetTimer(0);
-ElapsedTimer.resetTimer(1);
-ElapsedTimer.startTimer(0);
-ElapsedTimer.startTimer(1);
-ElapsedTimer.startTimer(2);
-ContactList c = ((CrestServlet)getApplication()).getDataCache().getContactList((CrestClientInfo)sessionClientInfo.getOauthClientInfo());
-System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
-System.out.println("look here");
+            CoreController.getController().fireAuthenticatedEvent(clientInfo, AuthEventListener.Type.Authenticated);
         } catch (Exception e)
         {
             LoggerFactory.getLogger(getClass()).info("OAuth authentication phase 2 failed", e);
@@ -81,10 +72,9 @@ System.out.println("look here");
     
     private void getVerifyData(Base20ClientInfo clientInfo) throws Exception
     {
-        Properties properties = ((OauthServlet)getApplication()).getFileProperties();
+        Properties properties = CoreController.getController().getProperties();
         String verifyUrl = properties.getProperty(CrestServlet.OauthVerifyUrlKey, CrestServlet.OauthVerifyUrlDefault);
         String userAgent = properties.getProperty(CrestServlet.UserAgentKey, CrestServlet.UserAgentDefault);
-//        CloseableHttpClient httpclient = HttpClients.createDefault();
         //@formatter:off
         CloseableHttpClient httpclient = 
                         HttpClients.custom()

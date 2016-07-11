@@ -15,13 +15,16 @@
 */
 package com.ccc.crest.servlet;
 
+import org.apache.wicket.RestartResponseAtInterceptPageException;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
+import org.apache.wicket.authroles.authentication.pages.SignOutPage;
 import org.apache.wicket.markup.html.WebPage;
 
 import com.ccc.crest.cache.DataCache;
 import com.ccc.crest.client.CrestClient;
 import com.ccc.crest.servlet.auth.CrestAuthenticator;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.crest.servlet.events.ApiKeyEventListener;
 import com.ccc.tools.TabToLevel;
 import com.ccc.tools.servlet.OauthServlet;
 import com.ccc.tools.servlet.OauthWebSession;
@@ -29,7 +32,7 @@ import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
 import com.ccc.tools.servlet.login.LoginPage;
 
 @SuppressWarnings("javadoc")
-public abstract class CrestServlet extends OauthServlet
+public abstract class CrestServlet extends OauthServlet implements ApiKeyEventListener
 {
     public static final String OauthLoginUrlKey = "ccc.crest.oauth.login-url";
     public static final String OauthTokenUrlKey = "ccc.crest.oauth.token-url";
@@ -62,6 +65,14 @@ public abstract class CrestServlet extends OauthServlet
     }
     
     @Override
+    public void needsApiKey(CrestClientInfo clientInfo)
+    {
+        log.info("look here");
+        throw new RestartResponseAtInterceptPageException(SignOutPage.class);
+        
+    }
+
+    @Override
     protected String getOauthImplClassDefault()
     {
         return OauthImplClassDefault;
@@ -86,7 +97,7 @@ public abstract class CrestServlet extends OauthServlet
         String crestUrl = properties.getProperty(CrestUrlKey, CrestUrlDefault); 
         String xmlUrl = properties.getProperty(XmlUrlKey, XmlUrlDefault); 
         String userAgent = properties.getProperty(UserAgentKey, UserAgentDefault); 
-        CrestClient.getClient(crestUrl, xmlUrl, userAgent, coreController.blockingExecutor);
+        CrestClient.getClient((CrestController)coreController, crestUrl, xmlUrl, userAgent, coreController.blockingExecutor);
     }
 
     @Override

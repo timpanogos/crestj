@@ -34,6 +34,7 @@ public class BaseEveData implements Serializable, EveData
     protected AtomicLong lastRefresh = new AtomicLong(0);
     protected AtomicBoolean continueRefresh = new AtomicBoolean(true);
     protected AtomicInteger cacheInSeconds = new AtomicInteger();
+    protected AtomicBoolean fromCrest = new AtomicBoolean(true);
 
     @Override
     public long getLastAccessed()
@@ -88,5 +89,17 @@ public class BaseEveData implements Serializable, EveData
     public RequestThrottle getThrottle(int seconds)
     {
         return IntervalType.getRequestThrottle(1, seconds);
+    }
+
+    @Override
+    public boolean isFromCrest()
+    {
+        return fromCrest.get();
+    }
+
+    @Override
+    public void setFromCrest(boolean value)
+    {
+        fromCrest.set(value);
     }
 }

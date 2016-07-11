@@ -13,11 +13,19 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crestj.da.pg;
+package com.ccc.crest.servlet;
 
-import com.ccc.crestj.da.DataAccessor;
+import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-@SuppressWarnings("javadoc")
-public class DataAccessorImpl implements DataAccessor
+@SuppressWarnings({ "javadoc"})
+@AuthorizeInstantiation("USER")
+public class ApiKeyPage extends WebPage
 {
+    public ApiKeyPage(final PageParameters parameters)
+    {
+        super(parameters);
+        setResponsePage(getApplication().getHomePage());
+    }
 }

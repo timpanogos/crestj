@@ -66,7 +66,9 @@ import com.ccc.crest.cache.character.WalletJournal;
 import com.ccc.crest.cache.character.WalletTransactions;
 import com.ccc.crest.client.CrestClient;
 import com.ccc.crest.client.CrestResponseCallback;
+import com.ccc.crest.servlet.CrestController;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.crest.servlet.events.CommsEventListener;
 import com.ccc.tools.ElapsedTimer;
 
 @SuppressWarnings("javadoc")
@@ -74,11 +76,21 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
 {
 	private final HashMap<String, CacheData> cache;
 	private final DataCacheCallback callback;
+	private final CrestController controller;
 
-	public DataCache()
+	public DataCache(CrestController controller)
 	{
 		cache = new HashMap<String, CacheData>();
 		callback = new DataCacheCallback();
+		this.controller = controller;
+	}
+	
+	public void remove(String url)
+	{
+        synchronized (cache)
+        {
+            cache.remove(url);
+        }
 	}
 	
     public void clear()
@@ -163,7 +175,13 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
             return list;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested ");
+            //TODO: can only determine neither worked here, is there a better isolation?
+            CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
+            controller.fireCommunicationEvent(clientInfo, type);
+//            if(!data.data.isFromCrest())
+            type = CommsEventListener.Type.XmlDown;
+            controller.fireCommunicationEvent(clientInfo, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
         }
     }
 

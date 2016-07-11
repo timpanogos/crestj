@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
 import com.ccc.crest.need.index.Index;
+import com.ccc.crest.servlet.CrestController;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
 import com.ccc.tools.servlet.login.LoginPage;
@@ -31,10 +32,12 @@ import com.ccc.tools.servlet.logout.LogoutPage;
 public class HeaderPanel extends Panel
 {
     private static final long serialVersionUID = -3206507354482474558L;
-    
-    BookmarkablePageLink<Object> login;
-    BookmarkablePageLink<Object> logout;
-    Label logoutLabel;
+
+    private BookmarkablePageLink<Object> login;
+    private BookmarkablePageLink<Object> logout;
+    private BookmarkablePageLink<Object> needsApi;
+    private Label logoutLabel;
+    private Label needsApiLabel;
 
     public HeaderPanel(String id)
     {
@@ -48,18 +51,27 @@ public class HeaderPanel extends Panel
         login = new BookmarkablePageLink<Object>("login", LoginPage.class);
         logout = new BookmarkablePageLink<Object>("logout", LogoutPage.class);
         logoutLabel = new Label("logoutLabel", "Welcome, " + user + " - ");
+        needsApiLabel = new Label("needsApiLabel", "We need your API Key");
+        needsApi = new BookmarkablePageLink<Object>("needsApi", LogoutPage.class);
 
         boolean loggedIn = user != null && !user.isEmpty();
+        boolean hasKeys = true; // not going to display if not authenticated
+        if(loggedIn)
+            hasKeys = CrestController.getCrestController().capsuleerHasApiKey(user);            
         logout.setVisible(loggedIn);
         logoutLabel.setVisible(loggedIn);
         login.setVisible(!loggedIn);
+        needsApiLabel.setVisible(!hasKeys);
+        needsApi.setVisible(!hasKeys);
 
         PackageResourceReference resourceReference = new PackageResourceReference(getClass(), "eveSsoSmlWht.png");
-        login.add(new Image("loginImg", resourceReference));        
-        
+        login.add(new Image("loginImg", resourceReference));
+
         add(new BookmarkablePageLink<>("homeURL", Index.class));
         add(login);
         add(logoutLabel);
         add(logout);
+        add(needsApiLabel);
+        add(needsApi);
     }
 }

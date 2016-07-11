@@ -39,7 +39,9 @@ import org.slf4j.LoggerFactory;
 import com.ccc.crest.cache.CrestRequestData;
 import com.ccc.crest.cache.EveData;
 import com.ccc.crest.cache.SourceFailureException;
+import com.ccc.crest.servlet.CrestController;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
+import com.ccc.crest.servlet.events.CommsEventListener;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
 import com.ccc.tools.executor.BlockingExecutor;
@@ -56,15 +58,17 @@ public class CrestClient
     private static String crestUrl;
     private static String xmlUrl;
     private static String userAgent;
+    private static CrestController controller;
     private static RequestThrottle crestGeneralThrottle;
     private static RequestThrottle xmlGeneralThrottle;
     private static HashMap<String, RequestThrottle> crestThrottleMap;
     private static BlockingExecutor executor;
 
-    private CrestClient(String crestUrl, String xmlUrl, String userAgent, BlockingExecutor executor)
+    private CrestClient(CrestController controller, String crestUrl, String xmlUrl, String userAgent, BlockingExecutor executor)
     {
         if (CrestClient.crestUrl == null)
         {
+            CrestClient.controller = controller;
             CrestClient.crestUrl = StrH.stripTrailingSeparator(crestUrl);
             CrestClient.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
             CrestClient.userAgent = userAgent;
@@ -86,12 +90,12 @@ public class CrestClient
     {
         if (crestUrl == null)
             throw new RuntimeException("someone must call the getClient method that supplies the two urls");
-        return new CrestClient(crestUrl, xmlUrl, userAgent, executor);
+        return new CrestClient(controller, crestUrl, xmlUrl, userAgent, executor);
     }
 
-    public static CrestClient getClient(String crestUrl, String xmlUrl, String userAgent, BlockingExecutor executor)
+    public static CrestClient getClient(CrestController controller, String crestUrl, String xmlUrl, String userAgent, BlockingExecutor executor)
     {
-        return new CrestClient(crestUrl, xmlUrl, userAgent, executor);
+        return new CrestClient(controller, crestUrl, xmlUrl, userAgent, executor);
     }
 
     public Future<EveData> getCrest(CrestRequestData requestData)
@@ -229,6 +233,11 @@ LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.ur
                 return data;
             }catch(Exception e)
             {
+                synchronized (controller.dataCache)
+                {
+                    controller.dataCache.remove(rdata.url);
+                    controller.fireCommunicationEvent(rdata.clientInfo, CommsEventListener.Type.CrestDown);
+                }
                 throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);            
             }
             finally
