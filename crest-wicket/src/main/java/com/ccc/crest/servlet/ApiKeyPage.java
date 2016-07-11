@@ -17,6 +17,7 @@ package com.ccc.crest.servlet;
 
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 import com.ccc.crest.core.CrestController;
@@ -32,7 +33,12 @@ public class ApiKeyPage extends WebPage
     {
         super(parameters);
         String s = CrestController.getCrestController().scopes.getCreatePredefinedUrl(ScopeToMask.Type.Character);
-        setResponsePage(ApiKeyPage.class);
-//        throw new RedirectToUrlException(CrestController.getCrestController().scopes.getCreatePredefinedUrl(ScopeToMask.Type.Character));
+        add(new ExternalLink("createApiKey", s));
+    }
+    
+    public void onClick()
+    {
+        String s = CrestController.getCrestController().scopes.getCreatePredefinedUrl(ScopeToMask.Type.Character);
+        add(new ExternalLink("createApiKey", s));
     }
 }
