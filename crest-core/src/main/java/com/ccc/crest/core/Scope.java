@@ -15,12 +15,59 @@
 */
 package com.ccc.crest.core;
 
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings({ "javadoc" })
 public class Scope
 {
-    public Scope(Properties properties)
+    public final List<ScopeToMask> scopes;
+    private String createPredefinedUrl;
+    
+    public Scope()
     {
+        scopes = new ArrayList<>();
+    }
+    
+    public synchronized String getCreatePredefinedUrl(ScopeToMask.Type type)
+    {
+        if(type == ScopeToMask.Type.Character)
+            return createPredefinedUrl + "?" + getCharacterMask();
+        return createPredefinedUrl + "?" + getCorporateMask();
+    }
+
+    public synchronized void setCreatePredefinedUrl(String createPredefinedUrl)
+    {
+        this.createPredefinedUrl = createPredefinedUrl;
+    }
+
+    public void addScope(String scope) throws Exception
+    {
+        ScopeToMask stm = ScopeToMask.characterScopes.get(scope);
+        if(stm == null)
+            throw new Exception("Configured scope: " + scope + " is invalid");
+        scopes.add(stm);
+    }
+    
+    public long getCharacterMask()
+    {
+        long mask = 0;
+        for(ScopeToMask bit : scopes)
+        {
+            if(bit.type == ScopeToMask.Type.Character)
+                mask |= bit.masks[0];
+        }
+        return mask;
+    }
+    
+    public long getCorporateMask()
+    {
+        long mask = 0;
+        for(ScopeToMask bit : scopes)
+        {
+            if(bit.type == ScopeToMask.Type.Corporate)
+            mask |= bit.masks[0];
+        }
+        return mask;
     }
 }

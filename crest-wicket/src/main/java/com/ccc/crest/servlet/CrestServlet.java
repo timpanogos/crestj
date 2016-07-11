@@ -32,9 +32,6 @@ import com.ccc.servlet.wicket.WicketWebSession;
 import com.ccc.servlet.wicket.login.LoginPage;
 import com.ccc.tools.TabToLevel;
 
-
-
-
 @SuppressWarnings("javadoc")
 public abstract class CrestServlet extends WicketBaseServlet implements ApiKeyEventListener
 {

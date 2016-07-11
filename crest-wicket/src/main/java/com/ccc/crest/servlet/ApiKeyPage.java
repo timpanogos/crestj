@@ -19,13 +19,20 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Aut
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
+import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.ScopeToMask;
+
 @SuppressWarnings({ "javadoc"})
 @AuthorizeInstantiation("USER")
 public class ApiKeyPage extends WebPage
 {
+    private static final long serialVersionUID = -1441810873555334342L;
+
     public ApiKeyPage(final PageParameters parameters)
     {
         super(parameters);
-        setResponsePage(getApplication().getHomePage());
+        String s = CrestController.getCrestController().scopes.getCreatePredefinedUrl(ScopeToMask.Type.Character);
+        setResponsePage(ApiKeyPage.class);
+//        throw new RedirectToUrlException(CrestController.getCrestController().scopes.getCreatePredefinedUrl(ScopeToMask.Type.Character));
     }
 }

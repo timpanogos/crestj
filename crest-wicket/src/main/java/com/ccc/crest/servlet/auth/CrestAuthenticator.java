@@ -15,8 +15,6 @@
 */
 package com.ccc.crest.servlet.auth;
 
-import java.util.List;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 
@@ -24,7 +22,6 @@ import com.ccc.crest.core.CrestController;
 import com.ccc.oauth.ScribeApi20Impl;
 import com.ccc.oauth.UserAuthenticationHandler;
 import com.ccc.servlet.wicket.WicketUserAuthenticator;
-import com.ccc.tools.PropertiesFile;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuthService;
 
@@ -47,14 +44,14 @@ public class CrestAuthenticator implements WicketUserAuthenticator
     }
     
     @Override
-    public void init(Properties properties)
+    public void init(Properties properties) throws Exception
     {
         loginUrl = properties.getProperty(CrestController.OauthLoginUrlKey);
         tokenUrl = properties.getProperty(CrestController.OauthTokenUrlKey);
         verifyUrl = properties.getProperty(CrestController.OauthVerifyUrlKey);
         clientId = properties.getProperty(CrestController.OauthClientIdKey);
         clientSecret = properties.getProperty(CrestController.OauthClientSecretKey);
-        List<Entry<String, String>> scopes = PropertiesFile.getPropertiesForBaseKey(CrestController.OauthScopeKey, properties);
+        scope = CrestController.getCrestController().getAuthenticationScopesString();
         callbackUrl = properties.getProperty(CrestController.OauthCallbackUrlKey);
         if (loginUrl == null)
             loginUrl = CrestController.OauthLoginUrlDefault;
@@ -66,21 +63,6 @@ public class CrestAuthenticator implements WicketUserAuthenticator
             throw new IllegalArgumentException("Missing property " + CrestController.OauthClientIdKey);
         if (clientSecret == null)
             throw new IllegalArgumentException("Missing property " + CrestController.OauthClientSecretKey);
-        if (scopes.size() == 0)
-            scope = CrestController.OauthScopeDefault;
-        else
-        {
-            StringBuilder sb = new StringBuilder();
-            boolean first = true;
-            for(Entry<String, String> entry : scopes)
-            {
-                if(!first)
-                    sb.append(" ");
-                first = false;
-                sb.append(entry.getValue());
-            }
-            scope = sb.toString();
-        }
         if (callbackUrl == null)
             throw new IllegalArgumentException("Missing property " + CrestController.OauthCallbackUrlKey);
         if(callbackUrl.endsWith("/"))

@@ -17,6 +17,7 @@ package com.ccc.crest.core;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.Callable;
 
@@ -36,11 +37,11 @@ import com.ccc.oauth.CoreController;
 import com.ccc.oauth.clientInfo.BaseClientInfo;
 import com.ccc.oauth.events.AuthEventListener;
 import com.ccc.tools.ElapsedTimer;
+import com.ccc.tools.PropertiesFile;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.RequestThrottle.IntervalType;
+import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
-
-
 
 @SuppressWarnings("javadoc")
 public class CrestController extends CoreController implements AuthEventListener, CommsEventListener
@@ -55,6 +56,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String CrestUrlKey = "ccc.crest.url";
     public static final String XmlUrlKey = "ccc.crest.xml-url";
     public static final String UserAgentKey = "ccc.crest.user-agent";
+    public static final String CreateApiKeyUrlKey = "ccc.crest.api.key-gen-url";
     
     public static final String CrestServletConfigDefault = "etc/opt/ccc/crest/crest.properties";
     public static final String OauthLoginUrlDefault = "https://login.eveonline.com/oauth/authorize";
@@ -63,11 +65,14 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String OauthScopeDefault = "publicData";
     public static final String CrestUrlDefault = "https://crest-tq.eveonline.com";
     public static final String XmlUrlDefault = "https://api.eveonline.com";
-    public static final String UserAgentDefault = "cadams@xmission.com";
+    public static final String UserAgentDefault = "Chad Adams (Salgare) cadams@xmission.com Nee-d";
+    public static final String CreateApiKeyUrlDefault = "https://community.eveonline.com/support/api-key/CreatePredefined"; //?accessMask=133038347
     
     public final DataCache dataCache;
     private final List<CommsEventListener> commsEventListeners;
     private final List<ApiKeyEventListener> apiKeyEventListeners;
+    public final Scope scopes;
+
     public Logger log;
 
     public CrestController()
@@ -78,8 +83,30 @@ public class CrestController extends CoreController implements AuthEventListener
         commsEventListeners = new ArrayList<>();
         apiKeyEventListeners = new ArrayList<>();
         registerCommunicationEventListener(this);
+        scopes = new Scope();
     }
 
+    public String getAuthenticationScopesString() throws Exception
+    {
+        String predefinedUrl = StrH.getParameter(properties, CreateApiKeyUrlDefault, CreateApiKeyUrlDefault, null);
+        scopes.setCreatePredefinedUrl(predefinedUrl);
+        List<Entry<String, String>> list = PropertiesFile.getPropertiesForBaseKey(OauthScopeKey, properties);
+        if (list.size() == 0)
+            return OauthScopeDefault;
+        
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for(Entry<String, String> entry : list)
+        {
+            if(!first)
+                sb.append(" ");
+            first = false;
+            String scopeStr = entry.getValue();
+            sb.append(scopeStr);
+            scopes.addScope(scopeStr);
+        }
+        return sb.toString();
+    }
     
     public boolean capsuleerHasApiKey(String name)
     {

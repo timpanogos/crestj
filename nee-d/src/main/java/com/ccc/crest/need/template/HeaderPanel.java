@@ -24,6 +24,7 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.need.index.Index;
+import com.ccc.crest.servlet.ApiKeyPage;
 import com.ccc.servlet.wicket.WicketClientInfo;
 import com.ccc.servlet.wicket.login.LoginPage;
 import com.ccc.servlet.wicket.logout.LogoutPage;
@@ -52,10 +53,11 @@ public class HeaderPanel extends Panel
         logout = new BookmarkablePageLink<Object>("logout", LogoutPage.class);
         logoutLabel = new Label("logoutLabel", "Welcome, " + user + " - ");
         needsApiLabel = new Label("needsApiLabel", "We need your API Key");
-        needsApi = new BookmarkablePageLink<Object>("needsApi", LogoutPage.class);
+        needsApi = new BookmarkablePageLink<Object>("needsApi", ApiKeyPage.class);
 
         boolean loggedIn = user != null && !user.isEmpty();
         boolean hasKeys = true; // not going to display if not authenticated
+        //TODO: add in check if there are actually any scopes configured
         if(loggedIn)
             hasKeys = CrestController.getCrestController().capsuleerHasApiKey(user);            
         logout.setVisible(loggedIn);
