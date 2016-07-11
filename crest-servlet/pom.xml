@@ -9,25 +9,28 @@
 	<artifactId>crest-servlet</artifactId>
 	<packaging>jar</packaging>
 	<name>CCC crest servlet</name>
+	
 	<dependencies>
+		<dependency>
+			<groupId>com.ccc</groupId>
+			<artifactId>ccc-oauth</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
 			<artifactId>crest-pg-da</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
+			<groupId>com.ccc.servlet</groupId>
+			<artifactId>ccc-wicket</artifactId>
 		</dependency>
-		<!-- dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpclient</artifactId> 
-			</dependency <dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpcore</artifactId> 
-			<version>4.1.2</version> </dependency> -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>org.apache.httpcomponents</groupId> <artifactId>httpcore-nio</artifactId> 
-			<version>4.4.5</version> </dependency <dependency> <groupId>org.apache.httpcomponents</groupId> 
-			<artifactId>httpasyncclient</artifactId> </dependency> -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>

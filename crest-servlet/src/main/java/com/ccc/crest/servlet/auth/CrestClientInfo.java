@@ -16,7 +16,7 @@
 package com.ccc.crest.servlet.auth;
 
 import com.ccc.crest.client.json.OauthVerify;
-import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
+import com.ccc.oauth.clientInfo.Base20ClientInfo;
 
 @SuppressWarnings("javadoc")
 public class CrestClientInfo extends Base20ClientInfo

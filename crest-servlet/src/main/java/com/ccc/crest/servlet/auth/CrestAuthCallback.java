@@ -32,17 +32,18 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.client.json.OauthVerify;
-import com.ccc.crest.servlet.CrestServlet;
-import com.ccc.tools.servlet.CoreController;
-import com.ccc.tools.servlet.clientInfo.Base20ClientInfo;
-import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
-import com.ccc.tools.servlet.events.AuthEventListener;
-import com.ccc.tools.servlet.login.Auth20Callback;
-import com.ccc.tools.servlet.login.LoginPage;
+import com.ccc.crest.servlet.CrestController;
+import com.ccc.oauth.CoreController;
+import com.ccc.oauth.clientInfo.Base20ClientInfo;
+import com.ccc.oauth.clientInfo.SessionClientInfo;
+import com.ccc.oauth.events.AuthEventListener;
+import com.ccc.servlet.wicket.login.AuthCallback;
+import com.ccc.servlet.wicket.login.LoginPage;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
+
 @SuppressWarnings("javadoc")
-public class CrestAuthCallback extends Auth20Callback
+public class CrestAuthCallback extends AuthCallback
 {
     private static final long serialVersionUID = 4563195900276611276L;
     
@@ -73,8 +74,8 @@ public class CrestAuthCallback extends Auth20Callback
     private void getVerifyData(Base20ClientInfo clientInfo) throws Exception
     {
         Properties properties = CoreController.getController().getProperties();
-        String verifyUrl = properties.getProperty(CrestServlet.OauthVerifyUrlKey, CrestServlet.OauthVerifyUrlDefault);
-        String userAgent = properties.getProperty(CrestServlet.UserAgentKey, CrestServlet.UserAgentDefault);
+        String verifyUrl = properties.getProperty(CrestController.OauthVerifyUrlKey, CrestController.OauthVerifyUrlDefault);
+        String userAgent = properties.getProperty(CrestController.UserAgentKey, CrestController.UserAgentDefault);
         //@formatter:off
         CloseableHttpClient httpclient = 
                         HttpClients.custom()

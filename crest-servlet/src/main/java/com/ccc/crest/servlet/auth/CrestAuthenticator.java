@@ -20,16 +20,17 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Random;
 
-import com.ccc.crest.servlet.CrestServlet;
+import com.ccc.crest.servlet.CrestController;
+import com.ccc.oauth.ScribeApi20Impl;
+import com.ccc.oauth.UserAuthenticationHandler;
+import com.ccc.servlet.wicket.WicketUserAuthenticator;
 import com.ccc.tools.PropertiesFile;
-import com.ccc.tools.servlet.OauthUserAuthenticator;
-import com.ccc.tools.servlet.ScribeApi20Impl;
-import com.ccc.tools.servlet.UserAuthenticationHandler;
 import com.github.scribejava.core.builder.ServiceBuilder;
 import com.github.scribejava.core.oauth.OAuthService;
 
+
 @SuppressWarnings("javadoc")
-public class CrestAuthenticator implements OauthUserAuthenticator
+public class CrestAuthenticator implements WicketUserAuthenticator
 {
     public static final String CallbackMount = "/oauth/eve";
 
@@ -48,25 +49,25 @@ public class CrestAuthenticator implements OauthUserAuthenticator
     @Override
     public void init(Properties properties)
     {
-        loginUrl = properties.getProperty(CrestServlet.OauthLoginUrlKey);
-        tokenUrl = properties.getProperty(CrestServlet.OauthTokenUrlKey);
-        verifyUrl = properties.getProperty(CrestServlet.OauthVerifyUrlKey);
-        clientId = properties.getProperty(CrestServlet.OauthClientIdKey);
-        clientSecret = properties.getProperty(CrestServlet.OauthClientSecretKey);
-        List<Entry<String, String>> scopes = PropertiesFile.getPropertiesForBaseKey(CrestServlet.OauthScopeKey, properties);
-        callbackUrl = properties.getProperty(CrestServlet.OauthCallbackUrlKey);
+        loginUrl = properties.getProperty(CrestController.OauthLoginUrlKey);
+        tokenUrl = properties.getProperty(CrestController.OauthTokenUrlKey);
+        verifyUrl = properties.getProperty(CrestController.OauthVerifyUrlKey);
+        clientId = properties.getProperty(CrestController.OauthClientIdKey);
+        clientSecret = properties.getProperty(CrestController.OauthClientSecretKey);
+        List<Entry<String, String>> scopes = PropertiesFile.getPropertiesForBaseKey(CrestController.OauthScopeKey, properties);
+        callbackUrl = properties.getProperty(CrestController.OauthCallbackUrlKey);
         if (loginUrl == null)
-            loginUrl = CrestServlet.OauthLoginUrlDefault;
+            loginUrl = CrestController.OauthLoginUrlDefault;
         if (tokenUrl == null)
-            tokenUrl = CrestServlet.OauthTokenUrlDefault;
+            tokenUrl = CrestController.OauthTokenUrlDefault;
         if (verifyUrl == null)
-            verifyUrl = CrestServlet.OauthVerifyUrlDefault;
+            verifyUrl = CrestController.OauthVerifyUrlDefault;
         if (clientId == null)
-            throw new IllegalArgumentException("Missing property " + CrestServlet.OauthClientIdKey);
+            throw new IllegalArgumentException("Missing property " + CrestController.OauthClientIdKey);
         if (clientSecret == null)
-            throw new IllegalArgumentException("Missing property " + CrestServlet.OauthClientSecretKey);
+            throw new IllegalArgumentException("Missing property " + CrestController.OauthClientSecretKey);
         if (scopes.size() == 0)
-            scope = CrestServlet.OauthScopeDefault;
+            scope = CrestController.OauthScopeDefault;
         else
         {
             StringBuilder sb = new StringBuilder();
@@ -81,7 +82,7 @@ public class CrestAuthenticator implements OauthUserAuthenticator
             scope = sb.toString();
         }
         if (callbackUrl == null)
-            throw new IllegalArgumentException("Missing property " + CrestServlet.OauthCallbackUrlKey);
+            throw new IllegalArgumentException("Missing property " + CrestController.OauthCallbackUrlKey);
         if(callbackUrl.endsWith("/"))
             callbackUrl = callbackUrl.substring(0, callbackUrl.length() - 2);
         callbackUrl += CallbackMount;
@@ -115,10 +116,4 @@ public class CrestAuthenticator implements OauthUserAuthenticator
     {
         return CrestAuthCallback.class;
     }
-
-//    @Override
-//    public SessionClientInfo getClientInformation()
-//    {
-//        return clientInfo;
-//    }
 }

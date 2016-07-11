@@ -24,10 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ccc.crest.da.CapsuleerData;
-import com.ccc.tools.da.AlreadyExistsException;
-import com.ccc.tools.da.NotFoundException;
-import com.ccc.tools.da.PgBaseDataAccessor;
-
+import com.ccc.db.AlreadyExistsException;
+import com.ccc.db.NotFoundException;
+import com.ccc.db.postgres.PgBaseDataAccessor;
 
 @SuppressWarnings("javadoc") 
 public class CapsuleerJdbc

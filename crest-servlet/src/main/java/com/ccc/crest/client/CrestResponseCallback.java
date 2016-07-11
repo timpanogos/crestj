@@ -15,8 +15,8 @@
 */
 package com.ccc.crest.client;
 
-import com.ccc.crest.cache.EveData;
 import com.ccc.crest.cache.CrestRequestData;
+import com.ccc.crest.cache.EveData;
 
 @SuppressWarnings("javadoc")
 public interface CrestResponseCallback

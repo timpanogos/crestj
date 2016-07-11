@@ -28,22 +28,45 @@ import com.ccc.crest.cache.SourceFailureException;
 import com.ccc.crest.cache.character.ContactList;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
+import com.ccc.crest.servlet.auth.CrestAuthenticator;
 import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.crest.servlet.events.ApiKeyEventListener;
 import com.ccc.crest.servlet.events.CommsEventListener;
+import com.ccc.db.DataAccessor;
+import com.ccc.db.NotFoundException;
+import com.ccc.oauth.CoreController;
+import com.ccc.oauth.clientInfo.BaseClientInfo;
+import com.ccc.oauth.events.AuthEventListener;
 import com.ccc.tools.ElapsedTimer;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.RequestThrottle.IntervalType;
 import com.ccc.tools.TabToLevel;
-import com.ccc.tools.da.DataAccessor;
-import com.ccc.tools.da.NotFoundException;
-import com.ccc.tools.servlet.CoreController;
-import com.ccc.tools.servlet.clientInfo.BaseClientInfo;
-import com.ccc.tools.servlet.events.AuthEventListener;
+
 
 @SuppressWarnings("javadoc")
 public class CrestController extends CoreController implements AuthEventListener, CommsEventListener
 {
+    public static final String OauthLoginUrlKey = "ccc.crest.oauth.login-url";
+    public static final String OauthTokenUrlKey = "ccc.crest.oauth.token-url";
+    public static final String OauthVerifyUrlKey = "ccc.crest.oauth.verify-url";
+    public static final String OauthCallbackUrlKey = "ccc.crest.oauth.callback-url";
+    public static final String OauthClientIdKey = "ccc.crest.oauth.client-id";
+    public static final String OauthClientSecretKey = "ccc.crest.oauth.client-secret";
+    public static final String OauthScopeKey = "ccc.crest.scope";
+    public static final String CrestUrlKey = "ccc.crest.url";
+    public static final String XmlUrlKey = "ccc.crest.xml-url";
+    public static final String UserAgentKey = "ccc.crest.user-agent";
+    
+    public static final String CrestServletConfigDefault = "etc/opt/ccc/crest/crest.properties";
+    public final static String OauthImplClassDefault = CrestAuthenticator.class.getName(); //
+    public static final String OauthLoginUrlDefault = "https://login.eveonline.com/oauth/authorize";
+    public static final String OauthTokenUrlDefault = "https://login.eveonline.com/oauth/token";
+    public static final String OauthVerifyUrlDefault = "https://login.eveonline.com/oauth/verify";
+    public static final String OauthScopeDefault = "publicData";
+    public static final String CrestUrlDefault = "https://crest-tq.eveonline.com";
+    public static final String XmlUrlDefault = "https://api.eveonline.com";
+    public static final String UserAgentDefault = "cadams@xmission.com";
+    
     public final DataCache dataCache;
     private final List<CommsEventListener> commsEventListeners;
     private final List<ApiKeyEventListener> apiKeyEventListeners;

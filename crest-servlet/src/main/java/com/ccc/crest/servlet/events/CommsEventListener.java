@@ -16,7 +16,7 @@
 package com.ccc.crest.servlet.events;
 
 import com.ccc.crest.servlet.auth.CrestClientInfo;
-import com.ccc.tools.servlet.events.EventListener;
+import com.ccc.oauth.events.EventListener;
 
 @SuppressWarnings("javadoc")
 public interface CommsEventListener extends EventListener

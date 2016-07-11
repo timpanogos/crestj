@@ -20,6 +20,7 @@ import java.util.Properties;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import com.ccc.crest.servlet.CrestController;
 import com.ccc.crest.servlet.CrestServlet;
 
 @SuppressWarnings("javadoc")
@@ -30,7 +31,7 @@ public class FooterPanel extends Panel
     public FooterPanel(String id)
     {
         super(id);
-        Properties properties = (Properties) ((CrestServlet) getApplication()).getServletContext().getAttribute(CrestServlet.WicketPropertiesKey);
+        Properties properties = CrestController.getCrestController().getProperties();
         String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
         String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
         add(new Label("copyright", copyrightYear + " " + copyrightowner));

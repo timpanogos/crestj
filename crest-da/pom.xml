@@ -11,7 +11,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ccc</groupId>
-			<artifactId>ccc-tools</artifactId>
+			<artifactId>ccc-db</artifactId>
 		</dependency>
 	</dependencies>
 </project>

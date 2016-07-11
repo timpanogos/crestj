@@ -9,7 +9,7 @@ import org.apache.wicket.protocol.http.WebSession;
 
 import com.ccc.crest.need.template.FooterPanel;
 import com.ccc.crest.need.template.HeaderPanel;
-import com.ccc.tools.servlet.clientInfo.SessionClientInfo;
+import com.ccc.servlet.wicket.WicketClientInfo;
 
 @SuppressWarnings("javadoc")
 public class Index extends WebPage
@@ -46,7 +46,7 @@ public class Index extends WebPage
         add(footerPanel);
         add(sidePanel);
 
-        boolean isAuthenticated = ((SessionClientInfo)WebSession.get().getClientInfo()).isAuthenticated();
+        boolean isAuthenticated = ((WicketClientInfo)WebSession.get().getClientInfo()).isAuthenticated();
         sidePanel.setVisible(isAuthenticated);
         
 

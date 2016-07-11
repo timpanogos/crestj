@@ -17,11 +17,12 @@ package com.ccc.crest.da;
 
 import java.util.List;
 
-import com.ccc.tools.da.AlreadyExistsException;
-import com.ccc.tools.da.NotFoundException;
+import com.ccc.db.AlreadyExistsException;
+import com.ccc.db.DataAccessor;
+import com.ccc.db.NotFoundException;
 
 @SuppressWarnings("javadoc")
-public interface CrestDataAccessor extends com.ccc.tools.da.DataAccessor
+public interface CrestDataAccessor extends DataAccessor
 {
     public void addCapsuleer(CapsuleerData userData) throws AlreadyExistsException, Exception;
     public CapsuleerData getCapsuleer(String name) throws NotFoundException, Exception;

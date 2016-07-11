@@ -15,15 +15,12 @@
 */
 package com.ccc.crest.servlet;
 
+import java.util.Properties;
+
 @SuppressWarnings({ "javadoc" })
 public class Scope
 {
-    public final String name;
-    public final long[] masks;
-
     public Scope(Properties properties)
     {
-        this.name = name;
-        this.masks = masks;
     }
 }
