@@ -13,27 +13,18 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need.template;
+package com.ccc.crest.core.events;
 
-import java.util.Properties;
-
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.crest.servlet.CrestServlet;
+import com.ccc.crest.core.CrestClientInfo;
+import com.ccc.oauth.events.EventListener;
 
 @SuppressWarnings("javadoc")
-public class FooterPanel extends Panel
+public interface CommsEventListener extends EventListener
 {
-    private static final long serialVersionUID = -4736200814044302198L;
-
-    public FooterPanel(String id)
-    {
-        super(id);
-        Properties properties = CrestController.getCrestController().getProperties();
-        String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
-        String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
-        add(new Label("copyright", copyrightYear + " " + copyrightowner));
-    }
+	public void crestUp(CrestClientInfo clientInfo);
+	public void crestDown(CrestClientInfo clientInfo);
+	public void xmlUp(CrestClientInfo clientInfo);
+    public void xmlDown(CrestClientInfo clientInfo);
+	
+	public enum Type{CrestUp, CrestDown, XmlUp, XmlDown}
 }

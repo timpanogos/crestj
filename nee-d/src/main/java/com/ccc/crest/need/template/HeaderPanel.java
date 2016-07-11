@@ -21,9 +21,9 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 
+import com.ccc.crest.core.CrestClientInfo;
+import com.ccc.crest.core.CrestController;
 import com.ccc.crest.need.index.Index;
-import com.ccc.crest.servlet.CrestController;
-import com.ccc.crest.servlet.auth.CrestClientInfo;
 import com.ccc.servlet.wicket.WicketClientInfo;
 import com.ccc.servlet.wicket.login.LoginPage;
 import com.ccc.servlet.wicket.logout.LogoutPage;

@@ -13,27 +13,23 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need.template;
+package com.ccc.crest.core.client.json.character;
 
-import java.util.Properties;
+import java.io.Serializable;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.crest.servlet.CrestServlet;
+import com.ccc.crest.core.client.json.Logo;
 
 @SuppressWarnings("javadoc")
-public class FooterPanel extends Panel
+public class Character implements Serializable
 {
-    private static final long serialVersionUID = -4736200814044302198L;
-
-    public FooterPanel(String id)
-    {
-        super(id);
-        Properties properties = CrestController.getCrestController().getProperties();
-        String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
-        String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
-        add(new Label("copyright", copyrightYear + " " + copyrightowner));
-    }
+    private static final long serialVersionUID = -6928135493367047249L;
+    
+    public String name;
+    public Corporation corporation;
+    public boolean isNPC;
+    public String href;
+    public Logo portrait;
+    public long id;
+    public String id_str;
 }
+

@@ -5,7 +5,7 @@
 **  purpose with or without fee is hereby granted, provided that the above
 **  copyright notice and this permission notice appear in all copies.
 **
-**  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+**  THE SOFTWARE IS PROVIDED \"AS IS\" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
 **  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
 **  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
 **  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
@@ -13,24 +13,12 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need;
+package com.ccc.crest.core.cache.account;
 
-import java.util.Properties;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.tools.TabToLevel;
+import com.ccc.crest.core.cache.BaseEveData;
 
 @SuppressWarnings("javadoc")
-public class NeedController extends CrestController
+public class CallList extends BaseEveData
 {
-    @Override
-    public void init(Properties properties, TabToLevel format) throws Exception
-    {
-        super.init(properties, format);
-    }
-
-    @Override
-    public void destroy()
-    {
-    }
 }
+

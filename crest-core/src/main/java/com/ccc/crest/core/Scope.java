@@ -13,27 +13,14 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need.template;
+package com.ccc.crest.core;
 
 import java.util.Properties;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.crest.servlet.CrestServlet;
-
-@SuppressWarnings("javadoc")
-public class FooterPanel extends Panel
+@SuppressWarnings({ "javadoc" })
+public class Scope
 {
-    private static final long serialVersionUID = -4736200814044302198L;
-
-    public FooterPanel(String id)
+    public Scope(Properties properties)
     {
-        super(id);
-        Properties properties = CrestController.getCrestController().getProperties();
-        String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
-        String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
-        add(new Label("copyright", copyrightYear + " " + copyrightowner));
     }
 }

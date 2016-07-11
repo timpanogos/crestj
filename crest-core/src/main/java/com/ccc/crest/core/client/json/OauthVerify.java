@@ -13,27 +13,28 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need.template;
+package com.ccc.crest.core.client.json;
 
-import java.util.Properties;
+import java.io.Serializable;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.crest.servlet.CrestServlet;
+import com.google.gson.Gson;
 
 @SuppressWarnings("javadoc")
-public class FooterPanel extends Panel
+public class OauthVerify implements Serializable
 {
-    private static final long serialVersionUID = -4736200814044302198L;
-
-    public FooterPanel(String id)
+    private static final long serialVersionUID = 2882934574060991858L;
+    
+    public String CharacterID;
+    public String CharacterName;
+    public String ExpiresOn;
+    public String Scopes;
+    public String TokenType;
+    public String CharacterOwnerHash;
+    
+    public static OauthVerify getOauthVerifyData(String json)
     {
-        super(id);
-        Properties properties = CrestController.getCrestController().getProperties();
-        String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
-        String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
-        add(new Label("copyright", copyrightYear + " " + copyrightowner));
+        Gson gson = new Gson();
+        return gson.fromJson(json, OauthVerify.class); 
     }
 }
+

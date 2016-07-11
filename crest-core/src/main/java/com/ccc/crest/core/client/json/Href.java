@@ -13,27 +13,27 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need.template;
+package com.ccc.crest.core.client.json;
 
-import java.util.Properties;
+import java.io.Serializable;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.crest.servlet.CrestServlet;
+import com.google.gson.JsonObject;
 
 @SuppressWarnings("javadoc")
-public class FooterPanel extends Panel
+public class Href implements Serializable
 {
-    private static final long serialVersionUID = -4736200814044302198L;
-
-    public FooterPanel(String id)
+    private static final long serialVersionUID = -5316133329636265093L;
+    public String href;
+    
+    public Href(JsonObject jsonObject)
     {
-        super(id);
-        Properties properties = CrestController.getCrestController().getProperties();
-        String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
-        String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
-        add(new Label("copyright", copyrightYear + " " + copyrightowner));
+        href = jsonObject.get("href").getAsString();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return href == null ? "null" : href;
     }
 }
+

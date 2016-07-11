@@ -13,27 +13,27 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.need.template;
+package com.ccc.crest.core;
 
-import java.util.Properties;
-
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-
-import com.ccc.crest.core.CrestController;
-import com.ccc.crest.servlet.CrestServlet;
+import com.ccc.crest.core.client.json.OauthVerify;
+import com.ccc.oauth.clientInfo.Base20ClientInfo;
 
 @SuppressWarnings("javadoc")
-public class FooterPanel extends Panel
+public class CrestClientInfo extends Base20ClientInfo
 {
-    private static final long serialVersionUID = -4736200814044302198L;
-
-    public FooterPanel(String id)
+    private OauthVerify verifyData;
+    
+    public CrestClientInfo()
     {
-        super(id);
-        Properties properties = CrestController.getCrestController().getProperties();
-        String copyrightYear = properties.getProperty(CrestServlet.CopyrightYearKey);
-        String copyrightowner = properties.getProperty(CrestServlet.CopyrightOwnerKey);
-        add(new Label("copyright", copyrightYear + " " + copyrightowner));
+    }
+
+    public synchronized OauthVerify getVerifyData()
+    {
+        return verifyData;
+    }
+
+    public synchronized void setVerifyData(OauthVerify verifyData)
+    {
+        this.verifyData = verifyData;
     }
 }

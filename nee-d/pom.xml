@@ -10,7 +10,8 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
-			<artifactId>crest-servlet</artifactId>
+			<artifactId>crest-wicket</artifactId>
+			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
