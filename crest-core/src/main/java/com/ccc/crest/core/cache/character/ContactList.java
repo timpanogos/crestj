@@ -77,5 +77,18 @@ public class ContactList extends BaseEveData
         //@formatter:on
         return CrestClient.getClient().getCrest(rdata);
     }
+    
+    public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback) throws Exception
+    {
+        //@formatter:off
+        CrestRequestData rdata = new CrestRequestData(
+                        clientInfo, getCrestUrl(clientInfo), 
+                        null, ContactList.class, 
+                        callback, 0, 
+                        ReadScope, Version);
+        return null;
+        //@formatter:on
+//        return XmlClient.getClient().getCrest(rdata);
+    }
 }
 

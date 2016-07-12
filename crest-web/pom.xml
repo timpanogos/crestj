@@ -12,15 +12,23 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.ccc</groupId>
+			<artifactId>ccc-db</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc</groupId>
+			<artifactId>ccc-oauth</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc</groupId>
 			<artifactId>ccc-tools</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.ccc.crest</groupId>
-			<artifactId>crest-servlet</artifactId>
+			<groupId>com.ccc.servlet</groupId>
+			<artifactId>ccc-wicket</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
-			<artifactId>nee-d</artifactId>
+			<artifactId>crest-core</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
@@ -29,6 +37,14 @@
 		<dependency>
 			<groupId>com.ccc.crest</groupId>
 			<artifactId>crest-pg-da</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>crest-wicket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ccc.crest</groupId>
+			<artifactId>nee-d</artifactId>
 		</dependency>
 	</dependencies>
 	<build>

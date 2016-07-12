@@ -44,7 +44,7 @@ public class ScopeToMask
         characterScopes.put("characterNotificationsRead", new ScopeToMask("characterNotificationsRead", new long[] { 0x00004000, 0x00008000 }, Type.Character));
         characterScopes.put("characterResearchRead", new ScopeToMask("characterResearchRead", new long[] { 0x00010000 }, Type.Character));
         characterScopes.put("characterSkillsRead", new ScopeToMask("characterSkillsRead", new long[] { 0x00020000, 0x00040000, 0x40000000 }, Type.Character));
-        characterScopes.put("characterAccountRead", new ScopeToMask("characterAccountRead", new long[] { 0x02000000 }, Type.Character));
+        characterScopes.put("characterAccountRead", new ScopeToMask("characterAccountRead", new long[] { 0x02000000 }, Type.Account));
         characterScopes.put("characterContractsRead", new ScopeToMask("characterContractsRead", new long[] { 0x04000000 }, Type.Character));
         characterScopes.put("characterBookmarksRead", new ScopeToMask("characterBookmarksRead", new long[] { 0x10000000 }, Type.Character));
         characterScopes.put("characterChatChannelsRead", new ScopeToMask("characterChatChannelsRead", new long[] { 0x20000000 }, Type.Character));
@@ -77,5 +77,5 @@ public class ScopeToMask
         this.type = type;
     }
     
-    public enum Type{Character, Corporate}
+    public enum Type{Public, Character, Corporate, Account, CrestOnlyCharacter, CrestOnlyCorporate, CrestOnlyPublic, XmlOnlyCharacter, XmlOnlyCorporate}
 }

@@ -186,6 +186,31 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
         }
     }
 
+    public ContactList getContactListXml(CrestClientInfo clientInfo) throws SourceFailureException
+    {
+        CacheData data = cache.get(ContactList.getApiUrl(clientInfo));
+        if(data != null)
+        {
+            data.data.accessed();
+            return (ContactList)data.data;
+        }
+        try
+        {
+            ContactList list = (ContactList)ContactList.getContacts(clientInfo, callback).get();
+            list.accessed();
+            return list;
+        } catch (Exception e)
+        {
+            //TODO: can only determine neither worked here, is there a better isolation?
+            CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
+            controller.fireCommunicationEvent(clientInfo, type);
+//            if(!data.data.isFromCrest())
+            type = CommsEventListener.Type.XmlDown;
+            controller.fireCommunicationEvent(clientInfo, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
+        }
+    }
+    
     @Override
     public ContactNotifications getContactNotifications(CrestClientInfo clientInfo) throws SourceFailureException
     {
