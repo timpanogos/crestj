@@ -12,10 +12,11 @@
 	<packaging>pom</packaging>
 	<name>CCC crest repository builder</name>
 	<modules>
+		<module>crest-core</module>
 		<module>crest-da</module>
 		<module>crest-pg-da</module>
-		<module>crest-servlet</module>
 		<module>crest-web</module>
+		<module>crest-wicket</module>
 		<module>nee-d</module>
 	</modules>
 </project>
