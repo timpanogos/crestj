@@ -1,18 +1,18 @@
 /*
-**  Copyright (c) 2016, Cascade Computer Consulting.
-**
-**  Permission to use, copy, modify, and/or distribute this software for any
-**  purpose with or without fee is hereby granted, provided that the above
-**  copyright notice and this permission notice appear in all copies.
-**
-**  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-**  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-**  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-**  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-**  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-**  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-**  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ **  Copyright (c) 2016, Cascade Computer Consulting.
+ **
+ **  Permission to use, copy, modify, and/or distribute this software for any
+ **  purpose with or without fee is hereby granted, provided that the above
+ **  copyright notice and this permission notice appear in all copies.
+ **
+ **  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ **  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ **  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ **  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ **  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.ccc.crest.core.cache;
 
 import java.util.HashMap;
@@ -27,6 +27,8 @@ import com.ccc.crest.core.cache.account.AccountStatus;
 import com.ccc.crest.core.cache.account.ApiKeyInfo;
 import com.ccc.crest.core.cache.account.CallList;
 import com.ccc.crest.core.cache.account.Characters;
+import com.ccc.crest.core.cache.api.ApiInterfaces;
+import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.cache.character.AccountBalance;
 import com.ccc.crest.core.cache.character.AssetList;
 import com.ccc.crest.core.cache.character.Blueprints;
@@ -66,34 +68,36 @@ import com.ccc.crest.core.cache.character.Standings;
 import com.ccc.crest.core.cache.character.UpcomingCalendarEvents;
 import com.ccc.crest.core.cache.character.WalletJournal;
 import com.ccc.crest.core.cache.character.WalletTransactions;
+import com.ccc.crest.core.cache.corporation.CorporationInterfaces;
+import com.ccc.crest.core.cache.eve.AllianceList;
+import com.ccc.crest.core.cache.eve.EveInterfaces;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.tools.ElapsedTimer;
 
-
 @SuppressWarnings("javadoc")
-public class DataCache implements AccountInterfaces, CharacterInterfaces
+public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces
 {
-	private final HashMap<String, CacheData> cache;
-	private final DataCacheCallback callback;
-	private final CrestController controller;
+    private final HashMap<String, CacheData> cache;
+    private final DataCacheCallback callback;
+    private final CrestController controller;
 
-	public DataCache(CrestController controller)
-	{
-		cache = new HashMap<String, CacheData>();
-		callback = new DataCacheCallback();
-		this.controller = controller;
-	}
-	
-	public void remove(String url)
-	{
+    public DataCache(CrestController controller)
+    {
+        cache = new HashMap<>();
+        callback = new DataCacheCallback();
+        this.controller = controller;
+    }
+
+    public void remove(String url)
+    {
         synchronized (cache)
         {
             cache.remove(url);
         }
-	}
-	
+    }
+
     public void clear()
     {
         synchronized (cache)
@@ -101,15 +105,15 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
             cache.clear();
         }
     }
-    
-    private class CacheData 
+
+    private class CacheData
     {
-    	private final EveData data;
-    	
-    	private CacheData(EveData data)
-    	{
-    		this.data = data;
-    	}
+        private final EveData data;
+
+        private CacheData(EveData data)
+        {
+            this.data = data;
+        }
     }
 
     @Override
@@ -164,14 +168,14 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
     public ContactList getContactList(CrestClientInfo clientInfo) throws SourceFailureException
     {
         CacheData data = cache.get(ContactList.getCrestUrl(clientInfo));
-        if(data != null)
+        if (data != null)
         {
             data.data.accessed();
-            return (ContactList)data.data;
+            return (ContactList) data.data;
         }
         try
         {
-            ContactList list = (ContactList)ContactList.getContacts(clientInfo, callback).get();
+            ContactList list = (ContactList) ContactList.getContacts(clientInfo, callback).get();
             list.accessed();
             return list;
         } catch (Exception e)
@@ -179,7 +183,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
             //TODO: can only determine neither worked here, is there a better isolation?
             CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
             controller.fireCommunicationEvent(clientInfo, type);
-//            if(!data.data.isFromCrest())
+            //            if(!data.data.isFromCrest())
             type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(clientInfo, type);
             throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
@@ -189,14 +193,14 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
     public ContactList getContactListXml(CrestClientInfo clientInfo) throws SourceFailureException
     {
         CacheData data = cache.get(ContactList.getApiUrl(clientInfo));
-        if(data != null)
+        if (data != null)
         {
             data.data.accessed();
-            return (ContactList)data.data;
+            return (ContactList) data.data;
         }
         try
         {
-            ContactList list = (ContactList)ContactList.getContacts(clientInfo, callback).get();
+            ContactList list = (ContactList) ContactList.getContacts(clientInfo, callback).get();
             list.accessed();
             return list;
         } catch (Exception e)
@@ -204,13 +208,13 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
             //TODO: can only determine neither worked here, is there a better isolation?
             CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
             controller.fireCommunicationEvent(clientInfo, type);
-//            if(!data.data.isFromCrest())
+            //            if(!data.data.isFromCrest())
             type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(clientInfo, type);
             throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
         }
     }
-    
+
     @Override
     public ContactNotifications getContactNotifications(CrestClientInfo clientInfo) throws SourceFailureException
     {
@@ -408,9 +412,9 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces
     {
         throw new RuntimeException("not implemented yet");
     }
-    
-    
-private AtomicInteger hits = new AtomicInteger();
+
+    private final AtomicInteger hits = new AtomicInteger();
+
     private class DataCacheCallback implements CrestResponseCallback
     {
         @Override
@@ -420,14 +424,42 @@ private AtomicInteger hits = new AtomicInteger();
             {
                 cache.put(requestData.url, new CacheData(data));
             }
-String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle, hit: " + hits.incrementAndGet(), 2);
-ElapsedTimer.resetElapsedTimers(2, 1);
-System.err.println(msg);
-            if(data.isContinueRefresh())
+            String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle, hit: " + hits.incrementAndGet(), 2);
+            ElapsedTimer.resetElapsedTimers(2, 1);
+            System.err.println(msg);
+            if (data.isContinueRefresh())
             {
-LoggerFactory.getLogger(getClass()).info("\ncallback, re-issuing request");                
+                LoggerFactory.getLogger(getClass()).info("\ncallback, re-issuing request");
                 CrestClient.getClient().getCrest(requestData);
             }
         }
+    }
+
+    @Override
+    public AllianceList getAllianceList(CrestClientInfo clientInfo) throws SourceFailureException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public com.ccc.crest.core.cache.corporation.AccountBalance getCorpAccountBalance(CrestClientInfo clientInfo) throws SourceFailureException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public com.ccc.crest.core.cache.api.CallList getApiCallList(CrestClientInfo clientInfo) throws SourceFailureException
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Time getTime() throws SourceFailureException
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -1,18 +1,18 @@
 /*
-**  Copyright (c) 2016, Cascade Computer Consulting.
-**
-**  Permission to use, copy, modify, and/or distribute this software for any
-**  purpose with or without fee is hereby granted, provided that the above
-**  copyright notice and this permission notice appear in all copies.
-**
-**  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-**  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-**  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-**  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-**  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-**  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-**  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ **  Copyright (c) 2016, Cascade Computer Consulting.
+ **
+ **  Permission to use, copy, modify, and/or distribute this software for any
+ **  purpose with or without fee is hereby granted, provided that the above
+ **  copyright notice and this permission notice appear in all copies.
+ **
+ **  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ **  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ **  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ **  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ **  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.ccc.crest.core.client;
 
 import java.io.IOException;
@@ -47,7 +47,6 @@ import com.ccc.tools.StrH;
 import com.ccc.tools.executor.BlockingExecutor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
-
 @SuppressWarnings("javadoc")
 public class CrestClient
 {
@@ -75,7 +74,7 @@ public class CrestClient
             CrestClient.userAgent = userAgent;
             crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
             xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
-            crestThrottleMap = new HashMap<String, RequestThrottle>();
+            crestThrottleMap = new HashMap<>();
             CrestClient.executor = executor;
         }
     }
@@ -102,27 +101,31 @@ public class CrestClient
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
         CloseableHttpClient client = HttpClients.custom().setUserAgent(userAgent).build();
-        String accessToken = ((OAuth2AccessToken) requestData.clientInfo.getAccessToken()).getAccessToken();
+        String accessToken = null;
+        if (requestData.clientInfo != null)
+            accessToken = ((OAuth2AccessToken) requestData.clientInfo.getAccessToken()).getAccessToken();
         HttpGet get = new HttpGet(requestData.url);
-        get.addHeader("Authorization", "Bearer " + accessToken);
-        if (requestData.scope != null)
-            get.addHeader("Scope", requestData.scope);
+        if (accessToken != null)
+        {
+            get.addHeader("Authorization", "Bearer " + accessToken);
+            if (requestData.scope != null)
+                get.addHeader("Scope", requestData.scope);
+        }
         if (requestData.version != null)
             get.addHeader("Accept", requestData.version);
-        
         RequestThrottle apiThrottle = null;
         synchronized (crestThrottleMap)
         {
             apiThrottle = crestThrottleMap.get(requestData.url);
         }
-LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + accessToken);                
+        LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + accessToken);
 
-        return executor.submit((new CrestGetTask(client, get, requestData, apiThrottle)));
+        return executor.submit(new CrestGetTask(client, get, requestData, apiThrottle));
     }
 
     public String getXml(CrestClientInfo clientInfo) throws Exception
     {
-        //TODO: move this to xml api later        
+        //TODO: move this to xml api later
 
         //        https://api.eveonline.com/eve/CharacterInfo.xml.aspx?characterID={character_id_here}
 
@@ -163,7 +166,7 @@ LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + a
         @Override
         public EveData call() throws Exception
         {
-LoggerFactory.getLogger(getClass()).info("executing, pre-throttle: " + rdata.url);            
+            LoggerFactory.getLogger(getClass()).info("executing, pre-throttle: " + rdata.url);
             try
             {
                 if (apiThrottle != null)
@@ -175,26 +178,22 @@ LoggerFactory.getLogger(getClass()).info("executing, pre-throttle: " + rdata.url
                     @Override
                     public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException
                     {
-LoggerFactory.getLogger(getClass()).info("handling response: " + response.toString());            
+                        LoggerFactory.getLogger(getClass()).info("handling response: " + response.toString());
                         Header[] headers = response.getHeaders(CacheControlHeader);
                         boolean found = false;
-                        if(headers != null && headers.length > 0)
-                        {
-                            for(int i=0; i < headers.length; i++)
+                        if (headers != null && headers.length > 0)
+                            for (int i = 0; i < headers.length; i++)
                             {
                                 HeaderElement[] headerElements = headers[i].getElements();
-                                for(int j=0; j < headerElements.length; j++)
-                                {
-                                    if(headerElements[i].getName().equals(CacheControlMaxAge))
+                                for (int j = 0; j < headerElements.length; j++)
+                                    if (headerElements[i].getName().equals(CacheControlMaxAge))
                                     {
                                         cacheTime.set(Integer.parseInt(headerElements[i].getValue()));
                                         found = true;
                                         break;
                                     }
-                                }
                             }
-                        }
-                        if(!found)
+                        if (!found)
                         {
                             String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
                             LoggerFactory.getLogger(getClass()).warn(msg);
@@ -209,11 +208,11 @@ LoggerFactory.getLogger(getClass()).info("handling response: " + response.toStri
                         String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
                         LoggerFactory.getLogger(getClass()).warn(msg);
                         throw new ClientProtocolException(msg);
-//TODO: is it enough to just log it here, currently no one is calling get 
-// maybe just re-issue, what about connection down retries?  Need to look at status code ranges to determine which to retry on.
+                        //TODO: is it enough to just log it here, currently no one is calling get
+                        // maybe just re-issue, what about connection down retries?  Need to look at status code ranges to determine which to retry on.
                     }
                 };
-LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);            
+                LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);
                 String json = client.execute(get, responseHandler);
                 EveData data = rdata.gson.fromJson(json, rdata.clazz);
                 if (apiThrottle == null)
@@ -232,16 +231,15 @@ LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.ur
                 rdata.setCacheSeconds(cacheTime.get());
                 rdata.callback.received(rdata, data);
                 return data;
-            }catch(Exception e)
+            } catch (Exception e)
             {
                 synchronized (controller.dataCache)
                 {
                     controller.dataCache.remove(rdata.url);
                     controller.fireCommunicationEvent(rdata.clientInfo, CommsEventListener.Type.CrestDown);
                 }
-                throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);            
-            }
-            finally
+                throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);
+            } finally
             {
                 client.close();
             }

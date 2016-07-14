@@ -1,18 +1,18 @@
 /*
-**  Copyright (c) 2016, Cascade Computer Consulting.
-**
-**  Permission to use, copy, modify, and/or distribute this software for any
-**  purpose with or without fee is hereby granted, provided that the above
-**  copyright notice and this permission notice appear in all copies.
-**
-**  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-**  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-**  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-**  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-**  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-**  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-**  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ **  Copyright (c) 2016, Cascade Computer Consulting.
+ **
+ **  Permission to use, copy, modify, and/or distribute this software for any
+ **  purpose with or without fee is hereby granted, provided that the above
+ **  copyright notice and this permission notice appear in all copies.
+ **
+ **  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ **  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ **  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ **  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ **  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.ccc.crest.core;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String DirectorGroupName = "directors";
     public static final String AnonymousGroupName = "anonymous";
     public static final String UserGroupName = "user";
-    
+
     public static final String OauthLoginUrlKey = "ccc.crest.oauth.login-url";
     public static final String OauthTokenUrlKey = "ccc.crest.oauth.token-url";
     public static final String OauthVerifyUrlKey = "ccc.crest.oauth.verify-url";
@@ -67,7 +67,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String UserAgentKey = "ccc.crest.user-agent";
     public static final String CreateApiKeyUrlKey = "ccc.crest.api.key-gen-url";
     public static final String GroupAdminBaseKey = "ccc.crest.group.director";
-    
+
     public static final String CrestServletConfigDefault = "etc/opt/ccc/crest/crest.properties";
     public static final String OauthLoginUrlDefault = "https://login.eveonline.com/oauth/authorize";
     public static final String OauthTokenUrlDefault = "https://login.eveonline.com/oauth/token";
@@ -77,7 +77,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String XmlUrlDefault = "https://api.eveonline.com";
     public static final String UserAgentDefault = "Chad Adams (Salgare) cadams@xmission.com Nee-d";
     public static final String CreateApiKeyUrlDefault = "https://community.eveonline.com/support/api-key/CreatePredefined"; //?accessMask=133038347
-    
+
     public final DataCache dataCache;
     private final List<CommsEventListener> commsEventListeners;
     private final List<ApiKeyEventListener> apiKeyEventListeners;
@@ -103,7 +103,7 @@ public class CrestController extends CoreController implements AuthEventListener
         List<Entry<String, String>> list = PropertiesFile.getPropertiesForBaseKey(OauthScopeKey, properties);
         if (list.size() == 0)
             return OauthScopeDefault;
-        
+
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for(Entry<String, String> entry : list)
@@ -117,7 +117,7 @@ public class CrestController extends CoreController implements AuthEventListener
         }
         return sb.toString();
     }
-    
+
     public boolean capsuleerHasApiKey(String name)
     {
         try
@@ -130,7 +130,7 @@ public class CrestController extends CoreController implements AuthEventListener
             return false;
         }
     }
-    
+
     public void setCapsuleerApiKey(String name, String keyId, String code) throws InvalidApiKeysException, DataAccessorException
     {
         try
@@ -149,7 +149,7 @@ public class CrestController extends CoreController implements AuthEventListener
             throw new DataAccessorException("Failed to update " + name +"'s CapsuleerData with xml-api keys");
         }
     }
-    
+
     public static CrestController getCrestController()
     {
         return (CrestController) getController();
@@ -204,9 +204,10 @@ public class CrestController extends CoreController implements AuthEventListener
         super.init(properties, format);
         if (dataAccessor == null)
             throw new Exception(DataAccessor.DaImplKey + " must be specified in the properties file");
-        
+
         initializeGroups();
-//        blockingExecutor.submit(new TestTask());
+
+        blockingExecutor.submit(new TimeTask());
     }
 
     @Override
@@ -221,7 +222,7 @@ public class CrestController extends CoreController implements AuthEventListener
 
     private class FireCommunicationsEventTask implements Callable<Void>
     {
-        private CrestClientInfo clientInfo;
+        private final CrestClientInfo clientInfo;
         private final CommsEventListener.Type type;
 
         private FireCommunicationsEventTask(CrestClientInfo clientInfo, CommsEventListener.Type type)
@@ -238,7 +239,6 @@ public class CrestController extends CoreController implements AuthEventListener
                 synchronized (commsEventListeners)
                 {
                     for (CommsEventListener listener : commsEventListeners)
-                    {
                         switch (type)
                         {
                             case CrestUp:
@@ -256,7 +256,6 @@ public class CrestController extends CoreController implements AuthEventListener
                             default:
                                 break;
                         }
-                    }
                 }
             } catch (Exception e)
             {
@@ -268,7 +267,7 @@ public class CrestController extends CoreController implements AuthEventListener
 
     private class FireApiKeyEventTask implements Callable<Void>
     {
-        private CrestClientInfo clientInfo;
+        private final CrestClientInfo clientInfo;
         private final ApiKeyEventListener.Type type;
 
         private FireApiKeyEventTask(CrestClientInfo clientInfo, ApiKeyEventListener.Type type)
@@ -294,7 +293,7 @@ public class CrestController extends CoreController implements AuthEventListener
             return null;
         }
     }
-    
+
     /*
      * *************************************************************************
      * *** AuthenticatedEventListener impl
@@ -340,7 +339,7 @@ public class CrestController extends CoreController implements AuthEventListener
                 //TODO: add/fire database error events
                 log.warn("Database failure:", e1);
             }
-            
+
             List<AccessGroup> groups;
             try
             {
@@ -357,7 +356,7 @@ public class CrestController extends CoreController implements AuthEventListener
                         ccinfo.addGroup(group);
                         continue;
                     }
-                        
+
                     if(da.isMember(name, group.group))
                         ccinfo.addGroup(group);
                 }
@@ -470,7 +469,7 @@ public class CrestController extends CoreController implements AuthEventListener
         List<Entry<String,String>> admins = PropertiesFile.getPropertiesForBaseKey(GroupAdminBaseKey, properties);
         if(admins.size() == 0)
             throw new Exception("You need to configure at least one admin. i.e. " + GroupAdminBaseKey + "0=Capsuleer Name");
-        
+
         AccessGroup directors = null;
         try
         {
@@ -482,7 +481,7 @@ public class CrestController extends CoreController implements AuthEventListener
             EntityData user = new EntityData(UserGroupName, true);
             EntityData director = new EntityData(DirectorGroupName, true);
             EntityData admin = new EntityData(admins.get(0).getValue(), false);
-            CrestDataAccessor da = (CrestDataAccessor)dataAccessor; 
+            CrestDataAccessor da = (CrestDataAccessor)dataAccessor;
             da.addEntity(admin);
             da.addGroup(admin.name, anon);
             da.addGroup(admin.name, user);
@@ -490,7 +489,22 @@ public class CrestController extends CoreController implements AuthEventListener
         }
     }
 
-    
+    private class TimeTask implements Callable<Void>
+    {
+        @Override
+        public Void call() throws Exception
+        {
+            try
+            {
+                dataCache.getTime();
+            } catch (SourceFailureException e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
     //TODO: setup regression testing
     private class TestTask implements Callable<Void>
     {
@@ -498,7 +512,7 @@ public class CrestController extends CoreController implements AuthEventListener
         public Void call() throws Exception
         {
             PgDataAccessorTest.testCapsuleer((CrestDataAccessor)dataAccessor);
-//            test4();
+            //            test4();
             return null;
         }
 
