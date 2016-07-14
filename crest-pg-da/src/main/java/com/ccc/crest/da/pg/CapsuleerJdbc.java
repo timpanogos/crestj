@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ccc.crest.da.CapsuleerData;
+import com.ccc.crest.da.EntityData;
 import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.NotFoundException;
 import com.ccc.db.postgres.PgBaseDataAccessor;
@@ -33,9 +34,9 @@ public class CapsuleerJdbc
 {
     public static final String TableName;
 
-    public static final String ColUserPkName = "capsuleerpk";
-    public static final String ColNameName = "capsuleer";
-    public static final String ColUserIdName = "capsuleerid";
+    public static final String ColCapPkName = "capsuleerpk";
+    public static final String ColCapName = "capsuleer";
+    public static final String ColCapIdName = "capsuleerid";
     public static final String ColApiKeyIdName = "apiKeyid";
     public static final String ColApiCodeName = "apicode";
     public static final String ColRefreshTokenName = "refreshtoken";
@@ -58,16 +59,16 @@ public class CapsuleerJdbc
     {
         TableName = "capsuleer";
 
-        PrepGetUserPk = "select " + ColUserPkName + " from " + TableName + " where " + ColNameName + "=?;";
-        PrepGetRow = "select * from " + TableName + " where " + ColUserPkName + "=?;";
-        PrepDeleteRow = "delete from " + TableName + " where " + ColUserPkName + "=?;";
+        PrepGetUserPk = "select " + ColCapPkName + " from " + TableName + " where " + ColCapName + "=?;";
+        PrepGetRow = "select * from " + TableName + " where " + ColCapPkName + "=?;";
+        PrepDeleteRow = "delete from " + TableName + " where " + ColCapPkName + "=?;";
         PrepListAll = "select * from " + TableName +";";
 
         //@formatter:off
         PrepInsertRow = 
             "insert into " + TableName + " (" + 
-            ColNameName + "," + 
-            ColUserIdName + "," + 
+            ColCapName + "," + 
+            ColCapIdName + "," + 
             ColApiKeyIdName + "," + 
             ColApiCodeName + "," + 
             ColRefreshTokenName + ")" + 
@@ -75,25 +76,25 @@ public class CapsuleerJdbc
 
         PrepUpdateRow = 
             "update " + TableName + " set " + 
-            ColNameName + "=?," + 
-            ColUserIdName + "=?," + 
+            ColCapName + "=?," + 
+            ColCapIdName + "=?," + 
             ColApiKeyIdName + "=?," + 
-            ColApiCodeName + "=?" + 
+            ColApiCodeName + "=?," + 
             ColRefreshTokenName + "=?" + 
-            " where " + ColUserPkName + "=?;";
+            " where " + ColCapPkName + "=?;";
         //@formatter:on
     }
 
-    public static long getPid(Connection connection, String name, boolean close) throws NotFoundException, SQLException
+    public static long getPid(Connection connection, long capId, boolean close) throws NotFoundException, SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepGetUserPk);
         ResultSet rs = null;
         try
         {
-            stmt.setString(1, name);
+            stmt.setLong(1, capId);
             rs = stmt.executeQuery();
             if (!rs.next())
-                throw new NotFoundException("name: " + name + " not found");
+                throw new NotFoundException("capId: " + capId + " not found");
             return rs.getLong(1);
         } finally
         {
@@ -101,36 +102,37 @@ public class CapsuleerJdbc
         }
     }
 
-    public static UserRow getUser(Connection connection, String name) throws NotFoundException, SQLException
+    public static CapsuleerRow getCapsuleer(Connection connection, String name) throws NotFoundException, SQLException
     {
         return getCapsuleer(connection, name, true);
     }
 
-    public static UserRow getCapsuleer(Connection connection, String name, boolean close) throws NotFoundException, SQLException
+    public static CapsuleerRow getCapsuleer(Connection connection, String name, boolean close) throws NotFoundException, SQLException
     {
-        long pid;
         try
         {
-            pid = getPid(connection, name, false);
+            EntityRow erow = EntityJdbc.getEntity(connection, name, false);
+            long pid = getPid(connection, erow.pid, false);
+            return getRow(connection, pid, erow, close);
         } catch (Exception e)
         {
             PgBaseDataAccessor.close(connection, null, null, true);
             throw e;
         }
-        return getRow(connection, pid, close);
     }
 
-    public static UserRow getRow(Connection connection, long pid, boolean close) throws NotFoundException, SQLException
+    public static CapsuleerRow getRow(Connection connection, long capId, EntityRow erow, boolean close) throws NotFoundException, SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepGetRow);
         ResultSet rs = null;
         try
         {
-            stmt.setLong(1, pid);
+            stmt.setLong(1, capId);
             rs = stmt.executeQuery();
             if (!rs.next())
-                throw new NotFoundException("user pid: " + pid + " not found");
-            return new UserRow(rs);
+                throw new NotFoundException("capsuleer: " + erow.name + " not found");
+            CapsuleerRow crow = new CapsuleerRow(rs);
+            return new CapsuleerRow(crow, erow.name);
         } catch (Exception e)
         {
             PgBaseDataAccessor.close(connection, stmt, rs, true);
@@ -141,30 +143,47 @@ public class CapsuleerJdbc
         }
     }
 
-    public static void addCapsuleer(Connection connection, CapsuleerData userData, boolean close) throws AlreadyExistsException, SQLException
+    public static void addCapsuleer(Connection connection, CapsuleerData capData, boolean close) throws AlreadyExistsException, SQLException
     {
         try
         {
-            getPid(connection, userData.capsuleer, false);
-            throw new AlreadyExistsException("name: '" + userData.capsuleer + "' already exists");
+            EntityJdbc.getEntity(connection, capData.capsuleer, false);
+            throw new AlreadyExistsException("capsuleer: '" + capData.capsuleer + "' already exists");
         } catch (NotFoundException nfe)
         {
-            insertRow(connection, userData, close);
+            try
+            {
+                // begin a transaction block to rollback new entity insert if our insert fails
+                connection.setAutoCommit(false);
+                // add the new capsuleer to the entity table.
+                EntityData edata = new EntityData(capData.capsuleer, false);
+                long pid = EntityJdbc.insertRow(connection, edata, false); // groupId is the pid of the groups admin row
+                insertRow(connection, pid, capData, false);
+                connection.commit();
+            } catch (Exception e)
+            {
+                connection.rollback();
+                throw e;
+            }
+        } finally
+        {
+            PgBaseDataAccessor.close(connection, null, null, close);
         }
+        
     }
 
-    public static long insertRow(Connection connection, CapsuleerData userData, boolean close) throws SQLException
+    public static long insertRow(Connection connection, long entityPid, CapsuleerData capData, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepInsertRow, Statement.RETURN_GENERATED_KEYS);
 
         ResultSet rs = null;
         try
         {
-            stmt.setString(NameIdx - 1, userData.capsuleer);
-            stmt.setLong(UserIdIdx - 1, userData.capsuleerId);
-            stmt.setLong(ApiKeyIdIdx - 1, userData.apiKeyId);
-            stmt.setString(ApiCodeIdx - 1, userData.apiCode);
-            stmt.setString(RefreshTokenIdx - 1, userData.refreshToken);
+            stmt.setLong(NameIdx - 1, entityPid);
+            stmt.setLong(UserIdIdx - 1, capData.capsuleerId);
+            stmt.setLong(ApiKeyIdIdx - 1, capData.apiKeyId);
+            stmt.setString(ApiCodeIdx - 1, capData.apiCode);
+            stmt.setString(RefreshTokenIdx - 1, capData.refreshToken);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("insertRow affected an unexpected number of rows: " + rows);
@@ -177,31 +196,31 @@ public class CapsuleerJdbc
         }
     }
 
-    public static void updateCapsuleer(Connection connection, CapsuleerData userData) throws NotFoundException, SQLException
+    public static void updateCapsuleer(Connection connection, CapsuleerData capData) throws NotFoundException, SQLException
     {
-        long pid;
         try
         {
-            pid = getPid(connection, userData.capsuleer, false);
+            EntityRow erow = EntityJdbc.getEntity(connection, capData.capsuleer, false);
+            long pid = getPid(connection, erow.pid, false);
+            updateRow(connection, pid, erow, capData);
         } catch (Exception e)
         {
             PgBaseDataAccessor.close(connection, null, null, true);
             throw e;
         }
-        updateRow(connection, pid, userData);
     }
 
-    public static void updateRow(Connection connection, long pid, CapsuleerData userData) throws SQLException
+    public static void updateRow(Connection connection, long capPid, EntityRow erow, CapsuleerData capData) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepUpdateRow);
         try
         {
-            stmt.setString(NameIdx - 1, userData.capsuleer);
-            stmt.setLong(UserIdIdx - 1, userData.capsuleerId);
-            stmt.setLong(ApiKeyIdIdx - 1, userData.apiKeyId);
-            stmt.setString(ApiCodeIdx - 1, userData.apiCode);
-            stmt.setString(RefreshTokenIdx - 1, userData.refreshToken);
-            stmt.setLong(4, pid);
+            stmt.setLong(NameIdx - 1, erow.pid);
+            stmt.setLong(UserIdIdx - 1, capData.capsuleerId);
+            stmt.setLong(ApiKeyIdIdx - 1, capData.apiKeyId);
+            stmt.setString(ApiCodeIdx - 1, capData.apiCode);
+            stmt.setString(RefreshTokenIdx - 1, capData.refreshToken);
+            stmt.setLong(6, capPid);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("updateRow affected an unexpected number of rows: " + rows);
@@ -213,36 +232,41 @@ public class CapsuleerJdbc
 
     public static void deleteCapsuleer(Connection connection, String name, boolean close) throws NotFoundException, SQLException
     {
-        long pid;
         try
         {
-            pid = getPid(connection, name, false);
+            EntityRow erow = EntityJdbc.getEntity(connection, name, false);
+            long pid = getPid(connection, erow.pid, false);
+            deleteRow(connection, pid, erow.pid, close);
         } catch (Exception e)
         {
             PgBaseDataAccessor.close(connection, null, null, close);
             throw e;
         }
-        deleteRow(connection, pid, close);
     }
 
-    public static void deleteRow(Connection connection, long pid, boolean close) throws SQLException
+    public static void deleteRow(Connection connection, long capPid, long epid, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepDeleteRow);
         try
         {
-            stmt.setLong(1, pid);
+            connection.setAutoCommit(false);
+            stmt.setLong(1, capPid);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("deleteRow affected an unexpected number of rows: " + rows);
+            EntityJdbc.deleteRow(connection, epid, false);
+            connection.commit();
+        } catch (Exception e)
+        {
+            connection.rollback();
+            throw e;
         } finally
         {
             PgBaseDataAccessor.close(connection, stmt, null, close);
         }
     }
-
-    //@formatter:off
+    
     public static List<CapsuleerData> listCapsuleers(Connection connection) throws Exception
-    //@formatter:on
     {
         PreparedStatement stmt = connection.prepareStatement(PrepListAll);
         ResultSet rs = null;
@@ -251,7 +275,11 @@ public class CapsuleerJdbc
         {
             rs = stmt.executeQuery();
             while(rs.next())
-                list.add(new UserRow(rs));
+            {
+                CapsuleerRow crow = new CapsuleerRow(rs);
+                EntityRow erow = EntityJdbc.getRow(connection, Long.parseLong(crow.capsuleer), false);
+                list.add(new CapsuleerRow(crow, erow.name));
+            }
         } catch (Exception e)
         {
             PgBaseDataAccessor.close(connection, stmt, rs, true);

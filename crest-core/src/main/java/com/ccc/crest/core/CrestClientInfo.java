@@ -15,19 +15,45 @@
 */
 package com.ccc.crest.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ccc.crest.core.client.json.OauthVerify;
+import com.ccc.crest.da.AccessGroup;
 import com.ccc.oauth.clientInfo.Base20ClientInfo;
 
 @SuppressWarnings("javadoc")
 public class CrestClientInfo extends Base20ClientInfo
 {
+    private static final long serialVersionUID = 7825545875283686681L;
+    
     private OauthVerify verifyData;
+    private final List<AccessGroup> groups;
     
     public CrestClientInfo()
     {
+        groups = new ArrayList<>();
     }
 
-    public synchronized OauthVerify getVerifyData()
+    
+    public List<AccessGroup> getGroups()
+    {
+        synchronized(groups)
+        {
+            return new ArrayList<>(groups);
+        }
+    }
+
+    public void addGroup(AccessGroup group)
+    {
+        synchronized(groups)
+        {
+            groups.add(group);
+        }
+    }
+
+
+    public OauthVerify getVerifyData()
     {
         return verifyData;
     }

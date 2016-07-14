@@ -23,19 +23,65 @@ public class CapsuleerData
     public final long apiKeyId;
     public final String apiCode;
     public final String refreshToken;
-    
-    public CapsuleerData(String name, long userId, long apiKeyId, String apiCode, String refreshToken)
+
+    public CapsuleerData(String name, long capsuleerId, long apiKeyId, String apiCode, String refreshToken)
     {
         this.capsuleer = name;
-        this.capsuleerId = userId;
+        this.capsuleerId = capsuleerId;
         this.apiKeyId = apiKeyId;
         this.apiCode = apiCode;
         this.refreshToken = refreshToken;
     }
-    
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((apiCode == null) ? 0 : apiCode.hashCode());
+        result = prime * result + (int) (apiKeyId ^ (apiKeyId >>> 32));
+        result = prime * result + ((capsuleer == null) ? 0 : capsuleer.hashCode());
+        result = prime * result + (int) (capsuleerId ^ (capsuleerId >>> 32));
+        result = prime * result + ((refreshToken == null) ? 0 : refreshToken.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        CapsuleerData other = (CapsuleerData) obj;
+        if (apiCode == null)
+        {
+            if (other.apiCode != null)
+                return false;
+        } else if (!apiCode.equals(other.apiCode))
+            return false;
+        if (apiKeyId != other.apiKeyId)
+            return false;
+        if (capsuleer == null)
+        {
+            if (other.capsuleer != null)
+                return false;
+        } else if (!capsuleer.equals(other.capsuleer))
+            return false;
+        if (capsuleerId != other.capsuleerId)
+            return false;
+        if (refreshToken == null)
+        {
+            if (other.refreshToken != null)
+                return false;
+        } else if (!refreshToken.equals(other.refreshToken))
+            return false;
+        return true;
+    }
+
     @Override
     public String toString()
     {
-        return "capsuleerId: " + capsuleerId + " capsuleer: " + capsuleer + " keyId: " + apiKeyId + " apiCode: " + (apiCode == null ? "null" : apiCode) + " refreshToken: " + (refreshToken == null ? "null" : refreshToken); 
+        return "capsuleerId: " + capsuleerId + " capsuleer: " + capsuleer + " keyId: " + apiKeyId + " apiCode: " + (apiCode == null ? "null" : apiCode) + " refreshToken: " + (refreshToken == null ? "null" : refreshToken);
     }
 }

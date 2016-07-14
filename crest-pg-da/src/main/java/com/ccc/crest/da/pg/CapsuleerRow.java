@@ -7,11 +7,17 @@ import java.sql.SQLException;
 import com.ccc.crest.da.CapsuleerData;
 
 @SuppressWarnings("javadoc")
-public class UserRow extends CapsuleerData
+public class CapsuleerRow extends CapsuleerData
 {
     public final long pid;
 
-    public UserRow(ResultSet rs) throws SQLException
+    public CapsuleerRow(CapsuleerRow data, String capsuleer)
+    {
+        super(capsuleer, data.capsuleerId, data.apiKeyId, data.apiCode, data.refreshToken);
+        this.pid = data.pid;
+    }
+    
+    public CapsuleerRow(ResultSet rs) throws SQLException
     {
         //@formatter:off
         super(
@@ -24,7 +30,7 @@ public class UserRow extends CapsuleerData
         pid = rs.getLong(CapsuleerJdbc.UserPkIdx);
     }
 
-    public UserRow(Object[] columns)
+    public CapsuleerRow(Object[] columns)
     {
         //@formatter:off
         super(

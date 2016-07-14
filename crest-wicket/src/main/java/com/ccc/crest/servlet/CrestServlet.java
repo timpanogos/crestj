@@ -41,6 +41,11 @@ public abstract class CrestServlet extends WicketBaseServlet implements ApiKeyEv
     {
     }
     
+    public static CrestClientInfo getCrestClientInfo()
+    {
+        return (CrestClientInfo)getClientInfo();
+    }
+
     public DataCache getDataCache()
     {
         return CrestController.getCrestController().dataCache;

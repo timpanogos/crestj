@@ -24,10 +24,26 @@ import com.ccc.db.NotFoundException;
 @SuppressWarnings("javadoc")
 public interface CrestDataAccessor extends DataAccessor
 {
-    public void addCapsuleer(CapsuleerData userData) throws AlreadyExistsException, Exception;
-    public CapsuleerData getCapsuleer(String name) throws NotFoundException, Exception;
-    public void updateCapsuleer(String name, CapsuleerData userData) throws NotFoundException, Exception;
-    public void deleteCapsuleer(String name) throws Exception;
+    public void addCapsuleer(CapsuleerData capData) throws AlreadyExistsException, Exception;
+    public CapsuleerData getCapsuleer(String capsuleer) throws NotFoundException, Exception;
+    public void updateCapsuleer(String capsuleer, CapsuleerData capData) throws NotFoundException, Exception;
+    public void deleteCapsuleer(String capsuleer) throws Exception;
     public List<CapsuleerData> listCapsuleers() throws Exception;
-    public boolean hasApiKeys(String name) throws Exception;
+    public boolean hasApiKeys(String capsuleer) throws Exception;
+    
+    public void addEntity(EntityData entityData) throws AlreadyExistsException, Exception;
+    public EntityData getEntity(String name) throws NotFoundException, Exception;
+    public void updateEntity(String name, EntityData userData) throws NotFoundException, Exception;
+    public void deleteEntity(String name) throws Exception;
+    public List<EntityData> listEntities() throws Exception;
+    
+    public void addGroup(String admin, EntityData groupData) throws AlreadyExistsException, Exception;
+    public AccessGroup getAccessGroup(String name) throws NotFoundException, Exception;
+//    public void updateAccessGroup(String name, EntityData userData) throws NotFoundException, Exception;
+    public void deleteAccessGroup(String name, boolean force) throws Exception;
+    public List<AccessGroup> listGroups() throws Exception;
+    public void addMemberToGroup(String member, String group) throws NotFoundException, Exception;
+    public void removeMemberFromGroup(String member, String group) throws Exception;
+    public boolean isMember(String member, String group) throws Exception;
+    public List<EntityData> listMembers(String group) throws Exception;
 }

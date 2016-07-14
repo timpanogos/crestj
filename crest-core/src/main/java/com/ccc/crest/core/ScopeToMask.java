@@ -28,7 +28,7 @@ public class ScopeToMask
     static
     {
         characterScopes = new HashMap<>();
-        characterScopes.put("characterWalletRead", new ScopeToMask("characterWalletRead", new long[] { 0x01, 0x200000, 0x400000 }, Type.Character));
+        characterScopes.put("characterWalletRead", new ScopeToMask("characterWalletRead", new long[] { 0x01, 0x200000, 0x400000 }, Type.Character)); // AccountBalance, WalletJournal, WalletTransactions
         characterScopes.put("characterAssetsRead", new ScopeToMask("characterAssetsRead", new long[] { 0x00000002, 0x08000000 }, Type.Character));
         characterScopes.put("characterCalendarRead", new ScopeToMask("characterCalendarRead", new long[] { 0x00000004, 0x00100000 }, Type.Character));
         characterScopes.put("characterContactsRead", new ScopeToMask("characterContactsRead", new long[] { 0x00000010, 0x00000020, 0x000080000}, Type.Character));
@@ -38,7 +38,7 @@ public class ScopeToMask
         characterScopes.put("characterKillsRead", new ScopeToMask("characterKillsRead", new long[] { 0x00000100 }, Type.Character));
         characterScopes.put("characterLocationRead", new ScopeToMask("characterLocationRead", new long[] { 0x00000000 }, Type.Character));
         characterScopes.put("characterMailRead", new ScopeToMask("characterMailRead", new long[] { 0x00000200, 0x00000400, 0x00000800 }, Type.Character));
-        characterScopes.put("characterMarketOrdersRead", new ScopeToMask("characterMarketOrdersRead", new long[] { 0x00001000 }, Type.Character));
+        characterScopes.put("characterMarketOrdersRead", new ScopeToMask("characterMarketOrdersRead", new long[] { 0x00001000 }, Type.Character)); // MarketOrders
         characterScopes.put("characterMedalsRead", new ScopeToMask("characterMedalsRead", new long[] { 0x00002000 }, Type.Character));
         characterScopes.put("characterNavigationWrite", new ScopeToMask("characterNavigationWrite", new long[] { 0x00000000}, Type.Character));
         characterScopes.put("characterNotificationsRead", new ScopeToMask("characterNotificationsRead", new long[] { 0x00004000, 0x00008000 }, Type.Character));
@@ -77,5 +77,5 @@ public class ScopeToMask
         this.type = type;
     }
     
-    public enum Type{Character, Corporate}
+    public enum Type{Public, Character, Corporate, Account, CrestOnlyCharacter, CrestOnlyCorporate, CrestOnlyPublic, XmlOnlyCharacter, XmlOnlyCorporate}
 }

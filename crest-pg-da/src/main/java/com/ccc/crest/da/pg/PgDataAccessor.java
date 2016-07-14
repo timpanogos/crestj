@@ -18,8 +18,10 @@ package com.ccc.crest.da.pg;
 import java.util.List;
 import java.util.Properties;
 
+import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
+import com.ccc.crest.da.EntityData;
 import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.NotFoundException;
 import com.ccc.db.postgres.PgBaseDataAccessor;
@@ -75,5 +77,89 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     {
         CapsuleerData capData = getCapsuleer(name);
         return capData.apiKeyId != -1;
+    }
+
+    @Override
+    public void addEntity(EntityData entityData) throws AlreadyExistsException, Exception
+    {
+        EntityJdbc.addEntity(getConnection(), entityData, true);
+    }
+
+    @Override
+    public EntityData getEntity(String name) throws NotFoundException, Exception
+    {
+        return EntityJdbc.getEntity(getConnection(), name);
+    }
+
+    @Override
+    public void updateEntity(String name, EntityData entityData) throws NotFoundException, Exception
+    {
+        EntityJdbc.updateEntity(getConnection(), entityData);
+    }
+
+    @Override
+    public void deleteEntity(String name) throws Exception
+    {
+        EntityJdbc.deleteEntity(getConnection(), name, true);
+    }
+
+    @Override
+    public List<EntityData> listEntities() throws Exception
+    {
+        return EntityJdbc.listEntities(getConnection());
+    }
+
+    @Override
+    public void addGroup(String admin, EntityData groupData) throws AlreadyExistsException, Exception
+    {
+        AccessGroupJdbc.addGroup(getConnection(), admin, groupData);
+    }
+
+    @Override
+    public AccessGroup getAccessGroup(String name) throws NotFoundException, Exception
+    {
+        return AccessGroupJdbc.getGroup(getConnection(), name);
+    }
+
+//    @Override
+//    public void updateAccessGroup(String name, EntityData userData) throws NotFoundException, Exception
+//    {
+//        AccessGroupJdbc.updateGroup(getConnection(), admin, groupData);
+//    }
+
+    @Override
+    public void deleteAccessGroup(String name, boolean force) throws Exception
+    {
+        AccessGroupJdbc.deleteGroup(getConnection(), name, force);
+    }
+
+    @Override
+    public List<AccessGroup> listGroups() throws Exception
+    {
+        return AccessGroupJdbc.listGroups(getConnection());
+    }
+
+    @Override
+    public void addMemberToGroup(String member, String group) throws NotFoundException, Exception
+    {
+        AccessGroupJdbc.addMemberToGroup(getConnection(), member, group);
+    }
+
+    @Override
+    public void removeMemberFromGroup(String member, String group) throws Exception
+    {
+        AccessGroupJdbc.removeMemberFromGroup(getConnection(), member, group);
+    }
+
+    @Override
+    public boolean isMember(String member, String group) throws Exception
+    {
+        return AccessGroupJdbc.isMember(getConnection(), member, group);
+    }
+
+    @Override
+    public List<EntityData> listMembers(String group) throws Exception
+    {
+        return AccessGroupJdbc.listMembers(getConnection(), group);
     }
 }

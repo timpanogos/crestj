@@ -21,7 +21,13 @@ import java.util.List;
 @SuppressWarnings({ "javadoc" })
 public class Scope
 {
+    public static final String AccessMask = "?accessMask=";
+    public static final String OwnerId = "&ownerID=";
+    public static final String OwnerType = "&ownerType=";
+    public static final String OwnerTypeDefault = "Character";
+    
     public final List<ScopeToMask> scopes;
+    
     private String createPredefinedUrl;
     
     public Scope()
@@ -29,11 +35,13 @@ public class Scope
         scopes = new ArrayList<>();
     }
     
-    public synchronized String getCreatePredefinedUrl(ScopeToMask.Type type)
+    public synchronized String getCreatePredefinedUrl(CrestClientInfo clientInfo, ScopeToMask.Type type)
     {
+        String ownerId = clientInfo.getVerifyData().CharacterID;
         if(type == ScopeToMask.Type.Character)
-            return createPredefinedUrl + "?" + getCharacterMask();
-        return createPredefinedUrl + "?" + getCorporateMask();
+            return createPredefinedUrl + AccessMask + getCharacterMask() + OwnerId + ownerId;
+        //TODO: need to get corporation ownerID not character
+        return createPredefinedUrl + AccessMask + getCorporateMask() + OwnerId + ownerId + OwnerType + OwnerTypeDefault; // note this one did not seem to work with manual entry of url in browser
     }
 
     public synchronized void setCreatePredefinedUrl(String createPredefinedUrl)
@@ -55,7 +63,10 @@ public class Scope
         for(ScopeToMask bit : scopes)
         {
             if(bit.type == ScopeToMask.Type.Character)
-                mask |= bit.masks[0];
+            {
+                for(int i=0; i < bit.masks.length; i++)
+                    mask |= bit.masks[i];
+            }
         }
         return mask;
     }
@@ -66,7 +77,10 @@ public class Scope
         for(ScopeToMask bit : scopes)
         {
             if(bit.type == ScopeToMask.Type.Corporate)
-            mask |= bit.masks[0];
+            {
+                for(int i=0; i < bit.masks.length; i++)
+                    mask |= bit.masks[i];
+            }
         }
         return mask;
     }

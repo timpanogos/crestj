@@ -29,9 +29,14 @@ import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.character.ContactList;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
+import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
+import com.ccc.crest.da.EntityData;
+import com.ccc.crest.da.pg.PgDataAccessorTest;
+import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.DataAccessor;
+import com.ccc.db.DataAccessorException;
 import com.ccc.db.NotFoundException;
 import com.ccc.oauth.CoreController;
 import com.ccc.oauth.clientInfo.BaseClientInfo;
@@ -46,6 +51,10 @@ import com.ccc.tools.TabToLevel;
 @SuppressWarnings("javadoc")
 public class CrestController extends CoreController implements AuthEventListener, CommsEventListener
 {
+    public static final String DirectorGroupName = "directors";
+    public static final String AnonymousGroupName = "anonymous";
+    public static final String UserGroupName = "user";
+    
     public static final String OauthLoginUrlKey = "ccc.crest.oauth.login-url";
     public static final String OauthTokenUrlKey = "ccc.crest.oauth.token-url";
     public static final String OauthVerifyUrlKey = "ccc.crest.oauth.verify-url";
@@ -57,6 +66,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String XmlUrlKey = "ccc.crest.xml-url";
     public static final String UserAgentKey = "ccc.crest.user-agent";
     public static final String CreateApiKeyUrlKey = "ccc.crest.api.key-gen-url";
+    public static final String GroupAdminBaseKey = "ccc.crest.group.director";
     
     public static final String CrestServletConfigDefault = "etc/opt/ccc/crest/crest.properties";
     public static final String OauthLoginUrlDefault = "https://login.eveonline.com/oauth/authorize";
@@ -121,6 +131,25 @@ public class CrestController extends CoreController implements AuthEventListener
         }
     }
     
+    public void setCapsuleerApiKey(String name, String keyId, String code) throws InvalidApiKeysException, DataAccessorException
+    {
+        try
+        {
+            CapsuleerData cdata = ((CrestDataAccessor)dataAccessor).getCapsuleer(name);
+            CapsuleerData updatedata = new CapsuleerData(name, cdata.capsuleerId, Long.parseLong(keyId), code, cdata.refreshToken);
+            ((CrestDataAccessor)dataAccessor).updateCapsuleer(name, updatedata);
+        } catch(NumberFormatException e)
+        {
+            throw new InvalidApiKeysException("Invalid KeyID: " + keyId);
+        }
+        catch (Exception e1)
+        {
+            // TODO work in with some db down fire event scheme
+            log.warn("DataAccessor failure", e1);
+            throw new DataAccessorException("Failed to update " + name +"'s CapsuleerData with xml-api keys");
+        }
+    }
+    
     public static CrestController getCrestController()
     {
         return (CrestController) getController();
@@ -171,9 +200,13 @@ public class CrestController extends CoreController implements AuthEventListener
     @Override
     public void init(Properties properties, TabToLevel format) throws Exception
     {
+        //TODO: don't let a down db be fatal to the webpage coming up.
         super.init(properties, format);
         if (dataAccessor == null)
             throw new Exception(DataAccessor.DaImplKey + " must be specified in the properties file");
+        
+        initializeGroups();
+//        blockingExecutor.submit(new TestTask());
     }
 
     @Override
@@ -262,94 +295,6 @@ public class CrestController extends CoreController implements AuthEventListener
         }
     }
     
-    private class TestTask implements Callable<Void>
-    {
-        @Override
-        public Void call() throws Exception
-        {
-            test4();
-            return null;
-        }
-
-        private void test4() throws InterruptedException
-        {
-            RequestThrottle rt = IntervalType.getRequestThrottle(1, 300);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 3; i++)
-            {
-                if (i >= 1)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-
-        private void test3() throws InterruptedException
-        {
-            RequestThrottle rt = new RequestThrottle(1, IntervalType.Minute);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 5; i++)
-            {
-                if (i >= 1)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-
-        private void test2() throws InterruptedException
-        {
-            RequestThrottle rt = new RequestThrottle(5, IntervalType.Second);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 30; i++)
-            {
-                if (i == 3)
-                    Thread.sleep(1000);
-                if (i % 4 == 0)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-
-        private void test1() throws InterruptedException
-        {
-            RequestThrottle rt = new RequestThrottle(1, IntervalType.Second);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 5; i++)
-            {
-                if (i >= 1)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-    }
-
     /*
      * *************************************************************************
      * *** AuthenticatedEventListener impl
@@ -394,6 +339,31 @@ public class CrestController extends CoreController implements AuthEventListener
             {
                 //TODO: add/fire database error events
                 log.warn("Database failure:", e1);
+            }
+            
+            List<AccessGroup> groups;
+            try
+            {
+                groups = da.listGroups();
+                for(AccessGroup group : groups)
+                {
+                    if(group.group.equals(AnonymousGroupName))
+                    {
+                        ccinfo.addGroup(group);
+                        continue;
+                    }
+                    if(group.group.equals(UserGroupName))
+                    {
+                        ccinfo.addGroup(group);
+                        continue;
+                    }
+                        
+                    if(da.isMember(name, group.group))
+                        ccinfo.addGroup(group);
+                }
+            } catch (Exception e)
+            {
+                log.warn("Database failure getting groups:", e);
             }
         }
         ElapsedTimer.resetAllElapsedTimers();
@@ -494,4 +464,121 @@ public class CrestController extends CoreController implements AuthEventListener
     {
         log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlDown");
     }
+
+    private void initializeGroups() throws AlreadyExistsException, Exception
+    {
+        List<Entry<String,String>> admins = PropertiesFile.getPropertiesForBaseKey(GroupAdminBaseKey, properties);
+        if(admins.size() == 0)
+            throw new Exception("You need to configure at least one admin. i.e. " + GroupAdminBaseKey + "0=Capsuleer Name");
+        
+        AccessGroup directors = null;
+        try
+        {
+            directors = ((CrestDataAccessor)dataAccessor).getAccessGroup(DirectorGroupName);
+            return; // if director group is setup, assumed all is setup.
+        }catch(NotFoundException e)
+        {
+            EntityData anon = new EntityData(AnonymousGroupName, true);
+            EntityData user = new EntityData(UserGroupName, true);
+            EntityData director = new EntityData(DirectorGroupName, true);
+            EntityData admin = new EntityData(admins.get(0).getValue(), false);
+            CrestDataAccessor da = (CrestDataAccessor)dataAccessor; 
+            da.addEntity(admin);
+            da.addGroup(admin.name, anon);
+            da.addGroup(admin.name, user);
+            da.addGroup(admin.name, director);
+        }
+    }
+
+    
+    //TODO: setup regression testing
+    private class TestTask implements Callable<Void>
+    {
+        @Override
+        public Void call() throws Exception
+        {
+            PgDataAccessorTest.testCapsuleer((CrestDataAccessor)dataAccessor);
+//            test4();
+            return null;
+        }
+
+        private void test4() throws InterruptedException
+        {
+            RequestThrottle rt = IntervalType.getRequestThrottle(1, 300);
+            log.info("start here");
+            ElapsedTimer.startTimer(0);
+            ElapsedTimer.startTimer(1);
+            for (int i = 0; i < 3; i++)
+            {
+                if (i >= 1)
+                    Thread.sleep(250);
+                rt.waitAsNeeded();
+                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
+                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
+                ElapsedTimer.resetElapsedTimers(1, 1);
+            }
+            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
+            return;
+        }
+
+        private void test3() throws InterruptedException
+        {
+            RequestThrottle rt = new RequestThrottle(1, IntervalType.Minute);
+            log.info("start here");
+            ElapsedTimer.startTimer(0);
+            ElapsedTimer.startTimer(1);
+            for (int i = 0; i < 5; i++)
+            {
+                if (i >= 1)
+                    Thread.sleep(250);
+                rt.waitAsNeeded();
+                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
+                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
+                ElapsedTimer.resetElapsedTimers(1, 1);
+            }
+            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
+            return;
+        }
+
+        private void test2() throws InterruptedException
+        {
+            RequestThrottle rt = new RequestThrottle(5, IntervalType.Second);
+            log.info("start here");
+            ElapsedTimer.startTimer(0);
+            ElapsedTimer.startTimer(1);
+            for (int i = 0; i < 30; i++)
+            {
+                if (i == 3)
+                    Thread.sleep(1000);
+                if (i % 4 == 0)
+                    Thread.sleep(250);
+                rt.waitAsNeeded();
+                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
+                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
+                ElapsedTimer.resetElapsedTimers(1, 1);
+            }
+            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
+            return;
+        }
+
+        private void test1() throws InterruptedException
+        {
+            RequestThrottle rt = new RequestThrottle(1, IntervalType.Second);
+            log.info("start here");
+            ElapsedTimer.startTimer(0);
+            ElapsedTimer.startTimer(1);
+            for (int i = 0; i < 5; i++)
+            {
+                if (i >= 1)
+                    Thread.sleep(250);
+                rt.waitAsNeeded();
+                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
+                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
+                ElapsedTimer.resetElapsedTimers(1, 1);
+            }
+            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
+            return;
+        }
+    }
+
 }

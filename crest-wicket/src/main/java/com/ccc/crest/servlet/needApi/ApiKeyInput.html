@@ -1,0 +1,40 @@
+<html xmlns:wicket="http://wicket.apache.org">
+<head>
+<title>Api keyid/code input</title>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+	<form wicket:id="inputForm" class="inputForm">
+		<p></p>
+		<fieldset>
+			<legend>Api Key/Code Input</legend>
+			<table id="inputFormTable">
+				<tr>
+					<td valign="top">
+						<label wicket:id="keyidlabel">KeyId</label> 
+						<input wicket:id="keyId" id="keyId" type="text" size="10" />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top">
+						<label wicket:id="codelabel">Code</label> 
+						<input wicket:id="code" id="code" type="text" size="64" />
+					</td>
+				</tr>
+				<tr>
+					<td valign="top"><wicket:link>
+							<a href="#" wicket:id=predefinedkey>Get Api</a>
+						</wicket:link>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="submit" wicket:id="saveButton" value="save" /> 
+						<input type="submit" wicket:id="cancelButton"value="cancel" />
+					</td>
+				</tr>
+			</table>
+		</fieldset>
+	</form>
+</body>
+</html>
