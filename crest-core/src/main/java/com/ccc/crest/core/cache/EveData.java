@@ -20,6 +20,7 @@ import com.ccc.tools.RequestThrottle;
 @SuppressWarnings("javadoc")
 public interface EveData
 {
+    public void init();
     public void setCacheTimeInSeconds(int seconds);
     public int getCacheTimeInSeconds();
     public RequestThrottle getThrottle(int seconds);

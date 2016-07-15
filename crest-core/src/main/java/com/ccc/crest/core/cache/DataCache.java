@@ -459,7 +459,25 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     @Override
     public Time getTime() throws SourceFailureException
     {
-        // TODO Auto-generated method stub
-        return null;
+        CacheData data = cache.get(Time.getCrestUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (Time) data.data;
+        }
+        try
+        {
+            Time time = (Time) Time.getTime(callback).get();
+            time.accessed();
+            return time;
+        } catch (Exception e)
+        {
+            CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
+            controller.fireCommunicationEvent(null, type);
+            //            if(!data.data.isFromCrest())
+//            type = CommsEventListener.Type.XmlDown;
+//            controller.fireCommunicationEvent(clientInfo, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl());
+        }
     }
 }

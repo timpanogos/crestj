@@ -23,7 +23,6 @@ import org.apache.wicket.markup.html.WebPage;
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.DataCache;
-import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.servlet.auth.CrestAuthenticator;
 import com.ccc.oauth.clientInfo.BaseClientInfo;
@@ -81,11 +80,6 @@ public abstract class CrestServlet extends WicketBaseServlet implements ApiKeyEv
     protected void init(TabToLevel format)
     {
         getApplicationSettings().setAccessDeniedPage(LoginPage.class);
-        String crestUrl = properties.getProperty(CrestController.CrestUrlKey, CrestController.CrestUrlDefault); 
-        String xmlUrl = properties.getProperty(CrestController.XmlUrlKey, CrestController.XmlUrlDefault); 
-        String userAgent = properties.getProperty(CrestController.UserAgentKey, CrestController.UserAgentDefault);
-        CrestController controller = CrestController.getCrestController();
-        CrestClient.getClient(controller, crestUrl, xmlUrl, userAgent, controller.blockingExecutor);
     }
 
     @Override

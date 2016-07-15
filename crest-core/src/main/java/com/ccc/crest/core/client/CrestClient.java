@@ -89,7 +89,7 @@ public class CrestClient
     public static CrestClient getClient()
     {
         if (crestUrl == null)
-            throw new RuntimeException("someone must call the getClient method that supplies the two urls");
+            throw new RuntimeException("someone's initialize must call the getClient method that supplies the two urls");
         return new CrestClient(controller, crestUrl, xmlUrl, userAgent, executor);
     }
 
@@ -215,6 +215,7 @@ public class CrestClient
                 LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);
                 String json = client.execute(get, responseHandler);
                 EveData data = rdata.gson.fromJson(json, rdata.clazz);
+                data.init();
                 if (apiThrottle == null)
                 {
                     RequestThrottle throttle = data.getThrottle(cacheTime.get());

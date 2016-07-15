@@ -15,7 +15,12 @@
  */
 package com.ccc.crest.core.cache.api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.Future;
+
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.cache.BaseEveData;
@@ -24,10 +29,7 @@ import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.character.ContactList;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
-import com.ccc.crest.core.client.json.Logo;
-import com.ccc.crest.core.client.json.LogoDeserializer;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("javadoc")
 public class Time extends BaseEveData
@@ -38,8 +40,26 @@ public class Time extends BaseEveData
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    public String time;
+    private volatile String time;
+    public volatile Date eveTime;
+    public volatile Date localTime;
 
+    @Override
+    public void init()
+    {
+        // 2016-07-15T01:23:30
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try
+        {
+            eveTime = sdf.parse(time);
+        } catch (ParseException e)
+        {
+            LoggerFactory.getLogger(getClass()).warn("Could not parse time string: " + time);
+            eveTime = new Date();
+        }
+        localTime = new Date();
+    }
+    
     public static String getApiUrl()
     {
         throw new RuntimeException("not implemented yet");
@@ -54,11 +74,11 @@ public class Time extends BaseEveData
 
     public static Future<EveData> getTime(CrestResponseCallback callback) throws Exception
     {
-        Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();
+        Gson gson = new Gson();
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getCrestUrl(),
-                        gson, ContactList.class,
+                        gson, Time.class,
                         callback, 0,
                         ReadScope, Version);
         //@formatter:on

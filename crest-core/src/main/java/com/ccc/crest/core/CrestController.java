@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.character.ContactList;
+import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.crest.da.AccessGroup;
@@ -204,9 +205,12 @@ public class CrestController extends CoreController implements AuthEventListener
         super.init(properties, format);
         if (dataAccessor == null)
             throw new Exception(DataAccessor.DaImplKey + " must be specified in the properties file");
-
         initializeGroups();
-
+        
+        String crestUrl = properties.getProperty(CrestUrlKey, CrestUrlDefault); 
+        String xmlUrl = properties.getProperty(XmlUrlKey, XmlUrlDefault); 
+        String userAgent = properties.getProperty(UserAgentKey, UserAgentDefault);
+        CrestClient.getClient(this, crestUrl, xmlUrl, userAgent, blockingExecutor);
         blockingExecutor.submit(new TimeTask());
     }
 
@@ -497,9 +501,9 @@ public class CrestController extends CoreController implements AuthEventListener
             try
             {
                 dataCache.getTime();
-            } catch (SourceFailureException e)
+            } catch (Throwable e)
             {
-                e.printStackTrace();
+                log.warn("GetTime failed: ", e);
             }
             return null;
         }

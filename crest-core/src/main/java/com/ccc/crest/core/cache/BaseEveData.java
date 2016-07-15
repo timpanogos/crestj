@@ -27,9 +27,9 @@ import com.ccc.tools.RequestThrottle.IntervalType;
 public class BaseEveData implements Serializable, EveData
 {
     private static final long serialVersionUID = 3678434427208069264L;
-    
+
     protected static final String Version = "application/vnd.ccp.eve.Api-v3+json";
-    
+
     protected AtomicLong lastAccess = new AtomicLong(0);
     protected AtomicLong lastRefresh = new AtomicLong(0);
     protected AtomicBoolean continueRefresh = new AtomicBoolean(true);
@@ -84,7 +84,6 @@ public class BaseEveData implements Serializable, EveData
         cacheInSeconds.set(seconds);
     }
 
-
     @Override
     public RequestThrottle getThrottle(int seconds)
     {
@@ -101,5 +100,10 @@ public class BaseEveData implements Serializable, EveData
     public void setFromCrest(boolean value)
     {
         fromCrest.set(value);
+    }
+
+    @Override
+    public void init()
+    {
     }
 }
