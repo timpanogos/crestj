@@ -80,6 +80,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String CreateApiKeyUrlDefault = "https://community.eveonline.com/support/api-key/CreatePredefined"; //?accessMask=133038347
 
     public final DataCache dataCache;
+    public volatile CrestClient crestClient;
     private final List<CommsEventListener> commsEventListeners;
     private final List<ApiKeyEventListener> apiKeyEventListeners;
     public final Scope scopes;
@@ -206,11 +207,11 @@ public class CrestController extends CoreController implements AuthEventListener
         if (dataAccessor == null)
             throw new Exception(DataAccessor.DaImplKey + " must be specified in the properties file");
         initializeGroups();
-        
-        String crestUrl = properties.getProperty(CrestUrlKey, CrestUrlDefault); 
-        String xmlUrl = properties.getProperty(XmlUrlKey, XmlUrlDefault); 
+
+        String crestUrl = properties.getProperty(CrestUrlKey, CrestUrlDefault);
+        String xmlUrl = properties.getProperty(XmlUrlKey, XmlUrlDefault);
         String userAgent = properties.getProperty(UserAgentKey, UserAgentDefault);
-        CrestClient.getClient(this, crestUrl, xmlUrl, userAgent, blockingExecutor);
+        crestClient = new CrestClient(this, crestUrl, xmlUrl, userAgent, blockingExecutor);
         blockingExecutor.submit(new TimeTask());
     }
 

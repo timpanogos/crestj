@@ -18,8 +18,6 @@ package com.ccc.crest.core.cache;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.slf4j.LoggerFactory;
-
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.account.AccountInterfaces;
@@ -71,7 +69,6 @@ import com.ccc.crest.core.cache.character.WalletTransactions;
 import com.ccc.crest.core.cache.corporation.CorporationInterfaces;
 import com.ccc.crest.core.cache.eve.AllianceList;
 import com.ccc.crest.core.cache.eve.EveInterfaces;
-import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.tools.ElapsedTimer;
@@ -427,11 +424,11 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle, hit: " + hits.incrementAndGet(), 2);
             ElapsedTimer.resetElapsedTimers(2, 1);
             System.err.println(msg);
-            if (data.isContinueRefresh())
-            {
-                LoggerFactory.getLogger(getClass()).info("\ncallback, re-issuing request");
-                CrestClient.getClient().getCrest(requestData);
-            }
+            //            if (data.isContinueRefresh())
+            //            {
+            //                LoggerFactory.getLogger(getClass()).info("\ncallback, re-issuing request");
+            //                CrestClient.getClient().getCrest(requestData);
+            //            }
         }
     }
 
@@ -475,8 +472,8 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
             controller.fireCommunicationEvent(null, type);
             //            if(!data.data.isFromCrest())
-//            type = CommsEventListener.Type.XmlDown;
-//            controller.fireCommunicationEvent(clientInfo, type);
+            //            type = CommsEventListener.Type.XmlDown;
+            //            controller.fireCommunicationEvent(clientInfo, type);
             throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl());
         }
     }

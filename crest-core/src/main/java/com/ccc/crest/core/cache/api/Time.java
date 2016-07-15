@@ -19,10 +19,12 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestClientInfo;
+import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
@@ -39,6 +41,8 @@ public class Time extends BaseEveData
     private static final String Uri1 = "/time/";
     private static final String ReadScope = null;
     private static final String WriteScope = null;
+
+    public static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
 
     private volatile String time;
     public volatile Date eveTime;
@@ -59,7 +63,7 @@ public class Time extends BaseEveData
         }
         localTime = new Date();
     }
-    
+
     public static String getApiUrl()
     {
         throw new RuntimeException("not implemented yet");
@@ -79,10 +83,10 @@ public class Time extends BaseEveData
         CrestRequestData rdata = new CrestRequestData(
                         null, getCrestUrl(),
                         gson, Time.class,
-                        callback, 0,
-                        ReadScope, Version);
+                        callback,
+                        ReadScope, Version, continueRefresh);
         //@formatter:on
-        return CrestClient.getClient().getCrest(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback) throws Exception
@@ -91,8 +95,8 @@ public class Time extends BaseEveData
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(),
                         null, ContactList.class,
-                        callback, 0,
-                        ReadScope, Version);
+                        callback,
+                        ReadScope, Version, continueRefresh);
         return null;
         //@formatter:on
         //        return XmlClient.getClient().getCrest(rdata);
