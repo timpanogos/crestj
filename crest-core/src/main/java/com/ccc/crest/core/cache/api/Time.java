@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
@@ -37,6 +38,8 @@ import com.google.gson.Gson;
 public class Time extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
+    public static final String AccessGroup = CrestController.AnonymousGroupName;
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
 
     private static final String Uri1 = "/time/";
     private static final String ReadScope = null;

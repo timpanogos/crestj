@@ -16,10 +16,14 @@
 package com.ccc.crest.core.cache;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.ccc.crest.core.CrestClientInfo;
+import com.ccc.crest.core.RightsException;
+import com.ccc.crest.da.AccessGroup;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.RequestThrottle.IntervalType;
 
@@ -36,6 +40,24 @@ public class BaseEveData implements Serializable, EveData
     protected AtomicInteger cacheInSeconds = new AtomicInteger();
     protected AtomicLong nextRefresh = new AtomicLong();
     protected AtomicBoolean fromCrest = new AtomicBoolean(true);
+
+    public static boolean checkRights(CrestClientInfo clientInfo, String group)
+    {
+        List<AccessGroup> list = clientInfo.getGroups();
+        for(AccessGroup agroup : list)
+            if(agroup.equals(group))
+                return true;
+        return false;
+    }
+
+    public static void enforceRights(CrestClientInfo clientInfo, String group) throws RightsException
+    {
+        List<AccessGroup> list = clientInfo.getGroups();
+        for(AccessGroup agroup : list)
+            if(agroup.equals(group))
+                return;
+        throw new RightsException("group: " + group + " is required");
+    }
 
     @Override
     public long getLastAccessed()

@@ -1,18 +1,18 @@
 /*
-**  Copyright (c) 2016, Cascade Computer Consulting.
-**
-**  Permission to use, copy, modify, and/or distribute this software for any
-**  purpose with or without fee is hereby granted, provided that the above
-**  copyright notice and this permission notice appear in all copies.
-**
-**  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-**  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-**  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-**  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-**  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-**  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-**  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-*/
+ **  Copyright (c) 2016, Cascade Computer Consulting.
+ **
+ **  Permission to use, copy, modify, and/or distribute this software for any
+ **  purpose with or without fee is hereby granted, provided that the above
+ **  copyright notice and this permission notice appear in all copies.
+ **
+ **  THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ **  WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ **  MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ **  ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ **  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 package com.ccc.crest.da.pg;
 
 import java.util.List;
@@ -22,10 +22,10 @@ import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
+import com.ccc.crest.da.SharedRight;
 import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.NotFoundException;
 import com.ccc.db.postgres.PgBaseDataAccessor;
-
 
 @SuppressWarnings("javadoc")
 public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAccessor
@@ -121,11 +121,11 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
         return AccessGroupJdbc.getGroup(getConnection(), name);
     }
 
-//    @Override
-//    public void updateAccessGroup(String name, EntityData userData) throws NotFoundException, Exception
-//    {
-//        AccessGroupJdbc.updateGroup(getConnection(), admin, groupData);
-//    }
+    //    @Override
+    //    public void updateAccessGroup(String name, EntityData userData) throws NotFoundException, Exception
+    //    {
+    //        AccessGroupJdbc.updateGroup(getConnection(), admin, groupData);
+    //    }
 
     @Override
     public void deleteAccessGroup(String name, boolean force) throws Exception
@@ -161,5 +161,23 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     public List<EntityData> listMembers(String group) throws Exception
     {
         return AccessGroupJdbc.listMembers(getConnection(), group);
+    }
+
+    @Override
+    public void addSharedRight(SharedRight right) throws AlreadyExistsException, Exception
+    {
+        SharedRightJdbc.addSharedRight(getConnection(), right);
+    }
+
+    @Override
+    public void deleteSharedRight(String capsuleer) throws Exception
+    {
+        SharedRightJdbc.deleteSharedRight(getConnection(), capsuleer);
+    }
+
+    @Override
+    public List<SharedRight> listSharedRights(String capsuleer) throws Exception
+    {
+        return SharedRightJdbc.listSharedRights(getConnection(), capsuleer);
     }
 }

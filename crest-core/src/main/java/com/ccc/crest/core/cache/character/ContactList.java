@@ -21,6 +21,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.RightsException;
+import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
@@ -37,6 +39,8 @@ import com.google.gson.GsonBuilder;
 public class ContactList extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
+    public static final String AccessGroup = CrestController.UserGroupName;
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.Character; //?
 
     private static final String Uri1 = "/characters/";
     private static final String Uri2 = "/contacts/";
@@ -69,8 +73,9 @@ public class ContactList extends BaseEveData
         return url.toString();
     }
 
-    public static Future<EveData> getContacts(CrestClientInfo clientInfo, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getContacts(CrestClientInfo clientInfo, CrestResponseCallback callback) throws RightsException
     {
+        enforceRights(clientInfo, AccessGroup);
         Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
@@ -81,7 +86,20 @@ public class ContactList extends BaseEveData
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
-    public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getContacts(CrestClientInfo clientInfo, CrestClientInfo clientInfo2, CrestResponseCallback callback) throws RightsException
+    {
+        enforceRights(clientInfo, AccessGroup);
+        Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();
+        //@formatter:off
+        CrestRequestData rdata = new CrestRequestData(
+                        clientInfo, getCrestUrl(clientInfo),
+                        gson, ContactList.class,
+                        callback, ReadScope, Version, continueRefresh);
+        //@formatter:on
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
+    }
+
+    public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback) throws RightsException
     {
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
