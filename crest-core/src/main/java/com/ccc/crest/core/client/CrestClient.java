@@ -17,8 +17,11 @@ package com.ccc.crest.core.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -46,7 +49,6 @@ import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
-import com.ccc.tools.executor.BlockingExecutor;
 import com.github.scribejava.core.model.OAuth2AccessToken;
 
 @SuppressWarnings("javadoc")
@@ -56,37 +58,63 @@ public class CrestClient
     private static final String CacheControlMaxAge = "max-age";
     private static final int CrestGeneralMaxRequestsPerSecond = 150;
     private static final int XmlGeneralMaxRequestsPerSecond = 30;
+    private static final int CrestMaxClients = 20;
 
     private static String CrestUrl;
     private final String xmlUrl;
     private final String userAgent;
     private final CrestController controller;
-    private final RequestThrottle crestGeneralThrottle;
-    private final RequestThrottle xmlGeneralThrottle;
     private final PriorityQueue<CrestRequestData> refreshQueue;
-    private final ScheduledFuture<?> queueCheckFuture;
+    private volatile ScheduledFuture<?> queueCheckFuture;
+    private final List<ClientElement> clients;
+    private final AtomicInteger clientIndex;
 
-    private final BlockingExecutor executor;
+    private final ExecutorService executor;
 
-    public CrestClient(CrestController controller, String crestUrl, String xmlUrl, String userAgent, BlockingExecutor executor)
+    public CrestClient(CrestController controller, String crestUrl, String xmlUrl, String userAgent, ExecutorService executor)
     {
         this.controller = controller;
         CrestUrl = StrH.stripTrailingSeparator(crestUrl);
         this.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
         this.userAgent = userAgent;
-        crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
-        xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
         refreshQueue = new PriorityQueue<>();
         this.executor = executor;
-        queueCheckFuture = controller.scheduledExecutor.scheduleAtFixedRate(new QueueTask(), 1000L, 1000L, TimeUnit.SECONDS);
+        clients = new ArrayList<>();
+        clientIndex = new AtomicInteger(-1);
+        for (int i = 0; i < CrestMaxClients; i++)
+        {
+            RequestThrottle crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
+            RequestThrottle xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
+            CloseableHttpClient client = HttpClients.custom().setUserAgent(userAgent).build();
+            ClientElement clientElement = new ClientElement(client, crestGeneralThrottle, xmlGeneralThrottle);
+            clients.add(clientElement);
+        }
+    }
+
+    public void init()
+    {
+        queueCheckFuture = controller.scheduledExecutor.scheduleAtFixedRate(new QueueTask(), 1L, 1L, TimeUnit.SECONDS);
     }
 
     public void destroy()
     {
-        if(queueCheckFuture != null)
-            queueCheckFuture.cancel(true);
-        if(refreshQueue != null)
-            refreshQueue.clear();
+        try
+        {
+            if (queueCheckFuture != null)
+                queueCheckFuture.cancel(true);
+            if (refreshQueue != null)
+                refreshQueue.clear();
+            if (clients != null)
+            {
+                for (int i = CrestMaxClients - 1; i >= 0; i--)
+                {
+                    clients.get(i).client.close();
+                }
+            }
+        } catch (IOException e)
+        {
+            LoggerFactory.getLogger(getClass()).warn(getClass().getSimpleName() + " failedto cleanup cleanly");
+        }
     }
 
     public static String getCrestBaseUri()
@@ -96,7 +124,14 @@ public class CrestClient
 
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
-        CloseableHttpClient client = HttpClients.custom().setUserAgent(userAgent).build();
+        ClientElement client = null;
+        synchronized (clients)
+        {
+            int idx = clientIndex.incrementAndGet();
+            client = clients.get(idx);
+            if (idx == CrestMaxClients - 1)
+                clientIndex.set(-1);
+        }
         String accessToken = null;
         if (requestData.clientInfo != null)
             accessToken = ((OAuth2AccessToken) requestData.clientInfo.getAccessToken()).getAccessToken();
@@ -109,9 +144,8 @@ public class CrestClient
         }
         if (requestData.version != null)
             get.addHeader("Accept", requestData.version);
-        RequestThrottle apiThrottle = null;
         LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + accessToken);
-        return executor.submit(new CrestGetTask(client, get, requestData, apiThrottle));
+        return executor.submit(new CrestGetTask(client, get, requestData));
     }
 
     public String getXml(CrestClientInfo clientInfo) throws Exception
@@ -139,14 +173,12 @@ public class CrestClient
     {
         private final CrestRequestData rdata;
         private final HttpGet get;
-        private final RequestThrottle apiThrottle;
-        private final CloseableHttpClient client;
+        private final ClientElement client;
 
-        private CrestGetTask(CloseableHttpClient client, HttpGet get, CrestRequestData rdata, RequestThrottle apiThrottle)
+        private CrestGetTask(ClientElement client, HttpGet get, CrestRequestData rdata)
         {
             this.rdata = rdata;
             this.get = get;
-            this.apiThrottle = apiThrottle;
             this.client = client;
         }
 
@@ -156,9 +188,7 @@ public class CrestClient
             LoggerFactory.getLogger(getClass()).info("executing, pre-throttle: " + rdata.url);
             try
             {
-                if (apiThrottle != null)
-                    apiThrottle.waitAsNeeded();
-                crestGeneralThrottle.waitAsNeeded();
+                client.crestThrottle.waitAsNeeded();
                 final AtomicInteger cacheTime = new AtomicInteger(0);
                 ResponseHandler<String> responseHandler = new ResponseHandler<String>()
                 {
@@ -200,7 +230,7 @@ public class CrestClient
                     }
                 };
                 LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);
-                String json = client.execute(get, responseHandler);
+                String json = client.client.execute(get, responseHandler);
                 EveData data = rdata.gson.fromJson(json, rdata.clazz);
                 data.init();
                 if (rdata.continueRefresh.get())
@@ -218,6 +248,7 @@ public class CrestClient
                 data.refreshed();
                 if (rdata.callback != null)
                     rdata.callback.received(rdata, data);
+                controller.fireCommunicationEvent(rdata.clientInfo, CommsEventListener.Type.CrestUp);
                 return data;
             } catch (Exception e)
             {
@@ -229,17 +260,18 @@ public class CrestClient
                 throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);
             } finally
             {
-                client.close();
+                //                client.client.close();
             }
         }
     }
 
     private class QueueTask implements Runnable
     {
-        CrestClient client = CrestController.getCrestController().crestClient;
+        private final CrestClient client;
 
         private QueueTask()
         {
+            client = controller.crestClient;
         }
 
         @Override
@@ -257,6 +289,20 @@ public class CrestClient
                 LoggerFactory.getLogger(getClass()).debug("requeue " + rdata.toString());
                 client.getCrest(rdata);
             } while (true);
+        }
+    }
+
+    protected class ClientElement
+    {
+        protected final CloseableHttpClient client;
+        protected final RequestThrottle crestThrottle;
+        protected final RequestThrottle xmlThrottle;
+
+        private ClientElement(CloseableHttpClient client, RequestThrottle crestThrottle, RequestThrottle xmlThrottle)
+        {
+            this.client = client;
+            this.crestThrottle = crestThrottle;
+            this.xmlThrottle = xmlThrottle;
         }
     }
 }

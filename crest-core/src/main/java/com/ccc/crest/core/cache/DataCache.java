@@ -16,7 +16,6 @@
 package com.ccc.crest.core.cache;
 
 import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
@@ -70,8 +69,8 @@ import com.ccc.crest.core.cache.corporation.CorporationInterfaces;
 import com.ccc.crest.core.cache.eve.AllianceList;
 import com.ccc.crest.core.cache.eve.EveInterfaces;
 import com.ccc.crest.core.client.CrestResponseCallback;
+import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
-import com.ccc.tools.ElapsedTimer;
 
 @SuppressWarnings("javadoc")
 public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces
@@ -410,8 +409,6 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
         throw new RuntimeException("not implemented yet");
     }
 
-    private final AtomicInteger hits = new AtomicInteger();
-
     private class DataCacheCallback implements CrestResponseCallback
     {
         @Override
@@ -419,16 +416,11 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
         {
             synchronized (cache)
             {
-                cache.put(requestData.url, new CacheData(data));
+                EveData previousData = (EveData) cache.put(requestData.url, new CacheData(data));
+                if(previousData.equals(data))
+                    controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
+                controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
             }
-            String msg = ElapsedTimer.getElapsedTime("cache contactlist full circle, hit: " + hits.incrementAndGet(), 2);
-            ElapsedTimer.resetElapsedTimers(2, 1);
-            System.err.println(msg);
-            //            if (data.isContinueRefresh())
-            //            {
-            //                LoggerFactory.getLogger(getClass()).info("\ncallback, re-issuing request");
-            //                CrestClient.getClient().getCrest(requestData);
-            //            }
         }
     }
 

@@ -29,28 +29,28 @@ import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.character.ContactList;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
+import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
+import com.ccc.crest.core.events.CommsLatch;
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
-import com.ccc.crest.da.pg.PgDataAccessorTest;
 import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.DataAccessor;
 import com.ccc.db.DataAccessorException;
+import com.ccc.db.DbEventListener;
 import com.ccc.db.NotFoundException;
 import com.ccc.oauth.CoreController;
 import com.ccc.oauth.clientInfo.BaseClientInfo;
 import com.ccc.oauth.events.AuthEventListener;
 import com.ccc.tools.ElapsedTimer;
 import com.ccc.tools.PropertiesFile;
-import com.ccc.tools.RequestThrottle;
-import com.ccc.tools.RequestThrottle.IntervalType;
 import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
 
 @SuppressWarnings("javadoc")
-public class CrestController extends CoreController implements AuthEventListener, CommsEventListener
+public class CrestController extends CoreController implements AuthEventListener, CommsEventListener, DbEventListener
 {
     public static final String DirectorGroupName = "directors";
     public static final String AnonymousGroupName = "anonymous";
@@ -83,6 +83,8 @@ public class CrestController extends CoreController implements AuthEventListener
     public volatile CrestClient crestClient;
     private final List<CommsEventListener> commsEventListeners;
     private final List<ApiKeyEventListener> apiKeyEventListeners;
+    private final List<CacheEventListener> cacheEventListeners;
+    private final CommsLatch commsLatch;
     public final Scope scopes;
 
     public Logger log;
@@ -93,9 +95,11 @@ public class CrestController extends CoreController implements AuthEventListener
         dataCache = new DataCache(this);
         registerAuthenticatedEventListener(this);
         commsEventListeners = new ArrayList<>();
+        cacheEventListeners = new ArrayList<>();
         apiKeyEventListeners = new ArrayList<>();
         registerCommunicationEventListener(this);
         scopes = new Scope();
+        commsLatch = new CommsLatch();
     }
 
     public String getAuthenticationScopesString() throws Exception
@@ -108,9 +112,9 @@ public class CrestController extends CoreController implements AuthEventListener
 
         StringBuilder sb = new StringBuilder();
         boolean first = true;
-        for(Entry<String, String> entry : list)
+        for (Entry<String, String> entry : list)
         {
-            if(!first)
+            if (!first)
                 sb.append(" ");
             first = false;
             String scopeStr = entry.getValue();
@@ -124,7 +128,7 @@ public class CrestController extends CoreController implements AuthEventListener
     {
         try
         {
-            return ((CrestDataAccessor)dataAccessor).hasApiKeys(name);
+            return ((CrestDataAccessor) dataAccessor).hasApiKeys(name);
         } catch (Exception e)
         {
             // TODO work in with some db down fire event scheme
@@ -137,18 +141,17 @@ public class CrestController extends CoreController implements AuthEventListener
     {
         try
         {
-            CapsuleerData cdata = ((CrestDataAccessor)dataAccessor).getCapsuleer(name);
+            CapsuleerData cdata = ((CrestDataAccessor) dataAccessor).getCapsuleer(name);
             CapsuleerData updatedata = new CapsuleerData(name, cdata.capsuleerId, Long.parseLong(keyId), code, cdata.refreshToken);
-            ((CrestDataAccessor)dataAccessor).updateCapsuleer(name, updatedata);
-        } catch(NumberFormatException e)
+            ((CrestDataAccessor) dataAccessor).updateCapsuleer(name, updatedata);
+        } catch (NumberFormatException e)
         {
             throw new InvalidApiKeysException("Invalid KeyID: " + keyId);
-        }
-        catch (Exception e1)
+        } catch (Exception e1)
         {
             // TODO work in with some db down fire event scheme
             log.warn("DataAccessor failure", e1);
-            throw new DataAccessorException("Failed to update " + name +"'s CapsuleerData with xml-api keys");
+            throw new DataAccessorException("Failed to update " + name + "'s CapsuleerData with xml-api keys");
         }
     }
 
@@ -173,9 +176,15 @@ public class CrestController extends CoreController implements AuthEventListener
         }
     }
 
+    public void fireCacheEvent(CrestClientInfo clientInfo, String url, CacheEventListener.Type type)
+    {
+        executor.submit(new FireCacheEventTask(clientInfo, url, type));
+    }
+
     public void fireCommunicationEvent(CrestClientInfo clientInfo, CommsEventListener.Type type)
     {
-        blockingExecutor.submit(new FireCommunicationsEventTask(clientInfo, type));
+        if (commsLatch.shouldFire(type))
+            executor.submit(new FireCommunicationsEventTask(clientInfo, type));
     }
 
     public void registerApiKeyEventListener(ApiKeyEventListener listener)
@@ -196,7 +205,7 @@ public class CrestController extends CoreController implements AuthEventListener
 
     public void fireApiKeyEvent(CrestClientInfo clientInfo, ApiKeyEventListener.Type type)
     {
-        blockingExecutor.submit(new FireApiKeyEventTask(clientInfo, type));
+        executor.submit(new FireApiKeyEventTask(clientInfo, type));
     }
 
     @Override
@@ -206,13 +215,15 @@ public class CrestController extends CoreController implements AuthEventListener
         super.init(properties, format);
         if (dataAccessor == null)
             throw new Exception(DataAccessor.DaImplKey + " must be specified in the properties file");
+        dataAccessor.setExecutor(executor);
         initializeGroups();
 
         String crestUrl = properties.getProperty(CrestUrlKey, CrestUrlDefault);
         String xmlUrl = properties.getProperty(XmlUrlKey, XmlUrlDefault);
         String userAgent = properties.getProperty(UserAgentKey, UserAgentDefault);
-        crestClient = new CrestClient(this, crestUrl, xmlUrl, userAgent, blockingExecutor);
-        blockingExecutor.submit(new TimeTask());
+        crestClient = new CrestClient(this, crestUrl, xmlUrl, userAgent, executor);
+        crestClient.init();
+        executor.submit(new CheckHealthTask());
     }
 
     @Override
@@ -223,6 +234,203 @@ public class CrestController extends CoreController implements AuthEventListener
         deregisterAuthenticatedEventListener(this);
         deregisterCommunicationEventListener(this);
         super.destroy();
+    }
+
+    /* ****************************************************************************
+     * AuthenticatedEventListener impl
+     ******************************************************************************/
+    @Override
+    public void authenticated(BaseClientInfo clientInfo)
+    {
+        CrestClientInfo ccinfo = (CrestClientInfo) clientInfo;
+        if (ccinfo.getVerifyData() == null)
+        {
+            log.warn("got a successfully authenticated, but no verifed user.");
+            return;
+        }
+
+        String name = ccinfo.getVerifyData().CharacterName;
+        long id = Long.parseLong(ccinfo.getVerifyData().CharacterID);
+
+        log.info(id + " " + name + " authenticated");
+        if (dataAccessor.isUp())
+        {
+            CrestDataAccessor da = (CrestDataAccessor) dataAccessor;
+            try
+            {
+                CapsuleerData userData = da.getCapsuleer(ccinfo.getVerifyData().CharacterName);
+                CapsuleerData updateData = new CapsuleerData(userData.capsuleer, userData.capsuleerId, userData.apiKeyId, userData.apiCode, ccinfo.getRefreshToken());
+                da.updateCapsuleer(name, updateData);
+                if (userData.apiKeyId == -1)
+                    fireApiKeyEvent(ccinfo, ApiKeyEventListener.Type.NeedsApi);
+            } catch (NotFoundException e1)
+            {
+                CapsuleerData userData = new CapsuleerData(name, id, -1, null, ccinfo.getRefreshToken());
+                try
+                {
+                    da.addCapsuleer(userData);
+                    fireApiKeyEvent(ccinfo, ApiKeyEventListener.Type.NeedsApi);
+                } catch (Exception e)
+                {
+                    //TODO: add/fire database error events
+                    log.warn("Failed to add user: " + userData.toString());
+                }
+            } catch (Exception e1)
+            {
+                //TODO: add/fire database error events
+                log.warn("Database failure:", e1);
+            }
+
+            List<AccessGroup> groups;
+            try
+            {
+                groups = da.listGroups();
+                for (AccessGroup group : groups)
+                {
+                    if (group.group.equals(AnonymousGroupName))
+                    {
+                        ccinfo.addGroup(group);
+                        continue;
+                    }
+                    if (group.group.equals(UserGroupName))
+                    {
+                        ccinfo.addGroup(group);
+                        continue;
+                    }
+
+                    if (da.isMember(name, group.group))
+                        ccinfo.addGroup(group);
+                }
+            } catch (Exception e)
+            {
+                log.warn("Database failure getting groups:", e);
+            }
+        }
+    }
+
+    @Override
+    public void refreshed(BaseClientInfo clientInfo)
+    {
+        CrestClientInfo ccinfo = (CrestClientInfo) clientInfo;
+        log.debug(ccinfo.getVerifyData().CharacterID + " " + ccinfo.getVerifyData().CharacterName + " refreshed authentication");
+    }
+
+    @Override
+    public void dropped(BaseClientInfo clientInfo)
+    {
+        CrestClientInfo ccinfo = (CrestClientInfo) clientInfo;
+        log.debug(ccinfo.getVerifyData().CharacterID + " " + ccinfo.getVerifyData().CharacterName + " dropped authentication");
+    }
+
+    /* ***************************************************************************
+     * CommunicationsEventListener impl
+     ******************************************************************************/
+    @Override
+    public void crestUp(CrestClientInfo clientInfo)
+    {
+        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestup");
+        ElapsedTimer.resetAllElapsedTimers();
+        ElapsedTimer.resetTimer(0);
+        ElapsedTimer.resetTimer(1);
+        ElapsedTimer.startTimer(0);
+        ElapsedTimer.startTimer(1);
+        ElapsedTimer.startTimer(2);
+        try
+        {
+            ContactList c = dataCache.getContactList(clientInfo);
+        } catch (SourceFailureException e)
+        {
+            e.printStackTrace();
+        }
+        System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
+        System.out.println("look here");
+
+    }
+
+    @Override
+    public void crestDown(CrestClientInfo clientInfo)
+    {
+        try
+        {
+            Thread.sleep(2000);
+        } catch (InterruptedException e1)
+        {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        if (clientInfo != null)
+            log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestdown");
+        else
+            log.debug("public endpoint,  crestdown");
+
+        ElapsedTimer.resetAllElapsedTimers();
+        ElapsedTimer.resetTimer(0);
+        ElapsedTimer.resetTimer(1);
+        ElapsedTimer.startTimer(0);
+        ElapsedTimer.startTimer(1);
+        ElapsedTimer.startTimer(2);
+        try
+        {
+            dataCache.getTime();
+        } catch (SourceFailureException e)
+        {
+            e.printStackTrace();
+        }
+        System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
+        System.out.println("look here");
+    }
+
+    @Override
+    public void xmlUp(CrestClientInfo clientInfo)
+    {
+        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlUp");
+    }
+
+    @Override
+    public void xmlDown(CrestClientInfo clientInfo)
+    {
+        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlDown");
+    }
+
+
+    /* ****************************************************************************
+     * DbEventListener impl
+     ******************************************************************************/
+    @Override
+    public void dbUp()
+    {
+        log.info("The database has is up");
+    }
+
+    @Override
+    public void dbDown()
+    {
+        log.warn("The database is down");
+    }
+    
+    private void initializeGroups() throws AlreadyExistsException, Exception
+    {
+        List<Entry<String, String>> admins = PropertiesFile.getPropertiesForBaseKey(GroupAdminBaseKey, properties);
+        if (admins.size() == 0)
+            throw new Exception("You need to configure at least one admin. i.e. " + GroupAdminBaseKey + "0=Capsuleer Name");
+
+        AccessGroup directors = null;
+        try
+        {
+            directors = ((CrestDataAccessor) dataAccessor).getAccessGroup(DirectorGroupName);
+            return; // if director group is setup, assumed all is setup.
+        } catch (NotFoundException e)
+        {
+            EntityData anon = new EntityData(AnonymousGroupName, true);
+            EntityData user = new EntityData(UserGroupName, true);
+            EntityData director = new EntityData(DirectorGroupName, true);
+            EntityData admin = new EntityData(admins.get(0).getValue(), false);
+            CrestDataAccessor da = (CrestDataAccessor) dataAccessor;
+            da.addEntity(admin);
+            da.addGroup(admin.name, anon);
+            da.addGroup(admin.name, user);
+            da.addGroup(admin.name, director);
+        }
     }
 
     private class FireCommunicationsEventTask implements Callable<Void>
@@ -299,202 +507,38 @@ public class CrestController extends CoreController implements AuthEventListener
         }
     }
 
-    /*
-     * *************************************************************************
-     * *** AuthenticatedEventListener impl
-     ******************************************************************************/
-    @Override
-    public void authenticated(BaseClientInfo clientInfo)
+    private class FireCacheEventTask implements Callable<Void>
     {
-        CrestClientInfo ccinfo = (CrestClientInfo) clientInfo;
-        if (ccinfo.getVerifyData() == null)
+        private final CrestClientInfo clientInfo;
+        private final String url;
+        private final CacheEventListener.Type type;
+
+        private FireCacheEventTask(CrestClientInfo clientInfo, String url, CacheEventListener.Type type)
         {
-            log.warn("got a successfully authenticated, but no verifed user.");
-            return;
+            this.clientInfo = clientInfo;
+            this.url = url;
+            this.type = type;
         }
 
-        String name = ccinfo.getVerifyData().CharacterName;
-        long id = Long.parseLong(ccinfo.getVerifyData().CharacterID);
-
-        log.info(id + " " + name + " authenticated");
-        if (dataAccessor.isUp())
+        @Override
+        public Void call() throws Exception
         {
-            CrestDataAccessor da = (CrestDataAccessor) dataAccessor;
             try
             {
-                CapsuleerData userData = da.getCapsuleer(ccinfo.getVerifyData().CharacterName);
-                CapsuleerData updateData = new CapsuleerData(userData.capsuleer, userData.capsuleerId, userData.apiKeyId, userData.apiCode, ccinfo.getRefreshToken());
-                da.updateCapsuleer(name, updateData);
-                if(userData.apiKeyId == -1)
-                    fireApiKeyEvent(ccinfo, ApiKeyEventListener.Type.NeedsApi);
-            } catch (NotFoundException e1)
-            {
-                CapsuleerData userData = new CapsuleerData(name, id, -1, null, ccinfo.getRefreshToken());
-                try
+                synchronized (apiKeyEventListeners)
                 {
-                    da.addCapsuleer(userData);
-                    fireApiKeyEvent(ccinfo, ApiKeyEventListener.Type.NeedsApi);
-                } catch (Exception e)
-                {
-                    //TODO: add/fire database error events
-                    log.warn("Failed to add user: " + userData.toString());
-                }
-            } catch (Exception e1)
-            {
-                //TODO: add/fire database error events
-                log.warn("Database failure:", e1);
-            }
-
-            List<AccessGroup> groups;
-            try
-            {
-                groups = da.listGroups();
-                for(AccessGroup group : groups)
-                {
-                    if(group.group.equals(AnonymousGroupName))
-                    {
-                        ccinfo.addGroup(group);
-                        continue;
-                    }
-                    if(group.group.equals(UserGroupName))
-                    {
-                        ccinfo.addGroup(group);
-                        continue;
-                    }
-
-                    if(da.isMember(name, group.group))
-                        ccinfo.addGroup(group);
+                    for (ApiKeyEventListener listener : apiKeyEventListeners)
+                        listener.needsApiKey(clientInfo);
                 }
             } catch (Exception e)
             {
-                log.warn("Database failure getting groups:", e);
+                LoggerFactory.getLogger(getClass()).warn("An communicationsEventListener has thrown an exception", e);
             }
-        }
-        ElapsedTimer.resetAllElapsedTimers();
-        ElapsedTimer.resetTimer(0);
-        ElapsedTimer.resetTimer(1);
-        ElapsedTimer.startTimer(0);
-        ElapsedTimer.startTimer(1);
-        ElapsedTimer.startTimer(2);
-        try
-        {
-            ContactList c = dataCache.getContactList((CrestClientInfo) clientInfo);
-        } catch (SourceFailureException e)
-        {
-            e.printStackTrace();
-        }
-        System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
-        System.out.println("look here");
-    }
-
-    @Override
-    public void refreshed(BaseClientInfo clientInfo)
-    {
-        CrestClientInfo ccinfo = (CrestClientInfo) clientInfo;
-        log.debug(ccinfo.getVerifyData().CharacterID + " " + ccinfo.getVerifyData().CharacterName + " refreshed authentication");
-    }
-
-    @Override
-    public void dropped(BaseClientInfo clientInfo)
-    {
-        CrestClientInfo ccinfo = (CrestClientInfo) clientInfo;
-        log.debug(ccinfo.getVerifyData().CharacterID + " " + ccinfo.getVerifyData().CharacterName + " dropped authentication");
-    }
-
-    /*
-     * *************************************************************************
-     * *** CommunicationsEventListener impl
-     ******************************************************************************/
-    @Override
-    public void crestUp(CrestClientInfo clientInfo)
-    {
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestup");
-        ElapsedTimer.resetAllElapsedTimers();
-        ElapsedTimer.resetTimer(0);
-        ElapsedTimer.resetTimer(1);
-        ElapsedTimer.startTimer(0);
-        ElapsedTimer.startTimer(1);
-        ElapsedTimer.startTimer(2);
-        try
-        {
-            ContactList c = dataCache.getContactList(clientInfo);
-        } catch (SourceFailureException e)
-        {
-            e.printStackTrace();
-        }
-        System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
-        System.out.println("look here");
-
-    }
-
-    @Override
-    public void crestDown(CrestClientInfo clientInfo)
-    {
-        try
-        {
-            Thread.sleep(2000);
-        } catch (InterruptedException e1)
-        {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
-
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestdown");
-        ElapsedTimer.resetAllElapsedTimers();
-        ElapsedTimer.resetTimer(0);
-        ElapsedTimer.resetTimer(1);
-        ElapsedTimer.startTimer(0);
-        ElapsedTimer.startTimer(1);
-        ElapsedTimer.startTimer(2);
-        try
-        {
-            ContactList c = dataCache.getContactList(clientInfo);
-        } catch (SourceFailureException e)
-        {
-            e.printStackTrace();
-        }
-        System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
-        System.out.println("look here");
-    }
-
-    @Override
-    public void xmlUp(CrestClientInfo clientInfo)
-    {
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlUp");
-    }
-
-    @Override
-    public void xmlDown(CrestClientInfo clientInfo)
-    {
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlDown");
-    }
-
-    private void initializeGroups() throws AlreadyExistsException, Exception
-    {
-        List<Entry<String,String>> admins = PropertiesFile.getPropertiesForBaseKey(GroupAdminBaseKey, properties);
-        if(admins.size() == 0)
-            throw new Exception("You need to configure at least one admin. i.e. " + GroupAdminBaseKey + "0=Capsuleer Name");
-
-        AccessGroup directors = null;
-        try
-        {
-            directors = ((CrestDataAccessor)dataAccessor).getAccessGroup(DirectorGroupName);
-            return; // if director group is setup, assumed all is setup.
-        }catch(NotFoundException e)
-        {
-            EntityData anon = new EntityData(AnonymousGroupName, true);
-            EntityData user = new EntityData(UserGroupName, true);
-            EntityData director = new EntityData(DirectorGroupName, true);
-            EntityData admin = new EntityData(admins.get(0).getValue(), false);
-            CrestDataAccessor da = (CrestDataAccessor)dataAccessor;
-            da.addEntity(admin);
-            da.addGroup(admin.name, anon);
-            da.addGroup(admin.name, user);
-            da.addGroup(admin.name, director);
+            return null;
         }
     }
 
-    private class TimeTask implements Callable<Void>
+    private class CheckHealthTask implements Callable<Void>
     {
         @Override
         public Void call() throws Exception
@@ -502,6 +546,7 @@ public class CrestController extends CoreController implements AuthEventListener
             try
             {
                 dataCache.getTime();
+                dataAccessor.isUp();
             } catch (Throwable e)
             {
                 log.warn("GetTime failed: ", e);
@@ -509,95 +554,4 @@ public class CrestController extends CoreController implements AuthEventListener
             return null;
         }
     }
-
-    //TODO: setup regression testing
-    private class TestTask implements Callable<Void>
-    {
-        @Override
-        public Void call() throws Exception
-        {
-            PgDataAccessorTest.testCapsuleer((CrestDataAccessor)dataAccessor);
-            //            test4();
-            return null;
-        }
-
-        private void test4() throws InterruptedException
-        {
-            RequestThrottle rt = IntervalType.getRequestThrottle(1, 300);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 3; i++)
-            {
-                if (i >= 1)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-
-        private void test3() throws InterruptedException
-        {
-            RequestThrottle rt = new RequestThrottle(1, IntervalType.Minute);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 5; i++)
-            {
-                if (i >= 1)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-
-        private void test2() throws InterruptedException
-        {
-            RequestThrottle rt = new RequestThrottle(5, IntervalType.Second);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 30; i++)
-            {
-                if (i == 3)
-                    Thread.sleep(1000);
-                if (i % 4 == 0)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-
-        private void test1() throws InterruptedException
-        {
-            RequestThrottle rt = new RequestThrottle(1, IntervalType.Second);
-            log.info("start here");
-            ElapsedTimer.startTimer(0);
-            ElapsedTimer.startTimer(1);
-            for (int i = 0; i < 5; i++)
-            {
-                if (i >= 1)
-                    Thread.sleep(250);
-                rt.waitAsNeeded();
-                log.info(ElapsedTimer.getElapsedTime("waited: ", 1));
-                log.info(ElapsedTimer.getElapsedTime("running: ", 0));
-                ElapsedTimer.resetElapsedTimers(1, 1);
-            }
-            log.info(ElapsedTimer.getElapsedTime("total: ", 0));
-            return;
-        }
-    }
-
 }
