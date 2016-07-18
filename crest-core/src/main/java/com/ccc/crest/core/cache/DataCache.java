@@ -19,11 +19,12 @@ import java.util.HashMap;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.cache.account.AccountCallList;
 import com.ccc.crest.core.cache.account.AccountInterfaces;
 import com.ccc.crest.core.cache.account.AccountStatus;
 import com.ccc.crest.core.cache.account.ApiKeyInfo;
-import com.ccc.crest.core.cache.account.CallList;
 import com.ccc.crest.core.cache.account.Characters;
+import com.ccc.crest.core.cache.api.ApiCallList;
 import com.ccc.crest.core.cache.api.ApiInterfaces;
 import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.cache.character.AccountBalance;
@@ -404,7 +405,32 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     }
 
     @Override
-    public CallList getCallList(CrestClientInfo clientInfo) throws SourceFailureException
+    public ApiCallList getApiCallList() throws SourceFailureException
+    {
+        CacheData data = cache.get(ApiCallList.getCrestUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (ApiCallList) data.data;
+        }
+        try
+        {
+            ApiCallList apiCallList = (ApiCallList) ApiCallList.getCallList(callback).get();
+            apiCallList.accessed();
+            return apiCallList;
+        } catch (Exception e)
+        {
+            CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
+            controller.fireCommunicationEvent(null, type);
+            //            if(!data.data.isFromCrest())
+            //            type = CommsEventListener.Type.XmlDown;
+            //            controller.fireCommunicationEvent(clientInfo, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl());
+        }
+    }
+
+    @Override
+    public AccountCallList getAccountCallList() throws SourceFailureException
     {
         throw new RuntimeException("not implemented yet");
     }
@@ -433,13 +459,6 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
 
     @Override
     public com.ccc.crest.core.cache.corporation.AccountBalance getCorpAccountBalance(CrestClientInfo clientInfo) throws SourceFailureException
-    {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public com.ccc.crest.core.cache.api.CallList getApiCallList(CrestClientInfo clientInfo) throws SourceFailureException
     {
         // TODO Auto-generated method stub
         return null;

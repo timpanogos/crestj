@@ -13,12 +13,14 @@
 **  ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 **  OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
-package com.ccc.crest.core.cache.api;
+package com.ccc.crest.core.cache.account;
 
 import com.ccc.crest.core.cache.BaseEveData;
 
+
+// I was told this existed and was the only xml-api call that required the old key?
 @SuppressWarnings("javadoc")
-public class CallList extends BaseEveData
+public class AccountCallList extends BaseEveData
 {
 }
 

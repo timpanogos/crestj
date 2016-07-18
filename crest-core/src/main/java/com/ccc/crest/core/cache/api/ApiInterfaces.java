@@ -15,12 +15,11 @@
  */
 package com.ccc.crest.core.cache.api;
 
-import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.cache.SourceFailureException;
 
 @SuppressWarnings("javadoc")
 public interface ApiInterfaces
 {
-    public CallList getApiCallList(CrestClientInfo clientInfo) throws SourceFailureException;
+    public ApiCallList getApiCallList() throws SourceFailureException;
     public Time getTime() throws SourceFailureException;
 }

@@ -24,5 +24,5 @@ public interface AccountInterfaces
 	public AccountStatus getAccountStatus(CrestClientInfo clientInfo) throws SourceFailureException;
 	public ApiKeyInfo getApiKeyInfo(CrestClientInfo clientInfo) throws SourceFailureException;
 	public Characters getCharacters(CrestClientInfo clientInfo) throws SourceFailureException;
-	public CallList getCallList(CrestClientInfo clientInfo) throws SourceFailureException;
+	public AccountCallList getAccountCallList() throws SourceFailureException;
 }
