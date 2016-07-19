@@ -46,6 +46,14 @@
 			<groupId>com.ccc.crest</groupId>
 			<artifactId>nee-d</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>ROOT</finalName>
