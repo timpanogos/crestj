@@ -17,6 +17,10 @@ package com.ccc.crest.core;
 
 // aws windows server Administrator/p6j.;uCGS9e
 
+//You can compute the Euclidean distance:
+//def distance((x1, y1, z1), (x2, y2, z2)):
+//     return math.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
+//This function will give you the distance between two coordinates.
 
 import java.util.ArrayList;
 import java.util.List;
@@ -358,8 +362,7 @@ public class CrestController extends CoreController implements AuthEventListener
             Thread.sleep(2000);
         } catch (InterruptedException e1)
         {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            log.warn("Unexpected interrupt from Thread.sleep", e1);
         }
         if (clientInfo != null)
             log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestdown");
