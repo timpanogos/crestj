@@ -1,4 +1,4 @@
-﻿select * from capsuleer;
+﻿select * from public.capsuleer;
 select * from entity;
 select * from accessgroup;
 
