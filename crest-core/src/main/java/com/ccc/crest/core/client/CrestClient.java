@@ -257,6 +257,7 @@ public class CrestClient
                     controller.dataCache.remove(rdata.url);
                     controller.fireCommunicationEvent(rdata.clientInfo, CommsEventListener.Type.CrestDown);
                 }
+                LoggerFactory.getLogger(getClass()).warn("failed to finialize inbound data", e);
                 throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);
             } finally
             {

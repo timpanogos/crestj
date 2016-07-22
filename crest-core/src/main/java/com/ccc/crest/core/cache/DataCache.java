@@ -425,7 +425,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             //            if(!data.data.isFromCrest())
             //            type = CommsEventListener.Type.XmlDown;
             //            controller.fireCommunicationEvent(clientInfo, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl());
+            throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl(), e);
         }
     }
 
@@ -442,8 +442,8 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
         {
             synchronized (cache)
             {
-                EveData previousData = (EveData) cache.put(requestData.url, new CacheData(data));
-                if(previousData.equals(data))
+                CacheData previousData = cache.put(requestData.url, new CacheData(data));
+                if(previousData == null || previousData.data.equals(data))
                     controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
                 controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
             }
