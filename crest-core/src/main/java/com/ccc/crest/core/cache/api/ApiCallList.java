@@ -25,7 +25,6 @@ import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
-import com.ccc.crest.core.cache.character.ContactList;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.Gson;
@@ -66,22 +65,21 @@ public class ApiCallList extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getCrestUrl(),
-                        gson, ContactList.class,
+                        gson, ApiCallList.class,
                         callback, ReadScope, Version, continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
-    public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback)
+    public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback) throws RightsException
     {
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(),
-                        null, ContactList.class,
+                        null, ApiCallList.class,
                         callback,
                         ReadScope, Version, continueRefresh);
-        return null;
         //@formatter:on
-        //        return XmlClient.getClient().getCrest(rdata);
+        return CrestController.getCrestController().crestClient.getXml(rdata);
     }
 }

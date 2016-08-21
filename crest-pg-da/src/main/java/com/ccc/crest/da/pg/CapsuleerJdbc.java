@@ -147,8 +147,8 @@ public class CapsuleerJdbc
     {
         try
         {
-            EntityJdbc.getEntity(connection, capData.capsuleer, false);
-            throw new AlreadyExistsException("capsuleer: '" + capData.capsuleer + "' already exists");
+            EntityRow row = EntityJdbc.getEntity(connection, capData.capsuleer, false);
+            insertRow(connection, row.pid, capData, false);
         } catch (NotFoundException nfe)
         {
             try

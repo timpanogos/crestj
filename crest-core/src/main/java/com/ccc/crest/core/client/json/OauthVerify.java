@@ -17,6 +17,7 @@ package com.ccc.crest.core.client.json;
 
 import java.io.Serializable;
 
+import com.ccc.tools.TabToLevel;
 import com.google.gson.Gson;
 
 @SuppressWarnings("javadoc")
@@ -35,6 +36,24 @@ public class OauthVerify implements Serializable
     {
         Gson gson = new Gson();
         return gson.fromJson(json, OauthVerify.class); 
+    }
+    
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("CharacterID: ", CharacterID);
+        format.ttl("CharacterName: ", CharacterName);
+        format.ttl("ExpiresOn: ", ExpiresOn);
+        format.ttl("TokenType: ", TokenType);
+        format.ttl("Scopes: ", Scopes);
+        format.ttl("CharacterOwnerHash: ", CharacterOwnerHash);
+        return format;
     }
 }
 

@@ -22,6 +22,7 @@ import com.ccc.crest.core.client.json.OauthVerify;
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.Right;
 import com.ccc.oauth.clientInfo.Base20ClientInfo;
+import com.ccc.tools.TabToLevel;
 
 @SuppressWarnings("javadoc")
 public class CrestClientInfo extends Base20ClientInfo
@@ -75,5 +76,40 @@ public class CrestClientInfo extends Base20ClientInfo
     public synchronized void setVerifyData(OauthVerify verifyData)
     {
         this.verifyData = verifyData;
+    }
+    
+    @Override
+    public TabToLevel toString(TabToLevel format)
+    {
+        super.toString(format);
+        format.ttl("CrestClient:");
+        format.inc();
+        format.ttl("verifyData:");
+        format.inc();
+        if(verifyData == null)
+            format.ttl("null");
+        else
+            verifyData.toString(format);
+        format.dec();
+        format.ttl("groups:");
+        format.inc();
+        if(groups.size() == 0)
+            format.ttl("none");
+        else
+        {
+            for(AccessGroup ag : groups)
+                ag.toString(format);
+        }
+        format.dec();
+        format.ttl("rights:");
+        format.inc();
+        if(rights.size() == 0)
+            format.ttl("none");
+        else
+        {
+            for(Right right : rights)
+                right.toString();
+        }
+        return format;
     }
 }

@@ -31,7 +31,7 @@ import com.ccc.tools.TabToLevel;
 @SuppressWarnings("javadoc")
 public class NeedServlet extends CrestServlet
 {
-    public static final String LogFilePathDefault = "/var/log/tomcat8/need.log";
+    public static final String LogFilePathDefault = "/var/opt/ccc/crest/need/log/need.log";
     public static final String NeedServletConfigDefault = "/etc/opt/ccc/crest/need/need.properties";
     public static final String NeedControllerDefault = NeedController.class.getName();
 

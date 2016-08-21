@@ -15,6 +15,8 @@
 */
 package com.ccc.crest.da;
 
+import com.ccc.tools.TabToLevel;
+
 @SuppressWarnings("javadoc")
 public class AccessGroup
 {
@@ -74,6 +76,15 @@ public class AccessGroup
     @Override
     public String toString()
     {
-        return "group: " + group + " admin: " + admin + " member: " + member;
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("group: ", group);
+        format.ttl("admin: ", admin);
+        format.ttl("member: ", member);
+        return format;
     }
 }

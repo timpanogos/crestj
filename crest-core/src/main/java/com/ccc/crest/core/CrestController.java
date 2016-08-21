@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.cache.character.ContactList;
+import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -231,6 +231,7 @@ public class CrestController extends CoreController implements AuthEventListener
         crestClient = new CrestClient(this, crestUrl, xmlUrl, userAgent, executor);
         crestClient.init();
         executor.submit(new CheckHealthTask());
+        //TODO: add a scheduled task that will hit CheckHealthTask so dbIsUp is checked.
     }
 
     @Override
@@ -335,7 +336,10 @@ public class CrestController extends CoreController implements AuthEventListener
     @Override
     public void crestUp(CrestClientInfo clientInfo)
     {
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestup");
+        if(clientInfo == null)
+            log.debug("public call, crestup");
+        else
+            log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestup");
         ElapsedTimer.resetAllElapsedTimers();
         ElapsedTimer.resetTimer(0);
         ElapsedTimer.resetTimer(1);
@@ -344,7 +348,7 @@ public class CrestController extends CoreController implements AuthEventListener
         ElapsedTimer.startTimer(2);
         try
         {
-            ContactList c = dataCache.getContactList(clientInfo);
+            Time t = dataCache.getTime();
         } catch (SourceFailureException e)
         {
             e.printStackTrace();
@@ -389,13 +393,14 @@ public class CrestController extends CoreController implements AuthEventListener
     @Override
     public void xmlUp(CrestClientInfo clientInfo)
     {
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlUp");
+        log.debug("XmlApi server is up");
     }
 
     @Override
     public void xmlDown(CrestClientInfo clientInfo)
     {
-        log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlDown");
+        //TODO: retrigger like crestdown above
+        log.debug("XmlApi server is down");
     }
 
 
@@ -432,7 +437,13 @@ public class CrestController extends CoreController implements AuthEventListener
             EntityData director = new EntityData(DirectorGroupName, true);
             EntityData admin = new EntityData(admins.get(0).getValue(), false);
             CrestDataAccessor da = (CrestDataAccessor) dataAccessor;
-            da.addEntity(admin);
+            try
+            {
+                da.addEntity(admin);
+            }catch(AlreadyExistsException e1)
+            {
+                //do nothing this is ok
+            }
             da.addGroup(admin.name, anon);
             da.addGroup(admin.name, user);
             da.addGroup(admin.name, director);
@@ -551,9 +562,9 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.getTime();
+//                dataCache.getTime();
                 dataAccessor.isUp();
-                dataCache.getApiCallList();
+                dataCache.getServerStatus();
             } catch (Throwable e)
             {
                 log.warn("GetTime failed: ", e);
