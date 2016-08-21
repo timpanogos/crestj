@@ -8,10 +8,10 @@
     </appender>  
 
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${opendof.tools.log-file-path}</file>
+        <file>${ccc.tools.log-file-path}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>${opendof.tools.log-file-base}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${ccc.tools.log-file-base}.%d{yyyy-MM-dd}.log</fileNamePattern>
             <!-- keep 7 days' worth of history -->
             <maxHistory>7</maxHistory>
         </rollingPolicy>
