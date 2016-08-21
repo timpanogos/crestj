@@ -15,10 +15,60 @@
 */
 package com.ccc.crest.core.cache.server;
 
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
+import com.ccc.crest.core.cache.CrestRequestData;
+import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.api.Time;
+import com.ccc.crest.core.client.CrestClient;
+import com.ccc.crest.core.client.CrestResponseCallback;
 
 @SuppressWarnings("javadoc")
 public class ServerStatus extends BaseEveData
 {
+    public static final String AccessGroup = CrestController.AnonymousGroupName;
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.XmlOnlyPublic; //?
+
+    private static final String Uri1 = "/Server/ServerStatus.xml.aspx/";
+    private static final String ReadScope = null;
+    private static final String WriteScope = null;
+
+    public static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
+
+    private volatile boolean serverOpen;
+    public volatile int onlinePlayers;
+
+    @Override
+    public void init()
+    {
+    }
+
+    public static String getApiUrl()
+    {
+        throw new RuntimeException("not implemented yet");
+    }
+
+    public static String getXmlUrl()
+    {
+        StringBuilder url = new StringBuilder();
+        url.append(CrestClient.getXmlBaseUri()).append(Uri1);
+        return url.toString();
+    }
+
+    public static Future<EveData> getServerStatus(CrestResponseCallback callback) throws Exception
+    {
+        //@formatter:off
+        CrestRequestData rdata = new CrestRequestData(
+                        null, getXmlUrl(),
+                        null, Time.class,
+                        callback,
+                        ReadScope, Version, continueRefresh);
+        //@formatter:on
+        return CrestController.getCrestController().crestClient.getXml(rdata);
+    }
 }
 

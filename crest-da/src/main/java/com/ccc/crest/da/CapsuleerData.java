@@ -15,6 +15,8 @@
 */
 package com.ccc.crest.da;
 
+import com.ccc.tools.TabToLevel;
+
 @SuppressWarnings("javadoc")
 public class CapsuleerData
 {
@@ -82,6 +84,17 @@ public class CapsuleerData
     @Override
     public String toString()
     {
-        return "capsuleerId: " + capsuleerId + " capsuleer: " + capsuleer + " keyId: " + apiKeyId + " apiCode: " + (apiCode == null ? "null" : apiCode) + " refreshToken: " + (refreshToken == null ? "null" : refreshToken);
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("capsuleer: ", capsuleer);
+        format.ttl("capsuleerId: ", capsuleerId);
+        format.ttl("apiKeyId: ", apiKeyId);
+        format.ttl("apiCode: ", apiCode);
+        format.ttl("refreshToken: ", refreshToken);
+        return format;
     }
 }

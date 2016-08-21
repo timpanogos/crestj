@@ -15,11 +15,10 @@
 */
 package com.ccc.crest.core.cache.server;
 
-import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.cache.SourceFailureException;
 
 @SuppressWarnings("javadoc")
 public interface ServerInterfaces
 {
-	public ServerStatus getServerStatus(CrestClientInfo clientInfo) throws SourceFailureException;
+	public ServerStatus getServerStatus() throws SourceFailureException;
 }

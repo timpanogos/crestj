@@ -82,6 +82,6 @@ public class ScopeToMask
 
     public enum Type
     {
-        Public, Character, Corporate, Account, CrestOnlyCharacter, CrestOnlyCorporate, CrestOnlyPublic, XmlOnlyCharacter, XmlOnlyCorporate
+        Public, Character, Corporate, Account, CrestOnlyCharacter, CrestOnlyCorporate, CrestOnlyPublic, XmlOnlyPublic, XmlOnlyCharacter, XmlOnlyCorporate
     }
 }

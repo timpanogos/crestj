@@ -69,12 +69,14 @@ import com.ccc.crest.core.cache.character.WalletTransactions;
 import com.ccc.crest.core.cache.corporation.CorporationInterfaces;
 import com.ccc.crest.core.cache.eve.AllianceList;
 import com.ccc.crest.core.cache.eve.EveInterfaces;
+import com.ccc.crest.core.cache.server.ServerInterfaces;
+import com.ccc.crest.core.cache.server.ServerStatus;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 
 @SuppressWarnings("javadoc")
-public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces
+public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces, ServerInterfaces
 {
     private final HashMap<String, CacheData> cache;
     private final DataCacheCallback callback;
@@ -486,6 +488,28 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             //            type = CommsEventListener.Type.XmlDown;
             //            controller.fireCommunicationEvent(clientInfo, type);
             throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl());
+        }
+    }
+
+    @Override
+    public ServerStatus getServerStatus() throws SourceFailureException
+    {
+        CacheData data = cache.get(ServerStatus.getXmlUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (ServerStatus) data.data;
+        }
+        try
+        {
+            ServerStatus status = (ServerStatus) ServerStatus.getServerStatus(callback).get();
+            status.accessed();
+            return status;
+        } catch (Exception e)
+        {
+            CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
+            controller.fireCommunicationEvent(null, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + ServerStatus.getXmlUrl());
         }
     }
 }

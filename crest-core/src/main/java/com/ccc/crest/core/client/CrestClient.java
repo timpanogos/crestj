@@ -16,7 +16,6 @@
 package com.ccc.crest.core.client;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -27,25 +26,23 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.SourceFailureException;
+import com.ccc.crest.core.client.xml.EveSaxHandler;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
@@ -60,34 +57,46 @@ public class CrestClient
     private static final int XmlGeneralMaxRequestsPerSecond = 30;
     private static final int CrestMaxClients = 20;
 
-    private static String CrestUrl;
-    private final String xmlUrl;
+    private static String crestUrl;
+    private static String xmlUrl;
     private final String userAgent;
     private final CrestController controller;
     private final PriorityQueue<CrestRequestData> refreshQueue;
     private volatile ScheduledFuture<?> queueCheckFuture;
-    private final List<ClientElement> clients;
-    private final AtomicInteger clientIndex;
+    private final List<ClientElement> crestClients;
+    private final List<ClientElement> xmlClients;
+    private final AtomicInteger crestClientIndex;
+    private final AtomicInteger xmlClientIndex;
 
     private final ExecutorService executor;
 
     public CrestClient(CrestController controller, String crestUrl, String xmlUrl, String userAgent, ExecutorService executor)
     {
         this.controller = controller;
-        CrestUrl = StrH.stripTrailingSeparator(crestUrl);
+        this.crestUrl = StrH.stripTrailingSeparator(crestUrl);
         this.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
         this.userAgent = userAgent;
         refreshQueue = new PriorityQueue<>();
         this.executor = executor;
-        clients = new ArrayList<>();
-        clientIndex = new AtomicInteger(-1);
+        crestClients = new ArrayList<>();
+        xmlClients = new ArrayList<>();
+        crestClientIndex = new AtomicInteger(-1);
+        xmlClientIndex = new AtomicInteger(-1);
         for (int i = 0; i < CrestMaxClients; i++)
         {
             RequestThrottle crestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
             RequestThrottle xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
             CloseableHttpClient client = HttpClients.custom().setUserAgent(userAgent).build();
             ClientElement clientElement = new ClientElement(client, crestGeneralThrottle, xmlGeneralThrottle);
-            clients.add(clientElement);
+            crestClients.add(clientElement);
+        }
+        for (int i = 0; i < CrestMaxClients; i++)
+        {
+            RequestThrottle xmlcrestGeneralThrottle = new RequestThrottle(CrestGeneralMaxRequestsPerSecond);
+            RequestThrottle xmlGeneralThrottle = new RequestThrottle(XmlGeneralMaxRequestsPerSecond);
+            CloseableHttpClient client = HttpClients.custom().setUserAgent(userAgent).build();
+            ClientElement clientElement = new ClientElement(client, xmlGeneralThrottle, xmlGeneralThrottle);
+            xmlClients.add(clientElement);
         }
     }
 
@@ -104,11 +113,11 @@ public class CrestClient
                 queueCheckFuture.cancel(true);
             if (refreshQueue != null)
                 refreshQueue.clear();
-            if (clients != null)
+            if (crestClients != null)
             {
                 for (int i = CrestMaxClients - 1; i >= 0; i--)
                 {
-                    clients.get(i).client.close();
+                    crestClients.get(i).client.close();
                 }
             }
         } catch (IOException e)
@@ -119,19 +128,42 @@ public class CrestClient
 
     public static String getCrestBaseUri()
     {
-        return CrestUrl;
+        return crestUrl;
+    }
+
+    public static String getXmlBaseUri()
+    {
+        return xmlUrl;
     }
 
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
         ClientElement client = null;
-        synchronized (clients)
+        synchronized (crestClients)
         {
-            int idx = clientIndex.incrementAndGet();
-            client = clients.get(idx);
+            int idx = crestClientIndex.incrementAndGet();
+            client = crestClients.get(idx);
             if (idx == CrestMaxClients - 1)
-                clientIndex.set(-1);
+                crestClientIndex.set(-1);
         }
+        return get(requestData, client);
+    }
+
+    public Future<EveData> getXml(CrestRequestData requestData)
+    {
+        ClientElement client = null;
+        synchronized (xmlClients)
+        {
+            int idx = xmlClientIndex.incrementAndGet();
+            client = xmlClients.get(idx);
+            if (idx == CrestMaxClients - 1)
+                xmlClientIndex.set(-1);
+        }
+        return get(requestData, client);
+    }
+
+    public Future<EveData> get(CrestRequestData requestData, ClientElement client)
+    {
         String accessToken = null;
         if (requestData.clientInfo != null)
             accessToken = ((OAuth2AccessToken) requestData.clientInfo.getAccessToken()).getAccessToken();
@@ -146,27 +178,6 @@ public class CrestClient
             get.addHeader("Accept", requestData.version);
         LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + accessToken);
         return executor.submit(new CrestGetTask(client, get, requestData));
-    }
-
-    public String getXml(CrestClientInfo clientInfo) throws Exception
-    {
-        CloseableHttpClient httpclient = HttpClients.custom().setUserAgent(userAgent).build();
-        String accessToken = ((OAuth2AccessToken) clientInfo.getAccessToken()).getAccessToken();
-        HttpGet httpGet = new HttpGet(xmlUrl);
-        httpGet.addHeader("Authorization", "Bearer " + accessToken);
-        CloseableHttpResponse response1 = httpclient.execute(httpGet);
-        try
-        {
-            HttpEntity entity1 = response1.getEntity();
-            InputStream is = entity1.getContent();
-            String json = IOUtils.toString(is, "UTF-8");
-            is.close();
-            EntityUtils.consume(entity1);
-            return json;
-        } finally
-        {
-            response1.close();
-        }
     }
 
     private class CrestGetTask implements Callable<EveData>
@@ -195,32 +206,46 @@ public class CrestClient
                     @Override
                     public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException
                     {
-                        LoggerFactory.getLogger(getClass()).info("handling response: " + response.toString());
-                        Header[] headers = response.getHeaders(CacheControlHeader);
-                        boolean found = false;
-                        if (headers != null && headers.length > 0)
-                            for (int i = 0; i < headers.length; i++)
-                            {
-                                HeaderElement[] headerElements = headers[i].getElements();
-                                for (int j = 0; j < headerElements.length; j++)
-                                    if (headerElements[i].getName().equals(CacheControlMaxAge))
-                                    {
-                                        cacheTime.set(Integer.parseInt(headerElements[i].getValue()));
-                                        found = true;
-                                        break;
-                                    }
-                            }
-                        if (!found)
+                        LoggerFactory.getLogger(getClass()).debug("handling response: " + response.toString());
+                        if (rdata.gson != null)
                         {
-                            String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
-                            LoggerFactory.getLogger(getClass()).warn(msg);
-                            throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
+                            Header[] headers = response.getHeaders(CacheControlHeader);
+                            boolean found = false;
+                            if (headers != null && headers.length > 0)
+                                for (int i = 0; i < headers.length; i++)
+                                {
+                                    HeaderElement[] headerElements = headers[i].getElements();
+                                    for (int j = 0; j < headerElements.length; j++)
+                                        if (headerElements[i].getName().equals(CacheControlMaxAge))
+                                        {
+                                            cacheTime.set(Integer.parseInt(headerElements[i].getValue()));
+                                            found = true;
+                                            break;
+                                        }
+                                }
+                            if (!found)
+                            {
+                                String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
+                                LoggerFactory.getLogger(getClass()).warn(msg);
+                                throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
+                            }
                         }
                         int status = response.getStatusLine().getStatusCode();
                         if (status >= 200 && status < 300)
                         {
                             HttpEntity entity = response.getEntity();
-                            return entity != null ? EntityUtils.toString(entity) : null;
+                            String body = entity != null ? EntityUtils.toString(entity) : null;
+                            if(rdata.gson == null)
+                            {
+                                try
+                                {
+                                    cacheTime.set(EveSaxHandler.getCachedUntil(body));
+                                } catch (Exception e)
+                                {
+                                    LoggerFactory.getLogger(getClass()).warn(e.getMessage(), e);
+                                }
+                            }
+                            return body;
                         }
                         String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
                         LoggerFactory.getLogger(getClass()).warn(msg);
@@ -230,8 +255,12 @@ public class CrestClient
                     }
                 };
                 LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);
-                String json = client.client.execute(get, responseHandler);
-                EveData data = rdata.gson.fromJson(json, rdata.clazz);
+                String body = client.client.execute(get, responseHandler);
+                EveData data = null;
+                if(rdata.gson != null)
+                    data = rdata.gson.fromJson(body, rdata.clazz);
+                else
+                    data = EveSaxHandler.getData(body);
                 data.init();
                 if (rdata.continueRefresh.get())
                     synchronized (refreshQueue)
