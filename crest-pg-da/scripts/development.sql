@@ -9,8 +9,8 @@ truncate entity;
 
 truncate accessgroup;
 truncate capsuleer cascade;
-delete from entity where entitypk=162;
-delete from entity where entitypk=163;
+delete from entity where entitypk=201;
+delete from entity where entitypk=205;
 delete from entity where entitypk=164;
 delete from entity where entitypk=185;
 delete from entity where entitypk=186;
