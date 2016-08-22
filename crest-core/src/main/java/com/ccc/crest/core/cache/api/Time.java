@@ -85,7 +85,7 @@ public class Time extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getCrestUrl(),
-                        gson, Time.class,
+                        gson, null, Time.class,
                         callback,
                         ReadScope, Version, continueRefresh);
         //@formatter:on
@@ -97,7 +97,7 @@ public class Time extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(),
-                        null, ContactList.class,
+                        null, null, ContactList.class,
                         callback,
                         ReadScope, Version, continueRefresh);
         return null;

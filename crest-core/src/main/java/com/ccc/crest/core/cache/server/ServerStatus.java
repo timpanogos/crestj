@@ -18,6 +18,9 @@ package com.ccc.crest.core.cache.server;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
@@ -32,6 +35,9 @@ public class ServerStatus extends BaseEveData
 {
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.XmlOnlyPublic; //?
+    
+    public static final String ServerOpenElement = "serverOpen";
+    public static final String OnlinePlayersElement = "onlinePlayers";
 
     private static final String Uri1 = "/Server/ServerStatus.xml.aspx/";
     private static final String ReadScope = null;
@@ -42,6 +48,10 @@ public class ServerStatus extends BaseEveData
     private volatile boolean serverOpen;
     public volatile int onlinePlayers;
 
+    public ServerStatus()
+    {
+    }
+    
     @Override
     public void init()
     {
@@ -64,11 +74,76 @@ public class ServerStatus extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getXmlUrl(),
-                        null, Time.class,
+                        null, new ServerStatus(), Time.class,
                         callback,
                         ReadScope, Version, continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getXml(rdata);
     }
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+    {
+        if (localName.equals(ServerOpenElement))
+        {
+            stack.push(localName);
+            return;
+        }else
+        if (localName.equals(OnlinePlayersElement))
+        {
+            stack.push(localName);
+            return;
+        }else
+            throw new SAXException(currentPath() + " startElement unknown localName for this level: " + localName);
+    }
+
+    @Override
+    public void characters(char ch[], int start, int length) throws SAXException
+    {
+        String current = stack.peek();
+        if (current.equals(ServerOpenElement))
+        {
+            synchronized (this)
+            {
+                String value = new String(ch, start, length);
+                try
+                {
+                    serverOpen = Boolean.parseBoolean(value); 
+                } catch (Exception e)
+                {
+                    throw new SAXException("invalid boolean format: " + value, e);
+                }
+            }
+            return;
+        }
+        if (current.equals(OnlinePlayersElement))
+        {
+            synchronized (this)
+            {
+                String value = new String(ch, start, length);
+                try
+                {
+                    onlinePlayers = Integer.parseInt(value); 
+                } catch (Exception e)
+                {
+                    throw new SAXException("invalid integer format: " + value, e);
+                }
+            }
+            return;
+        }
+        String value = new String(ch, start, length);
+        throw new SAXException(currentPath() + " characters unknown current stack: " + value);
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException
+    {
+        if (localName.equals(ServerOpenElement) || localName.equals(OnlinePlayersElement))
+        {
+            stack.pop();
+            return;
+        }
+        throw new SAXException(currentPath() + " endElement unknown stack path for localName: " + localName);
+    }
+
 }
 

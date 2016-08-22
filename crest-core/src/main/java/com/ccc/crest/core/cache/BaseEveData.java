@@ -23,15 +23,15 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.RightsException;
+import com.ccc.crest.core.client.xml.EveApiSaxHandler;
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.RequestThrottle.IntervalType;
 
 @SuppressWarnings("javadoc")
-public class BaseEveData implements Serializable, EveData
+public abstract class BaseEveData extends EveApiSaxHandler implements Serializable, EveData
 {
-    private static final long serialVersionUID = 3678434427208069264L;
-
+    private static final long serialVersionUID = -7379109873737393844L;
     protected static final String Version = "application/vnd.ccp.eve.Api-v3+json";
 
     protected AtomicLong lastAccess = new AtomicLong(0);
@@ -41,6 +41,10 @@ public class BaseEveData implements Serializable, EveData
     protected AtomicLong nextRefresh = new AtomicLong();
     protected AtomicBoolean fromCrest = new AtomicBoolean(true);
 
+    public BaseEveData()
+    {
+    }
+    
     public static boolean checkRights(CrestClientInfo clientInfo, String group)
     {
         List<AccessGroup> list = clientInfo.getGroups();

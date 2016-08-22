@@ -80,7 +80,7 @@ public class ContactList extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        gson, ContactList.class,
+                        gson, null, ContactList.class,
                         callback, ReadScope, Version, continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -93,7 +93,7 @@ public class ContactList extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        gson, ContactList.class,
+                        gson, null, ContactList.class,
                         callback, ReadScope, Version, continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -104,7 +104,7 @@ public class ContactList extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        null, ContactList.class,
+                        null, null, ContactList.class,
                         callback,
                         ReadScope, Version, continueRefresh);
         return null;

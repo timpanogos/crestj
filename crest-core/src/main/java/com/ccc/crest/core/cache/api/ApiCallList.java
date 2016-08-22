@@ -65,7 +65,7 @@ public class ApiCallList extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getCrestUrl(),
-                        gson, ApiCallList.class,
+                        gson, null, ApiCallList.class,
                         callback, ReadScope, Version, continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -76,7 +76,7 @@ public class ApiCallList extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(),
-                        null, ApiCallList.class,
+                        null, null, ApiCallList.class,
                         callback,
                         ReadScope, Version, continueRefresh);
         //@formatter:on

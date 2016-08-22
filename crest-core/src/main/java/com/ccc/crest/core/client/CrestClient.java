@@ -42,7 +42,10 @@ import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.client.xml.EveSaxHandler;
+import com.ccc.crest.core.cache.api.Time;
+import com.ccc.crest.core.cache.server.ServerStatus;
+import com.ccc.crest.core.client.xml.EveApi;
+import com.ccc.crest.core.client.xml.EveApiSaxHandler;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
@@ -239,7 +242,8 @@ public class CrestClient
                             {
                                 try
                                 {
-                                    cacheTime.set(EveSaxHandler.getCachedUntil(body));
+                                    
+                                    cacheTime.set(EveApi.getCachedUntil(body));
                                 } catch (Exception e)
                                 {
                                     LoggerFactory.getLogger(getClass()).warn(e.getMessage(), e);
@@ -260,12 +264,14 @@ public class CrestClient
                 if(rdata.gson != null)
                     data = rdata.gson.fromJson(body, rdata.clazz);
                 else
-                    data = EveSaxHandler.getData(body);
+                    data = new EveApiSaxHandler().getData(body, rdata.baseEveData);
                 data.init();
                 if (rdata.continueRefresh.get())
                     synchronized (refreshQueue)
                     {
                         long time = System.currentTimeMillis() + cacheTime.get() * 1000;
+                        if(rdata.url.equals(Time.getCrestUrl()) || rdata.url.equals(ServerStatus.getXmlUrl()))
+                            time = 2000; //TODO: make this health check refresh configurable
                         rdata.setNextRefresh(time);
                         data.setNextRefresh(time);
                         refreshQueue.add(rdata);
