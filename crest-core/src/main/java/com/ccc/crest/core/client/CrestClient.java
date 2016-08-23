@@ -42,8 +42,6 @@ import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.cache.api.Time;
-import com.ccc.crest.core.cache.server.ServerStatus;
 import com.ccc.crest.core.client.xml.EveApi;
 import com.ccc.crest.core.client.xml.EveApiSaxHandler;
 import com.ccc.crest.core.events.CommsEventListener;
@@ -117,15 +115,11 @@ public class CrestClient
             if (refreshQueue != null)
                 refreshQueue.clear();
             if (crestClients != null)
-            {
                 for (int i = CrestMaxClients - 1; i >= 0; i--)
-                {
                     crestClients.get(i).client.close();
-                }
-            }
         } catch (IOException e)
         {
-            LoggerFactory.getLogger(getClass()).warn(getClass().getSimpleName() + " failedto cleanup cleanly");
+            LoggerFactory.getLogger(getClass()).warn(getClass().getSimpleName() + " failed to cleanup cleanly");
         }
     }
 
@@ -179,7 +173,6 @@ public class CrestClient
         }
         if (requestData.version != null)
             get.addHeader("Accept", requestData.version);
-        LoggerFactory.getLogger(getClass()).info("pre-executor.submit accessToken: " + accessToken);
         return executor.submit(new CrestGetTask(client, get, requestData));
     }
 
@@ -199,7 +192,6 @@ public class CrestClient
         @Override
         public EveData call() throws Exception
         {
-            LoggerFactory.getLogger(getClass()).info("executing, pre-throttle: " + rdata.url);
             try
             {
                 client.crestThrottle.waitAsNeeded();
@@ -209,7 +201,7 @@ public class CrestClient
                     @Override
                     public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException
                     {
-                        LoggerFactory.getLogger(getClass()).debug("handling response: " + response.toString());
+                        LoggerFactory.getLogger(getClass()).debug("handling response for: " + rdata.url + " response: " + response.toString());
                         if (rdata.gson != null)
                         {
                             Header[] headers = response.getHeaders(CacheControlHeader);
@@ -238,17 +230,15 @@ public class CrestClient
                         {
                             HttpEntity entity = response.getEntity();
                             String body = entity != null ? EntityUtils.toString(entity) : null;
-                            if(rdata.gson == null)
-                            {
+                            if (rdata.gson == null)
                                 try
                                 {
-                                    
+
                                     cacheTime.set(EveApi.getCachedUntil(body));
                                 } catch (Exception e)
                                 {
                                     LoggerFactory.getLogger(getClass()).warn(e.getMessage(), e);
                                 }
-                            }
                             return body;
                         }
                         String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
@@ -258,10 +248,9 @@ public class CrestClient
                         // maybe just re-issue, what about connection down retries?  Need to look at status code ranges to determine which to retry on.
                     }
                 };
-                LoggerFactory.getLogger(getClass()).info("executing, post-throttle: " + rdata.url);
                 String body = client.client.execute(get, responseHandler);
                 EveData data = null;
-                if(rdata.gson != null)
+                if (rdata.gson != null)
                     data = rdata.gson.fromJson(body, rdata.clazz);
                 else
                     data = new EveApiSaxHandler().getData(body, rdata.baseEveData);
@@ -269,9 +258,10 @@ public class CrestClient
                 if (rdata.continueRefresh.get())
                     synchronized (refreshQueue)
                     {
+                        LoggerFactory.getLogger(getClass()).debug(rdata.url + " nextRefresh: " + cacheTime.get() + " seconds");
                         long time = System.currentTimeMillis() + cacheTime.get() * 1000;
-                        if(rdata.url.equals(Time.getCrestUrl()) || rdata.url.equals(ServerStatus.getXmlUrl()))
-                            time = 2000; //TODO: make this health check refresh configurable
+                        //                        if(rdata.url.equals(Time.getCrestUrl()) || rdata.url.equals(ServerStatus.getXmlUrl()))
+                        //                            time = 2000; //TODO: make this health check refresh configurable
                         rdata.setNextRefresh(time);
                         data.setNextRefresh(time);
                         refreshQueue.add(rdata);
@@ -283,7 +273,7 @@ public class CrestClient
                 data.refreshed();
                 if (rdata.callback != null)
                     rdata.callback.received(rdata, data);
-                controller.fireCommunicationEvent(rdata.clientInfo, CommsEventListener.Type.CrestUp);
+                controller.fireCommunicationEvent(rdata.clientInfo, rdata.gson == null ? CommsEventListener.Type.XmlUp : CommsEventListener.Type.CrestUp);
                 return data;
             } catch (Exception e)
             {
@@ -313,18 +303,23 @@ public class CrestClient
         @Override
         public void run()
         {
-            long current = System.currentTimeMillis();
             do
-            {
-                CrestRequestData rdata = refreshQueue.peek();
-                if (rdata == null)
-                    break;
-                if (rdata.getNextRefresh() > current)
-                    break;
-                rdata = refreshQueue.poll();
-                LoggerFactory.getLogger(getClass()).debug("requeue " + rdata.toString());
-                client.getCrest(rdata);
-            } while (true);
+                synchronized (refreshQueue)
+                {
+                    long current = System.currentTimeMillis();
+                    CrestRequestData rdata = refreshQueue.peek();
+                    if (rdata == null)
+                        break;
+                    if (rdata.getNextRefresh() > current)
+                        break;
+                    rdata = refreshQueue.poll();
+                    LoggerFactory.getLogger(getClass()).debug("refreshing " + rdata.toString());
+                    if (rdata.gson != null)
+                        client.getCrest(rdata);
+                    else
+                        client.getXml(rdata);
+                }
+            while (true);
         }
     }
 

@@ -33,9 +33,10 @@ import com.ccc.crest.core.client.CrestResponseCallback;
 @SuppressWarnings("javadoc")
 public class ServerStatus extends BaseEveData
 {
+    private static final long serialVersionUID = -5863306344484912590L;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.XmlOnlyPublic; //?
-    
+
     public static final String ServerOpenElement = "serverOpen";
     public static final String OnlinePlayersElement = "onlinePlayers";
 
@@ -51,15 +52,10 @@ public class ServerStatus extends BaseEveData
     public ServerStatus()
     {
     }
-    
+
     @Override
     public void init()
     {
-    }
-
-    public static String getApiUrl()
-    {
-        throw new RuntimeException("not implemented yet");
     }
 
     public static String getXmlUrl()
@@ -107,7 +103,7 @@ public class ServerStatus extends BaseEveData
                 String value = new String(ch, start, length);
                 try
                 {
-                    serverOpen = Boolean.parseBoolean(value); 
+                    serverOpen = Boolean.parseBoolean(value);
                 } catch (Exception e)
                 {
                     throw new SAXException("invalid boolean format: " + value, e);
@@ -122,7 +118,7 @@ public class ServerStatus extends BaseEveData
                 String value = new String(ch, start, length);
                 try
                 {
-                    onlinePlayers = Integer.parseInt(value); 
+                    onlinePlayers = Integer.parseInt(value);
                 } catch (Exception e)
                 {
                     throw new SAXException("invalid integer format: " + value, e);
@@ -145,5 +141,31 @@ public class ServerStatus extends BaseEveData
         throw new SAXException(currentPath() + " endElement unknown stack path for localName: " + localName);
     }
 
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + onlinePlayers;
+        result = prime * result + (serverOpen ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        ServerStatus other = (ServerStatus) obj;
+        if (onlinePlayers != other.onlinePlayers)
+            return false;
+        if (serverOpen != other.serverOpen)
+            return false;
+        return true;
+    }
 }
 

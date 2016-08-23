@@ -18,7 +18,9 @@ package com.ccc.crest.core.cache.api;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.ccc.crest.core.CrestClientInfo;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.RightsException;
 import com.ccc.crest.core.ScopeToMask;
@@ -27,59 +29,99 @@ import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
-import com.google.gson.Gson;
 
 @SuppressWarnings("javadoc")
 public class ApiCallList extends BaseEveData
 {
     public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.Account; //?
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.XmlOnlyPublic; //?
 
+    private static final String Uri1 = "/api/CallList.xml.aspx/";
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    public static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
+    public static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
 
-//    public String totalCount_str;
-//    public int pageCount;
-//    public List<Item> items;
-//    public Href next;
-//    public int totalCount;
-//    public String pageCount_str;
-
-    public static String getApiUrl()
+    public static String getXmlUrl()
     {
-        throw new RuntimeException("not implemented yet");
-    }
-
-    public static String getCrestUrl()
-    {
-        return CrestClient.getCrestBaseUri();
+        StringBuilder url = new StringBuilder();
+        url.append(CrestClient.getXmlBaseUri()).append(Uri1);
+        return url.toString();
     }
 
     public static Future<EveData> getCallList(CrestResponseCallback callback) throws RightsException
     {
-//        enforceRights(clientInfo, AccessGroup);
-//        Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();
-        Gson gson = new Gson();
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getCrestUrl(),
-                        gson, null, ApiCallList.class,
-                        callback, ReadScope, Version, continueRefresh);
-        //@formatter:on
-        return CrestController.getCrestController().crestClient.getCrest(rdata);
-    }
-
-    public static Future<EveData> getContactsXml(CrestClientInfo clientInfo, CrestResponseCallback callback) throws RightsException
-    {
-        //@formatter:off
-        CrestRequestData rdata = new CrestRequestData(
-                        clientInfo, getCrestUrl(),
-                        null, null, ApiCallList.class,
-                        callback,
+                        null, getXmlUrl(), null, new ApiCallList(),
+                        ApiCallList.class, callback,
                         ReadScope, Version, continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getXml(rdata);
+    }
+
+    @Override
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
+    {
+//        if (localName.equals(ServerOpenElement))
+//        {
+//            stack.push(localName);
+//            return;
+//        } else
+//        if (localName.equals(OnlinePlayersElement))
+//        {
+//            stack.push(localName);
+//            return;
+//        }else
+            throw new SAXException(currentPath() + " startElement unknown localName for this level: " + localName);
+    }
+
+    @Override
+    public void characters(char ch[], int start, int length) throws SAXException
+    {
+//        String current = stack.peek();
+//        if (current.equals(ServerOpenElement))
+//        {
+//            synchronized (this)
+//            {
+//                String value = new String(ch, start, length);
+//                try
+//                {
+//                    serverOpen = Boolean.parseBoolean(value);
+//                } catch (Exception e)
+//                {
+//                    throw new SAXException("invalid boolean format: " + value, e);
+//                }
+//            }
+//            return;
+//        }
+//        if (current.equals(OnlinePlayersElement))
+//        {
+//            synchronized (this)
+//            {
+//                String value = new String(ch, start, length);
+//                try
+//                {
+//                    onlinePlayers = Integer.parseInt(value);
+//                } catch (Exception e)
+//                {
+//                    throw new SAXException("invalid integer format: " + value, e);
+//                }
+//            }
+//            return;
+//        }
+        String value = new String(ch, start, length);
+        throw new SAXException(currentPath() + " characters unknown current stack: " + value);
+    }
+
+    @Override
+    public void endElement(String uri, String localName, String qName) throws SAXException
+    {
+//        if (localName.equals(ServerOpenElement) || localName.equals(OnlinePlayersElement))
+//        {
+//            stack.pop();
+//            return;
+//        }
+        throw new SAXException(currentPath() + " endElement unknown stack path for localName: " + localName);
     }
 }

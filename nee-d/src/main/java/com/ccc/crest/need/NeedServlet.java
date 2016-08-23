@@ -32,17 +32,24 @@ import com.ccc.tools.TabToLevel;
 public class NeedServlet extends CrestServlet
 {
     public static final String LogFilePathDefault = "/var/opt/ccc/crest/need/log/need.log";
+    public static final String LogConfigFilePath = "/etc/opt/ccc/crest/need/logback.xml";
     public static final String NeedServletConfigDefault = "/etc/opt/ccc/crest/need/need.properties";
     public static final String NeedControllerDefault = NeedController.class.getName();
 
     public NeedServlet()
     {
     }
-    
+
     @Override
     protected String getLogFilePathDefault()
     {
         return LogFilePathDefault;
+    }
+
+    @Override
+    protected String getLogConfigFilePath()
+    {
+        return LogConfigFilePath;
     }
 
     @Override
@@ -56,7 +63,7 @@ public class NeedServlet extends CrestServlet
     {
         return super.getSignInPageClass();
     }
-    
+
     @Override
     public Class<? extends WebPage> getHomePage()
     {
@@ -86,7 +93,7 @@ public class NeedServlet extends CrestServlet
     {
         super.onDestroy();
     }
-    
+
     public static void logRequest(HttpServletRequest request)
     {
         TabToLevel format = new TabToLevel();
@@ -99,13 +106,12 @@ public class NeedServlet extends CrestServlet
         format.ttl("cookies: ");
         format.level.incrementAndGet();
         if(cookies != null && cookies.length > 0)
-        {
             for(int i=0; i < cookies.length; i++)
                 logCookie(cookies[i], format);
-        }else
+        else
             format.ttl("none");
         format.level.decrementAndGet();
-        
+
         format.ttl("headers:");
         format.level.incrementAndGet();
         Enumeration<String> headerNames = request.getHeaderNames();
@@ -116,10 +122,10 @@ public class NeedServlet extends CrestServlet
             String headerName = headerNames.nextElement();
             format.ttl("headerName: ", headerName);
             format.level.incrementAndGet();
-            format.ttl("header: ", request.getHeader(headerName)); 
-//            format.ttl("intHeader: ", request.getIntHeader(headerName)); 
+            format.ttl("header: ", request.getHeader(headerName));
+//            format.ttl("intHeader: ", request.getIntHeader(headerName));
 //            Date headerDate = new Date(request.getDateHeader(headerName));
-//            format.ttl("dateHeader: ", headerDate.toString()); 
+//            format.ttl("dateHeader: ", headerDate.toString());
             format.level.decrementAndGet();
         }
         format.level.decrementAndGet();
@@ -143,17 +149,17 @@ public class NeedServlet extends CrestServlet
 //        format.ttl("requestedSessionIdFromUrl: ", request.isRequestedSessionIdFromUrl());
         format.ttl("requestedSessionIdValid: ", request.isRequestedSessionIdValid());
         format.ttl("requestedSessionIdValid: ", request.isRequestedSessionIdValid());
-//        public boolean authenticate(HttpServletResponse response) 
-//        public void login(String username, String password) 
+//        public boolean authenticate(HttpServletResponse response)
+//        public void login(String username, String password)
 //        public void logout() throws ServletException;
-  
+
         format.ttl("parts: not currently expanded");
 //        public Collection<Part> getParts() throws IOException, ServletException;
 //        public Part getPart(String name) throws IOException, ServletException;
 //        public <T extends HttpUpgradeHandler> T  upgrade(Class<T> handlerClass)
         LoggerFactory.getLogger(NeedServlet.class).debug(format.toString());
     }
-    
+
     public static void logCookie(Cookie cookie, TabToLevel format)
     {
         format.ttl("name: ", cookie.getName());

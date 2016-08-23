@@ -29,7 +29,7 @@ public class CommsLatch
         crestUp = new AtomicBoolean(false);
         xmlUp = new AtomicBoolean(false);
     }
-    
+
     public boolean shouldFire(CommsEventListener.Type type)
     {
         switch(type)
@@ -44,12 +44,12 @@ public class CommsLatch
                     return false;
                 crestUp.set(false);
                 return true;
-            case XmlDown:
+            case XmlUp:
                 if(xmlUp.get())
                     return false;
                 xmlUp.set(true);
                 return true;
-            case XmlUp:
+            case XmlDown:
                 if(!xmlUp.get())
                     return false;
                 xmlUp.set(false);
@@ -59,12 +59,12 @@ public class CommsLatch
                 return true;
         }
     }
-    
+
     public boolean isCrestUp()
     {
         return crestUp.get();
     }
-    
+
     public boolean isXmlUp()
     {
         return xmlUp.get();

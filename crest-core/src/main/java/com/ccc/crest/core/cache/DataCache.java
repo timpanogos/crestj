@@ -409,7 +409,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     @Override
     public ApiCallList getApiCallList() throws SourceFailureException
     {
-        CacheData data = cache.get(ApiCallList.getCrestUrl());
+        CacheData data = cache.get(ApiCallList.getXmlUrl());
         if (data != null)
         {
             data.data.accessed();

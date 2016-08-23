@@ -78,7 +78,7 @@ public class CrestRequestData implements Comparable<CrestRequestData>
         if(arg0.nextRefresh == nextRefresh)
             return 0;
         if(arg0.nextRefresh <= nextRefresh)
-            return -1;
-        return +1;
+            return +1;
+        return -1;
     }
 }

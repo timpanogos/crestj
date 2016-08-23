@@ -109,6 +109,16 @@ public class CrestController extends CoreController implements AuthEventListener
         commsLatch = new CommsLatch();
     }
 
+    public boolean isCrestUp()
+    {
+        return commsLatch.isCrestUp();
+    }
+
+    public boolean isXmlApiUp()
+    {
+        return commsLatch.isXmlUp();
+    }
+
     public String getAuthenticationScopesString() throws Exception
     {
         String predefinedUrl = StrH.getParameter(properties, CreateApiKeyUrlDefault, CreateApiKeyUrlDefault, null);
@@ -355,23 +365,22 @@ public class CrestController extends CoreController implements AuthEventListener
         }
         System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
         System.out.println("look here");
-
     }
 
     @Override
     public void crestDown(CrestClientInfo clientInfo)
     {
-        try
-        {
-            Thread.sleep(2000);
-        } catch (InterruptedException e1)
-        {
-            log.warn("Unexpected interrupt from Thread.sleep", e1);
-        }
         if (clientInfo != null)
             log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestdown");
         else
             log.debug("public endpoint,  crestdown");
+        try
+        {
+            Thread.sleep(5000);
+        } catch (InterruptedException e1)
+        {
+            log.warn("Unexpected interrupt from Thread.sleep", e1);
+        }
 
         ElapsedTimer.resetAllElapsedTimers();
         ElapsedTimer.resetTimer(0);
@@ -384,7 +393,7 @@ public class CrestController extends CoreController implements AuthEventListener
             dataCache.getTime();
         } catch (SourceFailureException e)
         {
-            e.printStackTrace();
+            log.warn("crestDown retry failed", e);
         }
         System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
         System.out.println("look here");
@@ -393,16 +402,34 @@ public class CrestController extends CoreController implements AuthEventListener
     @Override
     public void xmlUp(CrestClientInfo clientInfo)
     {
-        log.debug("XmlApi server is up");
+        if(clientInfo == null)
+            log.debug("public call, xmlApiUp");
+        else
+            log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlApiUp");
     }
 
     @Override
     public void xmlDown(CrestClientInfo clientInfo)
     {
-        //TODO: retrigger like crestdown above
-        log.debug("XmlApi server is down");
+        if (clientInfo != null)
+            log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmldown");
+        else
+            log.debug("public endpoint,  xmldown");
+        try
+        {
+            Thread.sleep(5000);
+        } catch (InterruptedException e1)
+        {
+            log.warn("Unexpected interrupt from Thread.sleep", e1);
+        }
+        try
+        {
+            dataCache.getServerStatus();
+        } catch (SourceFailureException e)
+        {
+            log.warn("xmlApiDown retry failed", e);
+        }
     }
-
 
     /* ****************************************************************************
      * DbEventListener impl
@@ -562,9 +589,10 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
+                dataCache.getApiCallList();
 //                dataCache.getTime();
-                dataAccessor.isUp();
-                dataCache.getServerStatus();
+//                dataAccessor.isUp();
+//                dataCache.getServerStatus();
             } catch (Throwable e)
             {
                 log.warn("GetTime failed: ", e);
