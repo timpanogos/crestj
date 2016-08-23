@@ -126,6 +126,8 @@ public class EveApiSaxHandler extends DefaultHandler
     @Override
     public void endDocument() throws SAXException
     {
+        if(eveApi != null)
+            eveApi.endDocument();
     }
 
     @Override

@@ -114,7 +114,7 @@ public class EveApi extends EveApiSaxHandler
                 return;
             }
         }else
-        if (stack.peek().equals(ResultElement))
+        if (currentPath().startsWith(ResultPath))
         {
             result.startElement(uri, localName, qName, attributes);
             return;
@@ -186,6 +186,12 @@ public class EveApi extends EveApiSaxHandler
         //            metadata.endElement(uri, localName, qName);
         else
             throw new SAXException(currentPath() + " endElement unknown stack path for localName: " + localName);
+    }
+    
+    @Override
+    public void endDocument() throws SAXException
+    {
+        result.endDocument();
     }
 
     public static int getCachedUntil(String body) throws Exception
