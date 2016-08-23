@@ -32,7 +32,6 @@ import com.ccc.tools.RequestThrottle.IntervalType;
 public abstract class BaseEveData extends EveApiSaxHandler implements Serializable, EveData
 {
     private static final long serialVersionUID = -7379109873737393844L;
-    protected static final String Version = "application/vnd.ccp.eve.Api-v3+json";
 
     protected AtomicLong lastAccess = new AtomicLong(0);
     protected AtomicLong lastRefresh = new AtomicLong(0);

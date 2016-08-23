@@ -1,0 +1,391 @@
+
+[XmlApiCallGroup:
+	groupId: 1
+	name: Account and Market
+	description: Market Orders, account balance and journal history.
+	calls:
+		XmlApiCall:
+			accessMask: 4194304(0x400000)
+			type: Character
+			name: WalletTransactions
+			groupId: 1
+			description: Market transaction journal of character.
+		XmlApiCall:
+			accessMask: 2097152(0x200000)
+			type: Character
+			name: WalletJournal
+			groupId: 1
+			description: Wallet journal of character.
+		XmlApiCall:
+			accessMask: 4096(0x1000)
+			type: Character
+			name: MarketOrders
+			groupId: 1
+			description: List of all Market Orders the character has made.
+		XmlApiCall:
+			accessMask: 1(0x1)
+			type: Character
+			name: AccountBalance
+			groupId: 1
+			description: Current balance of characters wallet.
+		XmlApiCall:
+			accessMask: 2097152(0x200000)
+			type: Corporation
+			name: WalletTransactions
+			groupId: 1
+			description: Market transactions of all corporate accounts.
+		XmlApiCall:
+			accessMask: 1048576(0x100000)
+			type: Corporation
+			name: WalletJournal
+			groupId: 1
+			description: Wallet journal for all corporate accounts.
+		XmlApiCall:
+			accessMask: 65536(0x10000)
+			type: Corporation
+			name: Shareholders
+			groupId: 1
+			description: Shareholders of the corporation.
+		XmlApiCall:
+			accessMask: 4096(0x1000)
+			type: Corporation
+			name: MarketOrders
+			groupId: 1
+			description: List of all corporate market orders.
+		XmlApiCall:
+			accessMask: 1(0x1)
+			type: Corporation
+			name: AccountBalance
+			groupId: 1
+			description: Current balance of all corporation accounts.
+, XmlApiCallGroup:
+	groupId: 7
+	name: Communications
+	description: Private communications such as contact lists, Eve Mail and Notifications.
+	calls:
+		XmlApiCall:
+			accessMask: 536870912(0x20000000)
+			type: Character
+			name: ChatChannels
+			groupId: 7
+			description: List of all chat channels the character owns or is an operator of.
+		XmlApiCall:
+			accessMask: 32768(0x8000)
+			type: Character
+			name: NotificationTexts
+			groupId: 7
+			description: Actual body of notifications sent to the character. Requires Notification access to function.
+		XmlApiCall:
+			accessMask: 16384(0x4000)
+			type: Character
+			name: Notifications
+			groupId: 7
+			description: List of recent notifications sent to the character.
+		XmlApiCall:
+			accessMask: 2048(0x800)
+			type: Character
+			name: MailMessages
+			groupId: 7
+			description: List of all messages in the characters EVE Mail Inbox.
+		XmlApiCall:
+			accessMask: 1024(0x400)
+			type: Character
+			name: MailingLists
+			groupId: 7
+			description: List of all Mailing Lists the character subscribes to.
+		XmlApiCall:
+			accessMask: 512(0x200)
+			type: Character
+			name: MailBodies
+			groupId: 7
+			description: EVE Mail bodies. Requires MailMessages as well to function.
+		XmlApiCall:
+			accessMask: 32(0x20)
+			type: Character
+			name: ContactNotifications
+			groupId: 7
+			description: Most recent contact notifications for the character.
+		XmlApiCall:
+			accessMask: 16(0x10)
+			type: Character
+			name: ContactList
+			groupId: 7
+			description: List of character contacts and relationship levels.
+		XmlApiCall:
+			accessMask: 16(0x10)
+			type: Corporation
+			name: ContactList
+			groupId: 7
+			description: Corporate contact list and relationships.
+, XmlApiCallGroup:
+	groupId: 5
+	name: Corporation Members
+	description: Member information for Corporations.
+	calls:
+		XmlApiCall:
+			accessMask: 33554432(0x2000000)
+			type: Corporation
+			name: MemberTrackingExtended
+			groupId: 5
+			description: Extensive Member information. Time of last logoff, last known location and ship.
+		XmlApiCall:
+			accessMask: 4194304(0x400000)
+			type: Corporation
+			name: Titles
+			groupId: 5
+			description: Titles of corporation and the roles they grant.
+		XmlApiCall:
+			accessMask: 2048(0x800)
+			type: Corporation
+			name: MemberTrackingLimited
+			groupId: 5
+			description: Limited Member information.
+		XmlApiCall:
+			accessMask: 1024(0x400)
+			type: Corporation
+			name: MemberSecurityLog
+			groupId: 5
+			description: Member role and title change log.
+		XmlApiCall:
+			accessMask: 512(0x200)
+			type: Corporation
+			name: MemberSecurity
+			groupId: 5
+			description: Member roles and titles.
+		XmlApiCall:
+			accessMask: 4(0x4)
+			type: Corporation
+			name: MemberMedals
+			groupId: 5
+			description: List of medals awarded to corporation members.
+, XmlApiCallGroup:
+	groupId: 6
+	name: Outposts and Starbases
+	description: Outpost and Starbase information for Corporations
+	calls:
+		XmlApiCall:
+			accessMask: 524288(0x80000)
+			type: Corporation
+			name: StarbaseList
+			groupId: 6
+			description: List of all corporate starbases.
+		XmlApiCall:
+			accessMask: 131072(0x20000)
+			type: Corporation
+			name: StarbaseDetail
+			groupId: 6
+			description: List of all settings of corporate starbases.
+		XmlApiCall:
+			accessMask: 32768(0x8000)
+			type: Corporation
+			name: OutpostServiceDetail
+			groupId: 6
+			description: List of all service settings of corporate outposts.
+		XmlApiCall:
+			accessMask: 16384(0x4000)
+			type: Corporation
+			name: OutpostList
+			groupId: 6
+			description: List of all outposts controlled by the corporation.
+, XmlApiCallGroup:
+	groupId: 3
+	name: Private Information
+	description: Personal information about the owner. Asset lists, skill training for characters, Private Calendar and more.
+	calls:
+		XmlApiCall:
+			accessMask: 2147483648(0x80000000)
+			type: Character
+			name: Clones
+			groupId: 3
+			description: List of your implants, attributes, jump clones, and jump fatigue timers.
+		XmlApiCall:
+			accessMask: 1073741824(0x40000000)
+			type: Character
+			name: Skills
+			groupId: 3
+			description: List of all your skills.
+		XmlApiCall:
+			accessMask: 268435456(0x10000000)
+			type: Character
+			name: Bookmarks
+			groupId: 3
+			description: List of all personal bookmarks.
+		XmlApiCall:
+			accessMask: 134217728(0x8000000)
+			type: Character
+			name: Locations
+			groupId: 3
+			description: Allows the fetching of coordinate and name data for items owned by the character.
+		XmlApiCall:
+			accessMask: 67108864(0x4000000)
+			type: Character
+			name: Contracts
+			groupId: 3
+			description: List of all Contracts the character is involved in.
+		XmlApiCall:
+			accessMask: 33554432(0x2000000)
+			type: Character
+			name: AccountStatus
+			groupId: 3
+			description: EVE player account status.
+		XmlApiCall:
+			accessMask: 16777216(0x1000000)
+			type: Character
+			name: CharacterInfo
+			groupId: 3
+			description: Sensitive Character Information, exposes account balance and last known location on top of the other Character Information call.
+		XmlApiCall:
+			accessMask: 1048576(0x100000)
+			type: Character
+			name: UpcomingCalendarEvents
+			groupId: 3
+			description: Upcoming events on characters calendar.
+		XmlApiCall:
+			accessMask: 262144(0x40000)
+			type: Character
+			name: SkillQueue
+			groupId: 3
+			description: Entire skill queue of character.
+		XmlApiCall:
+			accessMask: 131072(0x20000)
+			type: Character
+			name: SkillInTraining
+			groupId: 3
+			description: Skill currently in training on the character. Subset of entire Skill Queue.
+		XmlApiCall:
+			accessMask: 8(0x8)
+			type: Character
+			name: CharacterSheet
+			groupId: 3
+			description: Character Sheet information. Contains basic'Show Info'information along with clones, account balance, implants, attributes, skills, certificates and corporation roles.
+		XmlApiCall:
+			accessMask: 4(0x4)
+			type: Character
+			name: CalendarEventAttendees
+			groupId: 3
+			description: Event attendee responses. Requires UpcomingCalendarEvents to function.
+		XmlApiCall:
+			accessMask: 2(0x2)
+			type: Character
+			name: AssetList
+			groupId: 3
+			description: Entire asset list of character.
+		XmlApiCall:
+			accessMask: 67108864(0x4000000)
+			type: Corporation
+			name: Bookmarks
+			groupId: 3
+			description: List of all corporate bookmarks.
+		XmlApiCall:
+			accessMask: 16777216(0x1000000)
+			type: Corporation
+			name: Locations
+			groupId: 3
+			description: Allows the fetching of coordinate and name data for items owned by the corporation.
+		XmlApiCall:
+			accessMask: 8388608(0x800000)
+			type: Corporation
+			name: Contracts
+			groupId: 3
+			description: List of recent Contracts the corporation is involved in.
+		XmlApiCall:
+			accessMask: 32(0x20)
+			type: Corporation
+			name: ContainerLog
+			groupId: 3
+			description: Corporate secure container acess log.
+		XmlApiCall:
+			accessMask: 8(0x8)
+			type: Corporation
+			name: CorporationSheet
+			groupId: 3
+			description: Exposes basic'Show Info'information as well as Member Limit and basic division and wallet info.
+		XmlApiCall:
+			accessMask: 2(0x2)
+			type: Corporation
+			name: AssetList
+			groupId: 3
+			description: List of all corporation assets.
+, XmlApiCallGroup:
+	groupId: 4
+	name: Public Information
+	description: Achievements such as Medals, Kill Mails, Fational Warfare Statistics and NPC Standings.
+	calls:
+		XmlApiCall:
+			accessMask: 8388608(0x800000)
+			type: Character
+			name: CharacterInfo
+			groupId: 4
+			description: Character information, exposes skill points and current ship information on top of'Show Info'information.
+		XmlApiCall:
+			accessMask: 524288(0x80000)
+			type: Character
+			name: Standings
+			groupId: 4
+			description: NPC Standings towards the character.
+		XmlApiCall:
+			accessMask: 8192(0x2000)
+			type: Character
+			name: Medals
+			groupId: 4
+			description: Medals awarded to the character.
+		XmlApiCall:
+			accessMask: 256(0x100)
+			type: Character
+			name: KillLog
+			groupId: 4
+			description: Characters kill log.
+		XmlApiCall:
+			accessMask: 64(0x40)
+			type: Character
+			name: FacWarStats
+			groupId: 4
+			description: Characters Factional Warfare Statistics.
+		XmlApiCall:
+			accessMask: 262144(0x40000)
+			type: Corporation
+			name: Standings
+			groupId: 4
+			description: NPC Standings towards corporation.
+		XmlApiCall:
+			accessMask: 8192(0x2000)
+			type: Corporation
+			name: Medals
+			groupId: 4
+			description: List of all medals created by the corporation.
+		XmlApiCall:
+			accessMask: 256(0x100)
+			type: Corporation
+			name: KillLog
+			groupId: 4
+			description: Corporation kill log.
+		XmlApiCall:
+			accessMask: 64(0x40)
+			type: Corporation
+			name: FacWarStats
+			groupId: 4
+			description: Corporations Factional Warfare Statistics.
+, XmlApiCallGroup:
+	groupId: 2
+	name: Science and Industry
+	description: Datacore production and job listing.
+	calls:
+		XmlApiCall:
+			accessMask: 65536(0x10000)
+			type: Character
+			name: Research
+			groupId: 2
+			description: List of all Research agents working for the character and the progress of the research.
+		XmlApiCall:
+			accessMask: 128(0x80)
+			type: Character
+			name: IndustryJobs
+			groupId: 2
+			description: Character jobs, completed and active.
+		XmlApiCall:
+			accessMask: 128(0x80)
+			type: Corporation
+			name: IndustryJobs
+			groupId: 2
+			description: Corporation jobs, completed and active.
+]

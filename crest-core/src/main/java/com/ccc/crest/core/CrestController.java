@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
+import com.ccc.crest.core.cache.api.ApiCallListSax.XmlApiCallGroup;
 import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
@@ -589,8 +590,10 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.getApiCallList();
-                dataCache.getApiCallList();
+                List<XmlApiCallGroup> callGroups = dataCache.getApiCallList().getCallGroups();
+                
+                LoggerFactory.getLogger(getClass()).info("\n\n"+callGroups.toString());
+                
 //                dataCache.getTime();
 //                dataAccessor.isUp();
 //                dataCache.getServerStatus();

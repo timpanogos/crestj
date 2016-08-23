@@ -38,6 +38,8 @@ import com.google.gson.Gson;
 public class Time extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
+    private static final String Version = "application/vnd.ccp.eve.Api-v3+json";
+    
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
 

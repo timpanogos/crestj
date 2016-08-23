@@ -105,15 +105,15 @@ public class ApiCallListSax extends EveApiSaxHandler
                 }
                 if (onCallGroups.get())
                 {
-                    XmlApiCallGroup group = new XmlApiCallGroup(values[0], values[1], values[2]);
+                    XmlApiCallGroup group = new XmlApiCallGroup(Long.parseLong(values[0]), values[1], values[2]);
                     callGroups.add(group);
                 } else
                 {
-                    XmlApiCall call = new XmlApiCall(values[0], values[1], values[2], values[3], values[4]);
+                    XmlApiCall call = new XmlApiCall(Long.parseLong(values[0]), values[1], values[2], Long.parseLong(values[3]), values[4]);
                     boolean found = false;
                     for (XmlApiCallGroup group : callGroups)
                     {
-                        if (values[3].equals(group.groupId))
+                        if (Long.parseLong(values[3]) == group.groupId)
                         {
                             group.calls.add(call);
                             found = true;
@@ -149,19 +149,31 @@ public class ApiCallListSax extends EveApiSaxHandler
         throw new SAXException(currentPath() + " endElement unknown stack path for localName: " + localName);
     }
 
-    public class XmlApiCallGroup
+    public class XmlApiCallGroup implements Cloneable
     {
-        final public String groupId;
+        final public long groupId;
         final public String name;
         final public String description;
         final private List<XmlApiCall> calls;
 
-        public XmlApiCallGroup(String groupId, String name, String description)
+        public XmlApiCallGroup(long groupId, String name, String description)
         {
             this.groupId = groupId;
             this.name = name;
             this.description = description;
             calls = new ArrayList<>();
+        }
+
+        @Override
+        public Object clone()
+        {
+            synchronized (calls)
+            {
+                XmlApiCallGroup rvalue = new XmlApiCallGroup(groupId, name, description);
+                for (XmlApiCall call : calls)
+                    rvalue.calls.add((XmlApiCall) call.clone());
+                return rvalue;
+            }
         }
 
         @Override
@@ -171,7 +183,7 @@ public class ApiCallListSax extends EveApiSaxHandler
             int result = 1;
             result = prime * result + ((calls == null) ? 0 : calls.hashCode());
             result = prime * result + ((description == null) ? 0 : description.hashCode());
-            result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
+            result = prime * result + (int) (groupId ^ (groupId >>> 32));
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             return result;
         }
@@ -198,11 +210,7 @@ public class ApiCallListSax extends EveApiSaxHandler
                     return false;
             } else if (!description.equals(other.description))
                 return false;
-            if (groupId == null)
-            {
-                if (other.groupId != null)
-                    return false;
-            } else if (!groupId.equals(other.groupId))
+            if (groupId != other.groupId)
                 return false;
             if (name == null)
             {
@@ -236,21 +244,30 @@ public class ApiCallListSax extends EveApiSaxHandler
         }
     }
 
-    public class XmlApiCall
+    public class XmlApiCall implements Cloneable
     {
         final public long accessMask;
         final public String type;
         final public String name;
-        final public String groupId;
+        final public long groupId;
         final public String description;
 
-        public XmlApiCall(String accessMask, String type, String name, String groupId, String description)
+        public XmlApiCall(long accessMask, String type, String name, long groupId, String description)
         {
-            this.accessMask = Long.parseLong(accessMask);
+            this.accessMask = accessMask;
             this.type = type;
             this.name = name;
             this.groupId = groupId;
             this.description = description;
+        }
+
+        @Override
+        public Object clone()
+        {
+            synchronized (this)
+            {
+                return new XmlApiCall(accessMask, type, name, groupId, description);
+            }
         }
 
         @Override
@@ -260,7 +277,7 @@ public class ApiCallListSax extends EveApiSaxHandler
             int result = 1;
             result = prime * result + (int) (accessMask ^ (accessMask >>> 32));
             result = prime * result + ((description == null) ? 0 : description.hashCode());
-            result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
+            result = prime * result + (int) (groupId ^ (groupId >>> 32));
             result = prime * result + ((name == null) ? 0 : name.hashCode());
             result = prime * result + ((type == null) ? 0 : type.hashCode());
             return result;
@@ -284,11 +301,7 @@ public class ApiCallListSax extends EveApiSaxHandler
                     return false;
             } else if (!description.equals(other.description))
                 return false;
-            if (groupId == null)
-            {
-                if (other.groupId != null)
-                    return false;
-            } else if (!groupId.equals(other.groupId))
+            if (groupId != other.groupId)
                 return false;
             if (name == null)
             {

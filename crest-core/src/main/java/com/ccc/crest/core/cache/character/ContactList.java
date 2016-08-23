@@ -39,6 +39,7 @@ import com.google.gson.GsonBuilder;
 public class ContactList extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
+    private static final String Version = "application/vnd.ccp.eve.Api-v3+json";
     public static final String AccessGroup = CrestController.UserGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.Character; //?
 

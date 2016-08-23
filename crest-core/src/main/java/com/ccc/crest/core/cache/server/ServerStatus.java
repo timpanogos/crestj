@@ -34,6 +34,7 @@ import com.ccc.crest.core.client.CrestResponseCallback;
 public class ServerStatus extends BaseEveData
 {
     private static final long serialVersionUID = -5863306344484912590L;
+    private static final String Version = "2";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.XmlOnlyPublic; //?
 

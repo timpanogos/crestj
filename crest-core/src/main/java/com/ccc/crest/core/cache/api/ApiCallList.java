@@ -15,6 +15,7 @@
 */
 package com.ccc.crest.core.cache.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -35,6 +36,8 @@ import com.ccc.crest.core.client.CrestResponseCallback;
 @SuppressWarnings("javadoc")
 public class ApiCallList extends BaseEveData
 {
+    private static final long serialVersionUID = 4330717255249943548L;
+    private static final String Version = "2";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.XmlOnlyPublic; //?
 
@@ -51,6 +54,17 @@ public class ApiCallList extends BaseEveData
     {
         tableMap = new ApiCallListSax();
         callGroups = tableMap.getCallGroups();
+    }
+    
+    public List<XmlApiCallGroup> getCallGroups()
+    {
+        synchronized(callGroups)
+        {
+            List<XmlApiCallGroup> list = new ArrayList<>();
+            for(XmlApiCallGroup group : callGroups)
+                list.add((XmlApiCallGroup)group.clone());
+            return list;
+        }
     }
     
     public static String getXmlUrl()
