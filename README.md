@@ -1,11 +1,15 @@
 # crestj #
 
-zKillboard is a killboard created for EVE-Online, for use on zkillboard.com, but can also be used for single entities.
+crestj is a Java framework created for EVE-Online.  It has a rich set of functionality listed at the [crestj website](https://timpanogos.github.io/crestj/ "crestj website").
 
+Basic functionality is an auto refreshing cache who's sources are the full set of CCP xmlApi and CREST end points.
+
+A [developer wiki](https://github.com/timpanogos/crestj/wiki "developer wiki") also exists for more technical information.
 
 ## Contact ##
 
-Via Twitter at @zkillboard, via the ticket system itself on zkillboard.com (you have to log in), send an email to zkillboard@gmail.com, or you can talk to Squizz on TweetFleet.
+Via Twitter at @evecrestj, via the ticket system itself on 
+[crestj issues](https://github.com/timpanogos/crestj/issues "crestj issues") (you have to log in), send an email to evecrestj@gmail.com, or you can talk to Salgare on TweetFleet.
 
 ## Credits ##
 
