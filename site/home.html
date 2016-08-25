@@ -1,447 +1,222 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
+<meta content="text/html; charset=utf-8" http-equiv="content-type">
 <meta http-equiv="X-UA-Compatible" content="chrome=1">
 <title>crestj by timpanogos</title>
 <link rel="stylesheet" href="stylesheets/styles.css">
 <link rel="stylesheet" href="stylesheets/github-light.css">
 <meta name="viewport" content="width=device-width">
 <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>    <![endif]-->
 </head>
 <body>
     <div class="wrapper">
         <header>
-            <h1>
-                <h1>crestj</h1>
-            </h1>
-            <p></p>
-            <p class="view"></p>
+            <h1>crestj</h1>
             <p>
-                <a href="https://github.com/timpanogos/crestj">View
-                    the Project on GitHub <small>timpanogos/crestj</small>
-                </a>
+                <a href="https://github.com/timpanogos/crestj">View the Project on GitHub <small>timpanogos/crestj</small></a>
             </p>
             <p class="view">
                 <a href="https://github.com/timpanogos/crestj"> </a>
             </p>
             <ul>
-                <li><a
-                    href="https://github.com/timpanogos/crestj/zipball/master">Download
-                        <strong>ZIP File</strong>
+                <li><a href="https://github.com/timpanogos/crestj/zipball/master">Download <strong>ZIP File</strong></a></li>
+                <li><a href="https://github.com/timpanogos/crestj/tarball/master">Download <strong>TAR Ball</strong></a></li>
+                <li><a href="https://github.com/timpanogos/crestj">View On <strong>GitHub</strong>
                 </a></li>
-                <li><a
-                    href="https://github.com/timpanogos/crestj/tarball/master">Download
-                        <strong>TAR Ball</strong>
-                </a></li>
-                <li><a href="https://github.com/timpanogos/crestj">View
-                        On <strong>GitHub</strong>
-                </a></li>
+            </ul>
+            <ul>
+                <li><a href="#functionality">Functionality</a></li>
+                <li><a href="#authentication">Authentication</a></li>
+                <li><a href="#structure">Structure</a></li>
+                <li><a href="#installation">Installation</a></li>
             </ul>
         </header>
         <section>
-            <h3>
-                <a id="welcome-to-crestj" class="anchor"
-                    href="#welcome-to-crestj" aria-hidden="true"><span
-                    aria-hidden="true" class="octicon octicon-link"></span></a>
-                <h1>Welcome to the crestj framework</h1>
-            </h3>
-            <a href="CCP.html">CCP.html link</a> <a href="README.html">README.html
-                link</a>
-            <p>
-                auto deploy? This automatic page generator what the heck
-                is the easiest way to create beautiful pages for all of
-                your projects. Author your page content here <a
-                    href="https://guides.github.com/features/mastering-markdown/">using
-                    GitHub Flavored Markdown</a>, select a template crafted
-                by a designer, and publish. After your page is
-                generated, you can check out the new
-                <code>gh-pages</code>
-                branch locally. If you’re using GitHub Desktop, simply
-                sync your repository and you’ll see the new branch.
-            </p>
-            <ul>
-                <li><a href="#Functionality_">Functionality</a>&nbsp;</li>
-                <li><a href="#Authentication_">Authentication</a></li>
-                <li><a href="#Structure_">Structure</a></li>
-                <li><a href="#Installation_">Installation</a></li>
-            </ul>
-            <h3>
-                <a name="Functionality_"></a> <a id="designer-templates"
-                    class="anchor" href="#designer-templates"
-                    aria-hidden="true"><span aria-hidden="true"
-                    class="octicon octicon-link"></span></a>
-                <h1>Functionality</h1>
-            </h3>
-            <p>
-                <big style="font-style: italic;">OAuth support
-                    </h1>
-                    <br> <br>
-            </p>
-            <ul>
-                <li>&nbsp;&nbsp;&nbsp; abstract OAuth
-                    implementation</li>
-                <li>&nbsp;&nbsp;&nbsp; Wicket specific OAuth
-                    implementation layer</li>
-                <li>&nbsp;&nbsp;&nbsp; Crest Wicket specific OAuth
-                    implementation layer</li>
-            </ul>
-            <p>
-                <br> <big style="font-style: italic;">CoreController
-                    support
-                    </h1>
-                    <br> <br>
-            </p>
-            <ul>
-                <li>&nbsp;&nbsp;&nbsp; abstract CoreController
-                    layer</li>
-                <li>&nbsp;&nbsp;&nbsp; crest specific
-                    CoreController implementation</li>
-                <li>&nbsp;&nbsp;&nbsp; custom app CrestController
-                    extension.</li>
-            </ul>
-            <p>
-                <br>
             <h1>
-                <span style="font-style: italic;">View Support</span>
+                <a id="welcome-to-crestj" class="anchor" href="#welcome-to-crestj" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to the crestj framework
             </h1>
-            <br> <br>
-            </p>
+            <p>crestj is an EVE-Online xmlApi and crest endpoint client side caching framework. This site will provide details about this framework.</p>
             <ul>
-                <li>&nbsp;&nbsp;&nbsp; crest wicket specific
-                    extension layer</li>
-                <li>&nbsp;&nbsp;&nbsp; custom app wicket
-                    implementation</li>
+                <li><a href="#functionality">Functionality</a></li>
+                <li><a href="#authentication">Authentication</a></li>
+                <li><a href="#structure">Structure</a></li>
+                <li><a href="#installation">Installation</a></li>
             </ul>
-            <p>
-                <br> <big style="font-style: italic;">Model
-                    Support
-                    </h1>
-                    <br> <br>
-            </p>
+            <h2>
+                <a id="functionality" class="anchor" href="#functionality" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Functionality
+            </h2>
+            <h3>OAuth support</h3>
             <ul>
-                <li>&nbsp;&nbsp;&nbsp; eve Service Provider
-                    Interface (SPI) Cache</li>
-                <li>&nbsp;&nbsp;&nbsp; pure java interfaces
-                    declared for all xml-api and json api's, implemented
-                    by public side of SPI</li>
-                <li>&nbsp;&nbsp;&nbsp; eve clients provide the
-                    service implementation of the SPI.</li>
-                <li>&nbsp;&nbsp;&nbsp; read cache (updated per
-                    endpoints cached time)</li>
-                <li>&nbsp;&nbsp;&nbsp; write through cache (for
-                    those sweet new crest api's, keep em coming CPP!)</li>
-                <li>&nbsp;&nbsp;&nbsp; abstract DataAccessor - pure
-                    interfaces</li>
-                <li>&nbsp;&nbsp;&nbsp; abstract Crest specific
-                    DataAccessor implements/extends abstract da - pure
-                    interfaces</li>
-                <li>&nbsp;&nbsp;&nbsp; postgres implementation of
-                    crest da</li>
-                <li>&nbsp;&nbsp;&nbsp; DA interfaces for SDE</li>
+                <li>abstract OAuth implementation</li>
+                <li>Wicket specific OAuth implementation layer</li>
+                <li>Crest Wicket specific OAuth implementation layer</li>
             </ul>
-            <p>
-                <br> <big style="font-style: italic;">Eve
-                    clients (feeds&nbsp;client cache)
-                    </h1>
-                    <br> <br>
-            </p>
+            <h3>CoreController support</h3>
             <ul>
-                <li>&nbsp;&nbsp;&nbsp; async xml api client with
-                    full implementation of all endpoints.</li>
-                <li>&nbsp;&nbsp;&nbsp; async crest api client with
-                    full implementation of all endpoints.</li>
+                <li>abstract CoreController layer</li>
+                <li>crest specific CoreController implementation</li>
+                <li>custom app CrestController extension.</li>
             </ul>
-            <p>
-                <br> <big style="font-style: italic;">Event
-                    Support
-                    </h1>
-                    <br> <br>
-            </p>
+            <h3>View Support</h3>
             <ul>
-                <li>&nbsp; &nbsp; registration for OAuth state
-                    event listeners (authenticated, signedOut,
-                    refreshed)</li>
-                <li>&nbsp;&nbsp;&nbsp; registration for
-                    DataAccessor state event listeners (up/down)</li>
-                <li>&nbsp;&nbsp;&nbsp; registration for client
-                    state event listeners (up/down)</li>
-                <li>&nbsp;&nbsp;&nbsp; registration for cache event
-                    listeners (updated, objectChanged)</li>
+                <li>crest wicket specific extension layer</li>
+                <li>custom app wicket implementation</li>
             </ul>
-            <p>
-                <br>
-            <h1>
-                <span style="font-style: italic;">Access Control
-                    Lists (ACL)</span>
-            </h1>
-            <br> <br>
-            </p>
+            <h3>Model Support</h3>
             <ul>
-                <li>&nbsp;&nbsp;&nbsp; abstract AccessGroup</li>
-                <li>&nbsp;&nbsp;&nbsp; anonymous AccessGroup
-                    implementation</li>
-                <li>&nbsp;&nbsp;&nbsp; user AccessGroup
-                    implementation</li>
-                <li>&nbsp;&nbsp;&nbsp; director AccessGroup
-                    implementation</li>
-                <li>&nbsp;&nbsp;&nbsp; da's to support custom
-                    application Groups</li>
-                <li>&nbsp;&nbsp;&nbsp; abstract Rights</li>
-                <li>&nbsp;&nbsp;&nbsp; da's to assign rights to
-                    users.</li>
-                <li>&nbsp;&nbsp;&nbsp; public side of SPI Cache
-                    declares required AccessGroups</li>
-                <li>&nbsp;&nbsp;&nbsp; da's to share user access
-                    data with others.</li>
+                <li>eve Service Provider Interface (SPI) Cache</li>
+                <li>pure java interfaces declared for all xml-api and json api's, implemented by public side of SPI</li>
+                <li>eve clients provide the service implementation of the SPI.</li>
+                <li>read cache (updated per endpoints cached time)</li>
+                <li>write through cache (for those sweet new crest api's, keep em coming CPP!)</li>
+                <li>abstract DataAccessor - pure interfaces</li>
+                <li>abstract Crest specific DataAccessor implements/extends abstract da - pure interfaces</li>
+                <li>postgres implementation of crest da</li>
+                <li>DA interfaces for SDE</li>
             </ul>
-            <p>
-                <big style="font-style: italic;"><br>RabbitMQ
-                    </h1>
-            </p>
-            <p></p>
+            <h3>Eve clients (feeds client cache)</h3>
+            <ul>
+                <li>async xml api client with full implementation of all endpoints.</li>
+                <li>async crest api client with full implementation of all endpoints.</li>
+            </ul>
+            <h3>Event Support</h3>
+            <ul>
+                <li>registration for OAuth state event listeners (authenticated, signedOut, refreshed)</li>
+                <li>registration for DataAccessor state event listeners (up/down)</li>
+                <li>registration for client state event listeners (up/down)</li>
+                <li>registration for cache event listeners (updated, objectChanged)</li>
+            </ul>
+            <h3>Access Control Lists (ACL)</h3>
+            <ul>
+                <li>abstract AccessGroup</li>
+                <li>anonymous AccessGroup implementation</li>
+                <li>user AccessGroup implementation</li>
+                <li>director AccessGroup implementation</li>
+                <li>da's to support custom application Groups</li>
+                <li>abstract Rights</li>
+                <li>da's to assign rights to users.</li>
+                <li>public side of SPI Cache declares required AccessGroups</li>
+                <li>da's to share user access data with others.</li>
+            </ul>
+            <h3>RabbitMQ</h3>
             <ul>
                 <li>PHP Bridge</li>
                 <li>interfacing to other popular web-tier languages</li>
             </ul>
-            <p>.</p>
-            <h3>
-                <a name="Authentication_"></a> <a
-                    id="creating-pages-manually" class="anchor"
-                    href="#creating-pages-manually" aria-hidden="true"><span
-                    aria-hidden="true" class="octicon octicon-link"></span></a>
-                <h1>Authentication</h1>
-            </h3>
+            <h2>
+                <a id="authentication" class="anchor" href="#authentication" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authentication
+            </h2>
+            <p>This is a development box and so will be up/down and will not be a permanent situation, but if anyone wants to see the eve SOS in action feel free.
+            <p>http://ec2-23-20-106-130.compute-1.amazonaws.com
+            <p>http://23.20.106.130
+            <p>The authentication is a dual purpose situation. First it distinguishes what pages in the application a user has rights to while they are interacting with the application. Currently the AccessGroup db table provides these groups:</p>
+            <ul>
+                <li>Anonymous</li>
+                <li>User</li>
+                <li>Directors</li>
+                <li>extensible for custom</li>
+            </ul>
+            <p>There is also a Rights table which currently only has the following right</p>
+            <ul>
+                <li>SharedRight</li>
+            </ul>
+            <p>Directors will be able to create other custom groups and assign capsuleer's to those groups. Capsuleer's will be able to assign ShareRights to other capsuleers or groups that allow those individuals access to their personal (User group)
+                information.
+            <p>This trickles over to actual access rights to the public API side of the SPI Cache, verses character and corporation private. Everyone is a member of the Anonymous group (public data). An authenticated capsuleer is in the User group
+                (character/corp). Currently at least one Director has to be configured at installation/startup to provide an individual with "Admin" rights to go from there.
+            <p>I currently have a single properties file (simple name/value pairs) for configuration. When I started I only had a single app per installation in mind. For example, the applications required scopes are declared here. The Director/s are
+                also declared here. As the cache evolved in my design, and my discovery that RabbitMQ has implementations for all of the languages our group use is available, I realized a big buy here is for multiple applications to share the cost of the
+                server. Thus I will look at how to break up these groups/rights, and capsuleers/directors partitioned by application, and make these accessible to the app for their own restriction purposes.
+            <p>So, future, not only will this be able to provide SSO/access_token and fresh async data pushed to the application but a ACL system for the application to leverage and for individual capsuleers to share with others (alts will love it)
+            <p>Do note if you authenticate the system at this time, it will capture your refresh_token in the db and can/currently will continue to refresh any endpoints that are accessed by a given CharacterID. You can go to the following url to
+                invalidate this refresh_token ... but the db is super volatile and will continue to undergo change anyway (regularly blown away).</p>
+            <h2>
+                <a id="structure" class="anchor" href="#structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Structure
+            </h2>
             <p>
-                This is a development box and so will be up/down and
-                will not be a permanent situation, but if anyone wants
-                to see the eve SOS in action feel free.<br> <br>http://ec2-23-20-106-130.compute-1.amazonaws.com<br>http://23.20.106.130<br>
-                <br>The authentication is a dual purpose situation.
-                First it distinguishes what pages in the application a
-                user has rights to while they are interacting with the
-                application. Currently the AccessGroup db table provides
-                these groups:<br>
+                <span style="font-weight: bold;">Personal utils</span><a href="https://github.com/timpanogos/ccc-common"></a>
             </p>
             <ul>
-                <li>&nbsp;&nbsp;&nbsp; Anonymous</li>
-                <li>&nbsp;&nbsp;&nbsp; User</li>
-                <li>&nbsp;&nbsp;&nbsp; Directors</li>
-                <li>&nbsp;&nbsp;&nbsp; extensible for custom</li>
+                <li>ccc-tools jar - generic utilities</li>
+                <li>ccc-db jar - generic DataAccessor interfaces/base classes</li>
+                <li>ccc-oauth jar - generic OAuth for v1/v2 support (uses com.github.scribejava)</li>
+                <li>ccc-wicket jar - generic wicket base application utilizing ccc-oauth</li>
             </ul>
             <p>
-                There is also a Rights table which currently only has
-                the following right<br> <br>
+                <span style="font-weight: bold;">crestj</span>
             </p>
             <ul>
-                <li>&nbsp;&nbsp;&nbsp; SharedRight</li>
+                <li>crest-core jar - ccc-oauth contains a generic CoreController which is extended here</li>
+                <li>crest-da jar - implements/extends ccc-db - Declares pure Data Accessor interfaces for frameworks persistence needs.</li>
+                <li>crest-pg-da jar - Postgres implementation of crest-da</li>
+                <li>crest-wicket.jar - implementation/extends ccc-wicket's base application class.</li>
+                <li>crest-web - Tomcat/jetty ready .war file.</li>
+                <li>need-d - Leaf wicket application layer, provides custom views and custom controller as needed.</li>
             </ul>
             <p>
-                Directors will be able to create other custom groups and
-                assign capsuleer's to those groups. Capsuleer's will be
-                able to assign ShareRights to other capsuleers or groups
-                that allow those individuals access to their personal
-                (User group) information.<br> <br>This
-                trickles over to actual access rights to the public API
-                side of the SPI Cache, verses character and corporation
-                private. Everyone is a member of the Anonymous group
-                (public data). An authenticated capsuleer is in the User
-                group (character/corp). Currently at least one Director
-                has to be configured at installation/startup to provide
-                an individual with "Admin" rights to go from there.<br>
-                <br>I currently have a single properties file
-                (simple name/value pairs) for configuration. When I
-                started I only had a single app per installation in
-                mind. For example, the applications required scopes are
-                declared here. The Director/s are also declared here. As
-                the cache evolved in my design, and my discovery that
-                RabbitMQ has implementations for all of the languages
-                our group use is available, I realized a big buy here is
-                for multiple applications to share the cost of the
-                server. Thus I will look at how to break up these
-                groups/rights, and capsuleers/directors partitioned by
-                application, and make these accessible to the app for
-                their own restriction purposes.<br> <br>So,
-                future, not only will this be able to provide
-                SSO/access_token and fresh async data pushed to the
-                application but a ACL system for the application to
-                leverage and for individual capsuleers to share with
-                others (alts will love it)<br> <br>Do note if
-                you authenticate the system at this time, it will
-                capture your refresh_token in the db and can/currently
-                will continue to refresh any endpoints that are accessed
-                by a given CharacterID. You can go to the following url
-                to invalidate this refresh_token ... but the db is super
-                volatile and will continue to undergo change anyway
-                (regularly blown away).<br>
+                Thus OAuth, Web Application framework, Controller (Model coupling in controllers) and DataSource's have all been abstracted and loosely coupled allowing for the likes of<br> <br> Provide your own OAuth, utilize the frameworks
+                model, view and controller<br> Provide your own view (Web Application framework) and likely OAuth and utilize the frameworks controller/DataSources<br> <a href="https://github.com/timpanogos" class="user-mention">@timpanogos</a>
             </p>
-            <h3>
-                <h1>Structure</h1>
-            </h3>
+            <h2>
+                <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation
+            </h2>
+            <p>1. https://eclipse.org/downloads/ run the download, its an installer, pick "Eclipse IDE for Java EE Developers" 2. https://maven.apache.org/download.cgi 3. https://tomcat.apache.org/download-70.cgi (don't get v8 or 9 if you want to play
+                with the PHPBridge) 4. https://www.postgresql.org/ postgresSql for the tomcat, unzip it anywhere ... I happen to gather this sort of stuff at c:\tools\* but it does not matter. Also, you will only need this if you plan to run/single-step
+                debug. You will only need the maven if you want to build/run it.
+            <p>These instructions will get you into the source quickly as any IDE has it's painful learning curve.
+            <p>I like short paths, all at the bottom. Do something similar. If you follow this pattern it will make eclipse life better long term. ws stands for WorkSpace in eclipse.
+            <p>First create something similar to the following directory structure
             <p>
-                <span style="font-weight: bold;">Personal utils</span>j<br>https://github.com/timpanogos/ccc-common<br>
-                <br>
-            </p>
-            <ul>
-                <li>&nbsp;&nbsp;&nbsp; ccc-tools jar - generic
-                    utilities</li>
-                <li>&nbsp;&nbsp;&nbsp; ccc-db jar - generic
-                    DataAccessor interfaces/base classes</li>
-                <li>&nbsp;&nbsp;&nbsp; ccc-oauth jar - generic
-                    OAuth for v1/v2 support (uses com.github.scribejava)</li>
-                <li>&nbsp;&nbsp;&nbsp; ccc-wicket jar - generic
-                    wicket base application utilizing ccc-oauth<br>
-                </li>
-            </ul>
+                c:\ws<br> c:\ws\eclipse<br> c:\ws\ccc-common<br> c:\ws\crestj
+            <p>git tools don't like cloning into folders that have anything in them. Copy the two that you cloned into their corresponding ccc-common and crestj folders in the above structure and delete them from where you originally cloned them out
+                to.
+            <p>When you first fire up eclipse it's going to ask you for a "Workspace" folder, set it to c:\ws\eclipse
+            <p>In eclipse, hook it up with your git clone as follows
+            <p>File-&gt;new-&gt;project... pick "Java Project"
+            <p>Right under Project Name there is a "Use default location" check box, de-select it and browse to your git clone locations.
+            <p>There are the two git repositories, each with multiple "modules" or "projects" or "jars" these are synonymous terms. So with the above mentioned browse to, select say ccc-db. Repeat this process for all of the projects in the two
+                repositories.
             <p>
-                <span style="font-weight: bold;">crestj</span><br>
-            </p>
-            <ul>
-                <li>&nbsp;&nbsp;&nbsp; crest-core jar - ccc-oauth
-                    contains a generic CoreController which is extended
-                    here</li>
-                <li>&nbsp;&nbsp;&nbsp; crest-da jar -
-                    implements/extends ccc-db - Declares pure Data
-                    Accessor interfaces for frameworks persistence
-                    needs.</li>
-                <li>&nbsp;&nbsp;&nbsp; crest-pg-da jar - Postgres
-                    implementation of crest-da</li>
-                <li>&nbsp;&nbsp;&nbsp; crest-wicket.jar -
-                    implementation/extends ccc-wicket's base application
-                    class.</li>
-                <li>&nbsp;&nbsp;&nbsp; crest-web - Tomcat/jetty
-                    ready .war file.</li>
-                <li>&nbsp;&nbsp;&nbsp; need-d - Leaf wicket
-                    application layer, provides custom views and custom
-                    controller as needed.<br>
-                </li>
-            </ul>
+                c:\wsc\ccc-common (has .git repo)<br>c:\wsc\ccc-common\ccc-db (a jar - select me)<br>c:\wsc\ccc-common\ccc-oauth (a jar - select me)<br> c:\wsc\ccc-common\ccc-tools (a jar - select me)<br>c:\wsc\ccc-common\ccc-wicket (a
+                jar - select me)
             <p>
-                Thus OAuth, Web Application framework, Controller (Model
-                coupling in controllers) and DataSource's have all been
-                abstracted and loosely coupled allowing for the likes of<br>
-                <br>Provide your own OAuth, utilize the frameworks
-                model, view and controller<br>Provide your own view
-                (Web Application framework) and likely OAuth and utilize
-                the frameworks controller/DataSources<br> <a
-                    href="https://github.com/defunkt"
-                    class="user-mention">@timpanogos</a>
+                I need to get scratch.jar out of there at some point, its for junk playing around right now. c:\wsc\crestj (has .git repo)<p><br>c:\wsc\crestj\crest-core (a jar select me)<br>c:\wsc\crestj\crest-da (a jar select me)<br>pc:\wsc\crestj\crest-pd-da
+                (a jar select me)<br>pc:\wsc\crestj\crest-web (a .war (special jar) select me)<br>c:\wsc\crestj\crest-wicket (a jar select me)<br>c:\wsc\crestj\nee-d (a jar select me - skeletal application that sparked this slow, overly
+                design
+            ed nightmare)longer term in the "Project Explorer" tab the cryptic small graphics at the top, check out the triangle and "working sets" to better organize these two sets.At thi
+            s point you should have 12 eclipse projects which are
+                typed java and may or may not have realized they are also of type maven (they have a pom.xml in them). Look close at the folder icons for each of the 12, there should be an 'm' upper left corner and 'j' upper right corner. Select any/all
+                that don't have the 'm', right click and select "configure-&gt;mavenEverythin
+            g is going to be red at this point (not building), but you will have full IDE helps ... F3 any selected item jumps you to the declaration of that item, etc. watch
+                for the various navigational mnemonics and accelerators in the right click pull downs.Ok, if you w
+            ant to build and get rid of all the red. I use ccc-common for a lot of other personal/work stuff, thus I've used an advanced feature of maven
+                for dependency version management that utilizes parent poms. You need to get these parents loaded into your local .m2 repository. To do this execute the batch file at: c:\ws\ccc-comm
+            on\shadowbuild\parents\buildParents.bat installit will
+                need that 
+            install command line parameter.Ok, at this point you
+             have two build systems, the maven command line build, which is used for final deployments, this is the master. Then you have Eclipses auto maven build, a subset of the command
+                line which does it's own caching of the .m2 repository classes/jars for IDE time dependencies etc. Sometimes these two get out of synch, and we have definitely confused eclipse at this time.To fix this, right click on any of the p
+            rojects
+                (i.e. crest-core) select "maven-&gt;update project ..." and hit the "Select All" button and then ok. All the red will drop.if i
+            t does not drop, I have a cart-before the 
+            horse situation in the build poms that I'm not sure resolve in a clean
+                environment. Holler if that's the case.<br> <br> later, you are real
+                close here to being able to single step servlet code running on the tomcat server, so holler if/when ready to play with that.
+                
             </p>
-            <h3>
-                <a name="Installation_"></a> <a id="support-or-contact"
-                    class="anchor" href="#support-or-contact"
-                    aria-hidden="true"><span aria-hidden="true"
-                    class="octicon octicon-link"></span></a>
-                <h1>Installation</h1>
-            </h3>
-            <p>
-                1. https://eclipse.org/downloads/ run the download, its
-                an installer, pick "Eclipse IDE for Java EE Developers"<br>2.
-                https://maven.apache.org/download.cgi<br>3.
-                https://tomcat.apache.org/download-70.cgi (don't get v8
-                or 9 if you want to play with the PHPBridge)<br>4.
-                https://www.postgresql.org/ postgresSql<br> <br>for
-                the tomcat, unzip it anywhere ... I happen to gather
-                this sort of stuff at c:\tools\* but it does not matter.
-                Also, you will only need this if you plan to
-                run/single-step debug. You will only need the maven if
-                you want to build/run it.<br> <br>These
-                instructions will get you into the source quickly as any
-                IDE has it's painful learning curve.<br>I like
-                short paths, all at the bottom. Do something similar. If
-                you follow this pattern it will make eclipse life better
-                long term. ws stands for WorkSpace in eclipse.<br>
-                <br>First create something similar to the following
-                directory structure<br>c:\ws<br>c:\ws\eclipse<br>c:\ws\ccc-common<br>c:\ws\crestj<br>
-                <br>git tools don't like cloning into folders that
-                have anything in them. Copy the two that you cloned into
-                their corresponding ccc-common and crestj folders in the
-                above structure and delete them from where you
-                originally cloned them out to.<br> <br>When
-                you first fire up eclipse it's going to ask you for a
-                "Workspace" folder, set it to c:\ws\eclipse<br> <br>In
-                eclipse, hook it up with your git clone as follows<br>File-&gt;new-&gt;project...
-                pick "Java Project"<br>Right under Project Name
-                there is a "Use default location" check box, de-select
-                it and browse to your git clone locations.<br> <br>There
-                are the two git repositories, each with multiple
-                "modules" or "projects" or "jars" these are synonymous
-                terms. So with the above mentioned browse to, select say
-                ccc-db. Repeat this process for all of the projects in
-                the two repositories.<br> <br>c:\wsc\ccc-common
-                (has .git repo)<br>c:\wsc\ccc-common\ccc-db (a jar
-                - select me)<br>c:\wsc\ccc-common\ccc-oauth (a jar
-                - select me)<br>c:\wsc\ccc-common\ccc-tools (a jar
-                - select me)<br>c:\wsc\ccc-common\ccc-wicket (a jar
-                - select me)<br> <br>I need to get scratch.jar
-                out of there at some point, its for junk playing around
-                right now.<br> <br>c:\wsc\crestj (has .git
-                repo)<br>c:\wsc\crestj\crest-core (a jar select me)<br>c:\wsc\crestj\crest-da
-                (a jar select me)<br>c:\wsc\crestj\crest-pd-da (a
-                jar select me)<br>c:\wsc\crestj\crest-web (a .war
-                (special jar) select me)<br>c:\wsc\crestj\crest-wicket
-                (a jar select me)<br>c:\wsc\crestj\nee-d (a jar
-                select me - skeletal application that sparked this slow,
-                overly designed nightmare)<br> <br>longer term
-                in the "Project Explorer" tab the cryptic small graphics
-                at the top, check out the triangle and "working sets" to
-                better organize these two sets.<br> <br>At
-                this point you should have 12 eclipse projects which are
-                typed java and may or may not have realized they are
-                also of type maven (they have a pom.xml in them). Look
-                close at the folder icons for each of the 12, there
-                should be an 'm' upper left corner and 'j' upper right
-                corner. Select any/all that don't have the 'm', right
-                click and select "configure-&gt;maven<br> <br>Everything
-                is going to be red at this point (not building), but you
-                will have full IDE helps ... F3 any selected item jumps
-                you to the declaration of that item, etc. watch for the
-                various navigational mnemonics and accelerators in the
-                right click pull downs.<br> <br>Ok, if you
-                want to build and get rid of all the red. I use
-                ccc-common for a lot of other personal/work stuff, thus
-                I've used an advanced feature of maven for dependency
-                version management that utilizes parent poms. You need
-                to get these parents loaded into your local .m2
-                repository. To do this execute the batch file at:<br>
-                <br>c:\ws\ccc-common\shadowbuild\parents\buildParents.bat
-                install<br> <br>it will need that install
-                command line parameter.<br> <br>Ok, at this
-                point you have two build systems, the maven command line
-                build, which is used for final deployments, this is the
-                master. Then you have Eclipses auto maven build, a
-                subset of the command line which does it's own caching
-                of the .m2 repository classes/jars for IDE time
-                dependencies etc. Sometimes these two get out of synch,
-                and we have definitely confused eclipse at this time.<br>
-                <br>To fix this, right click on any of the projects
-                (i.e. crest-core) select "maven-&gt;update project ..."
-                and hit the "Select All" button and then ok.<br> <br>All
-                the red will drop.<br> <br>if it does not
-                drop, I have a cart-before the horse situation in the
-                build poms that I'm not sure resolve in a clean
-                environment. Holler if that's the case.<br> <br>later,
-                you are real close here to being able to single step
-                servlet code running on the tomcat server, so holler
-                if/when ready to play with that.aving trouble with
-                Pages? Check out our <a
-                    href="https://help.github.com/pages">documentation</a>
-                or <a href="https://github.com/contact">contact
-                    support</a> and we’ll help you sort it out.
-            </p>
+            
+        
         </section>
         <footer>
             <p>
-                This project is maintained by <a
-                    href="https://github.com/timpanogos">timpanogos</a>
+                This project is maintained by <a href="https://github.com/timpanogos">timpanogos</a>
             </p>
             <p>
-                <small>Hosted on GitHub Pages — Theme by <a
-                    href="https://github.com/orderedlist">orderedlist</a></small>
+                <small>Hosted on GitHub Pages — Theme by <a href="https://github.com/orderedlist">orderedlist</a></small>
             </p>
         </footer>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
 </body>
 </html>
