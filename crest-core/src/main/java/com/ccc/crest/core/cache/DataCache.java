@@ -27,6 +27,7 @@ import com.ccc.crest.core.cache.account.ApiKeyInfo;
 import com.ccc.crest.core.cache.account.Characters;
 import com.ccc.crest.core.cache.api.ApiCallList;
 import com.ccc.crest.core.cache.api.ApiInterfaces;
+import com.ccc.crest.core.cache.api.CrestCallList;
 import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.cache.character.AccountBalance;
 import com.ccc.crest.core.cache.character.AssetList;
@@ -512,5 +513,12 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             controller.fireCommunicationEvent(null, type);
             throw new SourceFailureException("Failed to obtain requested url: " + ServerStatus.getXmlUrl());
         }
+    }
+
+    @Override
+    public CrestCallList getCrestCallList() throws SourceFailureException
+    {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

@@ -591,10 +591,7 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                List<XmlApiCallGroup> callGroups = dataCache.getApiCallList().getCallGroups();
-                
-                LoggerFactory.getLogger(getClass()).info("\n\n"+callGroups.toString());
-                
+                dataCache.
 //                dataCache.getTime();
 //                dataAccessor.isUp();
 //                dataCache.getServerStatus();

@@ -21,6 +21,7 @@ import com.ccc.crest.core.cache.SourceFailureException;
 @SuppressWarnings("javadoc")
 public interface ApiInterfaces
 {
+    public CrestCallList getCrestCallList() throws SourceFailureException;
     public ApiCallList getApiCallList() throws SourceFailureException;
     public Time getTime() throws SourceFailureException;
 }
