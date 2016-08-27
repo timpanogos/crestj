@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -518,7 +518,22 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     @Override
     public CrestCallList getCrestCallList() throws SourceFailureException
     {
-        // TODO Auto-generated method stub
-        return null;
+        CacheData data = cache.get(CrestCallList.getCrestUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (CrestCallList) data.data;
+        }
+        try
+        {
+            CrestCallList callList = (CrestCallList) CrestCallList.getCallList(callback).get();
+            callList.accessed();
+            return callList;
+        } catch (Exception e)
+        {
+            CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
+            controller.fireCommunicationEvent(null, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + CrestCallList.getCrestUrl());
+        }
     }
 }

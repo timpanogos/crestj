@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.cache.api.ApiCallListSax.XmlApiCallGroup;
 import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
@@ -591,7 +590,7 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.
+                dataCache.getCrestCallList();
 //                dataCache.getTime();
 //                dataAccessor.isUp();
 //                dataCache.getServerStatus();
