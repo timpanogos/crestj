@@ -34,9 +34,12 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpOptions;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestController;
@@ -53,6 +56,8 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 @SuppressWarnings("javadoc")
 public class CrestClient
 {
+    private static final String CrestDeprecatedHeader = "X-Deprecated";
+    private static final int NoLongerSupported = 406;
     private static final String CacheControlHeader = "Cache-Control";
     private static final String CacheControlMaxAge = "max-age";
     private static final int CrestGeneralMaxRequestsPerSecond = 150;
@@ -69,11 +74,13 @@ public class CrestClient
     private final List<ClientElement> xmlClients;
     private final AtomicInteger crestClientIndex;
     private final AtomicInteger xmlClientIndex;
+    private final Logger log;
 
     private final ExecutorService executor;
 
     public CrestClient(CrestController controller, String crestUrl, String xmlUrl, String userAgent, ExecutorService executor)
     {
+        log = LoggerFactory.getLogger(getClass());
         this.controller = controller;
         this.crestUrl = StrH.stripTrailingSeparator(crestUrl);
         this.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
@@ -120,7 +127,7 @@ public class CrestClient
                     crestClients.get(i).client.close();
         } catch (IOException e)
         {
-            LoggerFactory.getLogger(getClass()).warn(getClass().getSimpleName() + " failed to cleanup cleanly");
+            log.warn(getClass().getSimpleName() + " failed to cleanup cleanly");
         }
     }
 
@@ -134,6 +141,19 @@ public class CrestClient
         return xmlUrl;
     }
 
+    public Future<EveData> getOptions(CrestRequestData requestData)
+    {
+        ClientElement client = null;
+        synchronized (crestClients)
+        {
+            int idx = crestClientIndex.incrementAndGet();
+            client = crestClients.get(idx);
+            if (idx == CrestMaxClients - 1)
+                crestClientIndex.set(-1);
+        }
+        return getOptions(requestData, client);
+    }
+    
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
         ClientElement client = null;
@@ -160,6 +180,23 @@ public class CrestClient
         return get(requestData, client);
     }
 
+    public Future<EveData> getOptions(CrestRequestData requestData, ClientElement client)
+    {
+        String accessToken = null;
+        if (requestData.clientInfo != null)
+            accessToken = ((OAuth2AccessToken) requestData.clientInfo.getAccessToken()).getAccessToken();
+        HttpOptions get = new HttpOptions(requestData.url);
+        if (accessToken != null)
+        {
+            get.addHeader("Authorization", "Bearer " + accessToken);
+            if (requestData.scope != null)
+                get.addHeader("Scope", requestData.scope);
+        }
+        if (requestData.version != null)
+            get.addHeader("Accept", requestData.version);
+        return executor.submit(new CrestGetTask(client, get, requestData));
+    }
+    
     public Future<EveData> get(CrestRequestData requestData, ClientElement client)
     {
         String accessToken = null;
@@ -180,10 +217,10 @@ public class CrestClient
     private class CrestGetTask implements Callable<EveData>
     {
         private final CrestRequestData rdata;
-        private final HttpGet get;
+        private final HttpRequestBase get;
         private final ClientElement client;
 
-        private CrestGetTask(ClientElement client, HttpGet get, CrestRequestData rdata)
+        private CrestGetTask(ClientElement client, HttpRequestBase get, CrestRequestData rdata)
         {
             this.rdata = rdata;
             this.get = get;
@@ -202,7 +239,17 @@ public class CrestClient
                     @Override
                     public String handleResponse(final HttpResponse response) throws ClientProtocolException, IOException
                     {
-                        LoggerFactory.getLogger(getClass()).debug("handling response for: " + rdata.url + " response: " + response.toString());
+                        log.debug("handling response for: " + rdata.url + " response: " + response.toString());
+                        int status = response.getStatusLine().getStatusCode();
+                        if (status < 200 || status > 299)
+                        {
+                            String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
+                            msg += " : " + response.toString();
+                            log.warn(msg);
+                            throw new ClientProtocolException(msg);
+                            //TODO: is it enough to just log it here, currently no one is calling get
+                            // maybe just re-issue, what about connection down retries?  Need to look at status code ranges to determine which to retry on.
+                        }
                         if (rdata.gson != null)
                         {
                             Header[] headers = response.getHeaders(CacheControlHeader);
@@ -222,31 +269,40 @@ public class CrestClient
                             if (!found)
                             {
                                 String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
-                                LoggerFactory.getLogger(getClass()).warn(msg);
+                                log.warn(msg);
                                 throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
                             }
+                            headers = response.getHeaders(CrestDeprecatedHeader);
+                            if (headers != null && headers.length > 0)
+                            {
+                                rdata.deprecated.set(true);
+                                log.warn("Requested Endpoint version is deprecated: " + rdata.url + " " + rdata.version);
+                            }
                         }
-                        int status = response.getStatusLine().getStatusCode();
+                        if (status == NoLongerSupported)
+                        {
+                            String msg = "Endpoint no longer supported: " + status + " " + response.getStatusLine().getReasonPhrase();
+                            log.warn(msg);
+                            throw new ClientProtocolException(msg);
+                        }
+
                         if (status >= 200 && status < 300)
                         {
+                            if(status != 200)
+                                log.warn("received a non 200, but under 300 response: " + response.toString());
                             HttpEntity entity = response.getEntity();
                             String body = entity != null ? EntityUtils.toString(entity) : null;
                             if (rdata.gson == null)
                                 try
                                 {
-
                                     cacheTime.set(EveApi.getCachedUntil(body));
                                 } catch (Exception e)
                                 {
-                                    LoggerFactory.getLogger(getClass()).warn(e.getMessage(), e);
+                                    log.warn(e.getMessage(), e);
                                 }
                             return body;
                         }
-                        String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
-                        LoggerFactory.getLogger(getClass()).warn(msg);
-                        throw new ClientProtocolException(msg);
-                        //TODO: is it enough to just log it here, currently no one is calling get
-                        // maybe just re-issue, what about connection down retries?  Need to look at status code ranges to determine which to retry on.
+                        return null;
                     }
                 };
                 String body = client.client.execute(get, responseHandler);
@@ -259,7 +315,7 @@ public class CrestClient
                 if (rdata.continueRefresh.get())
                     synchronized (refreshQueue)
                     {
-                        LoggerFactory.getLogger(getClass()).debug(rdata.url + " nextRefresh: " + cacheTime.get() + " seconds");
+                        log.debug(rdata.url + " nextRefresh: " + cacheTime.get() + " seconds");
                         long time = System.currentTimeMillis() + cacheTime.get() * 1000;
                         //                        if(rdata.url.equals(Time.getCrestUrl()) || rdata.url.equals(ServerStatus.getXmlUrl()))
                         //                            time = 2000; //TODO: make this health check refresh configurable
@@ -283,7 +339,7 @@ public class CrestClient
                     controller.dataCache.remove(rdata.url);
                     controller.fireCommunicationEvent(rdata.clientInfo, CommsEventListener.Type.CrestDown);
                 }
-                LoggerFactory.getLogger(getClass()).warn("failed to finialize inbound data", e);
+                log.warn("failed to finialize inbound data", e);
                 throw new SourceFailureException("HttpRequest for url: " + rdata.url + " failed", e);
             } finally
             {
@@ -314,7 +370,7 @@ public class CrestClient
                     if (rdata.getNextRefresh() > current)
                         break;
                     rdata = refreshQueue.poll();
-                    LoggerFactory.getLogger(getClass()).debug("refreshing " + rdata.toString());
+                    log.debug("refreshing " + rdata.toString());
                     if (rdata.gson != null)
                         client.getCrest(rdata);
                     else

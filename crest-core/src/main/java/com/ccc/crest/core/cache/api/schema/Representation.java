@@ -14,17 +14,11 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache;
+package com.ccc.crest.core.cache.api.schema;
 
 @SuppressWarnings("javadoc")
-public class Endpoint
+public class Representation
 {
-    public final String name;
-    public final String url;
-
-    public Endpoint(String name, String url)
-    {
-        this.name = name;
-        this.url = url;
-    }
+    public volatile String version_str;
+    public volatile SchemaType acceptType;
 }

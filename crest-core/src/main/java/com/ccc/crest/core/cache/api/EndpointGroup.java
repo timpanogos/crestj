@@ -14,15 +14,17 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache;
+package com.ccc.crest.core.cache.api;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ccc.tools.TabToLevel;
+
 @SuppressWarnings("javadoc")
 public class EndpointGroup
 {
-    private final String name;
+    public final String name;
     private final List<Endpoint> endpoints;
 
     public EndpointGroup(String name)
@@ -30,4 +32,38 @@ public class EndpointGroup
         this.name = name;
         endpoints = new ArrayList<>();
     }
+    
+    public void addEndpoint(Endpoint endpoint)
+    {
+        synchronized (endpoints)
+        {
+            endpoints.add(endpoint);
+        }
+    }
+    
+    public List<Endpoint> getEndpoints()
+    {
+        synchronized (endpoints)
+        {
+            return new ArrayList<>(endpoints);
+        }
+    }
+    
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("name: ", name);
+        format.inc();
+        for(Endpoint endpoint : endpoints)
+            endpoint.toString(format);
+        format.dec();
+        return format;
+    }
+    
 }

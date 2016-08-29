@@ -18,7 +18,11 @@ package com.ccc.crest.core.cache.api;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -26,8 +30,8 @@ import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
-import com.ccc.crest.core.cache.Endpoint;
 import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.api.schema.Representations;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.GsonBuilder;
@@ -36,10 +40,9 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
 
 @SuppressWarnings("javadoc")
-public class CrestCallList extends BaseEveData
+public class CrestCallList extends BaseEveData implements JsonDeserializer<CrestCallList>
 {
     private static final long serialVersionUID = -7096257178892270648L;
 
@@ -52,15 +55,24 @@ public class CrestCallList extends BaseEveData
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    public static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
+    public static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
 
-    private volatile List<Endpoint> endpoints;
+    private volatile int userCount;
+    private volatile String serverVersion;
+    private volatile String serverName;
+    private volatile String serviceStatus;
+    private volatile List<EndpointGroup> callGroups;
 
     public CrestCallList()
     {
-        endpoints = new ArrayList<>();
+        callGroups = new ArrayList<>();
     }
 
+    public List<EndpointGroup> getCallGroups()
+    {
+        return new ArrayList<>(callGroups);
+    }
+    
     public static String getCrestUrl()
     {
         StringBuilder url = new StringBuilder();
@@ -71,8 +83,8 @@ public class CrestCallList extends BaseEveData
     public static Future<EveData> getCallList(CrestResponseCallback callback) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        CrestCallListJson parser = new CrestCallListJson();
-        gson.registerTypeAdapter(CrestCallList.class, parser);
+        //        CrestCallListJson parser = new CrestCallListJson();
+        gson.registerTypeAdapter(CrestCallList.class, new CrestCallList());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getCrestUrl(),
@@ -80,27 +92,129 @@ public class CrestCallList extends BaseEveData
                         callback,
                         ReadScope, Version, continueRefresh);
         //@formatter:on
+//        CrestController.getCrestController().crestClient.getOptions(rdata);
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
-    public static class CrestCallListJson implements JsonDeserializer<CrestCallListJson>
+    public void walk() throws InterruptedException, ExecutionException
     {
-        private final CrestCallList crestCallList;
-
-        public CrestCallListJson()
+//        Gson gson = new Gson();
+        GsonBuilder gson = new GsonBuilder();
+//        CrestCallList ccl = new CrestCallList();
+        Representations representations = new Representations();
+//        gson.registerTypeAdapter(CrestCallList.class, ccl);
+        gson.registerTypeAdapter(Representations.class, representations);
+        for (int i = 0; i < callGroups.size(); i++)
         {
-            crestCallList = new CrestCallList();
-        }
-
-        @Override
-        public CrestCallListJson deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            JsonObject jobj = json.getAsJsonObject();
-            JsonPrimitive jprim = jobj.getAsJsonPrimitive();
-            Endpoint endpoint = new Endpoint("name", "value");
-            return null;
+            EndpointGroup group = callGroups.get(i);
+            List<Endpoint> endpoints = group.getEndpoints();
+            for (Endpoint endpoint : endpoints)
+            {
+                //@formatter:off
+                CrestRequestData rdata = new CrestRequestData(
+                                null, endpoint.uri,
+                                gson.create(), null, Representations.class/*CrestCallList.class*/,
+                                null,
+                                ReadScope, Version, continueRefresh);
+                //@formatter:on
+                log.info("requesting url: " + rdata.url);
+CrestController.getCrestController().crestClient.getOptions(rdata);
+              Future<EveData> data = CrestController.getCrestController().crestClient.getCrest(rdata);
+                EveData d = data.get();
+                log.info(d.toString());
+            }
         }
     }
+
+    private static final String UserCountKey = "userCount";
+    private static final String UserCountStrKey = "userCount_str";
+    private static final String ServerVersionKey = "serverVersion";
+    private static final String ServerNameKey = "serverName";
+    private static final String ServerStatusKey = "serviceStatus";
+
+    @Override
+    public CrestCallList deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        JsonObject topObj = (JsonObject) json;
+        Set<Entry<String, JsonElement>> topSet = topObj.entrySet();
+        Iterator<Entry<String, JsonElement>> topIter = topSet.iterator();
+        do
+        {
+            if (!topIter.hasNext())
+                break;
+            Entry<String, JsonElement> topEntry = topIter.next();
+            String topKey = topEntry.getKey();
+            JsonElement topElement = topEntry.getValue();
+            if (topKey.equals(UserCountKey))
+            {
+                userCount = Integer.parseInt(topElement.getAsString());
+                continue;
+            }
+            if (topKey.equals(UserCountStrKey))
+                continue;
+            if (topKey.equals(ServerVersionKey))
+            {
+                serverVersion = topElement.getAsString();
+                continue;
+            }
+            if (topKey.equals(ServerNameKey))
+            {
+                serverName = topElement.getAsString();
+                continue;
+            }
+            if (topKey.equals(ServerStatusKey))
+            {
+                serviceStatus = topElement.getAsString();
+                continue;
+            }
+            // if its not a top object level known variable from above list, it must be a group object
+            if (topElement.isJsonPrimitive())
+            {
+                log.warn("unexpected key: " + topKey + " = " + topObj.toString());
+                continue;
+            }
+            if (!topElement.isJsonObject())
+            {
+                log.warn("expected an object: " + topKey + " = " + topObj.toString());
+                continue;
+            }
+            // first pass you should have a group in the topElement
+            String groupName = topKey;
+            EndpointGroup endpointGroup = new EndpointGroup(groupName);
+            callGroups.add(endpointGroup);
+            Set<Entry<String, JsonElement>> groupSet = topElement.getAsJsonObject().entrySet();
+            Iterator<Entry<String, JsonElement>> groupIter = groupSet.iterator();
+            do
+            {
+                if (!groupIter.hasNext())
+                    break;
+                Entry<String, JsonElement> groupEntry = groupIter.next();
+                // expecting a primitive href here
+                String endpointName = groupEntry.getKey();
+                JsonElement hrefElement = groupEntry.getValue();
+                if (hrefElement.isJsonObject())
+                {
+                    JsonObject groupChildObj = (JsonObject) hrefElement;
+                    Set<Entry<String, JsonElement>> groupChildSet = groupChildObj.entrySet();
+                    Iterator<Entry<String, JsonElement>> groupChildIter = groupChildSet.iterator();
+                    if (!groupChildIter.hasNext())
+                        break;
+                    Entry<String, JsonElement> groupChildEntry = groupChildIter.next();
+                    String groupChildKey = groupChildEntry.getKey();
+                    JsonElement groupChildElement = groupChildEntry.getValue();
+                    endpointGroup.addEndpoint(new Endpoint(endpointName, groupChildElement.getAsString()));
+                    continue;
+                }
+                // expect an object with href in it
+                if (!hrefElement.isJsonPrimitive())
+                {
+                    log.warn("expected a primitive after group: " + groupName + " = " + hrefElement.toString());
+                    continue;
+                }
+                endpointGroup.addEndpoint(new Endpoint(endpointName, hrefElement.getAsString()));
+                break;
+            } while (true);
+        } while (true);
+        return this;
+    }
 }
-
-

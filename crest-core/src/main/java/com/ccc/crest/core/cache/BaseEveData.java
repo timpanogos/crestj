@@ -22,6 +22,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.RightsException;
 import com.ccc.crest.core.client.xml.EveApiSaxHandler;
@@ -40,9 +43,11 @@ public abstract class BaseEveData extends EveApiSaxHandler implements Serializab
     protected AtomicInteger cacheInSeconds = new AtomicInteger();
     protected AtomicLong nextRefresh = new AtomicLong();
     protected AtomicBoolean fromCrest = new AtomicBoolean(true);
+    protected final Logger log;
 
     public BaseEveData()
     {
+        log = LoggerFactory.getLogger(getClass());
     }
     
     public static boolean checkRights(CrestClientInfo clientInfo, String group)

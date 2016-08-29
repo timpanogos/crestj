@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.cache.api.Time;
+import com.ccc.crest.core.cache.api.CrestCallList;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -348,7 +348,10 @@ public class CrestController extends CoreController implements AuthEventListener
     public void crestUp(CrestClientInfo clientInfo)
     {
         if(clientInfo == null)
+        {
             log.debug("public call, crestup");
+            return;
+        }
         else
             log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestup");
         ElapsedTimer.resetAllElapsedTimers();
@@ -357,13 +360,13 @@ public class CrestController extends CoreController implements AuthEventListener
         ElapsedTimer.startTimer(0);
         ElapsedTimer.startTimer(1);
         ElapsedTimer.startTimer(2);
-        try
-        {
-            Time t = dataCache.getTime();
-        } catch (SourceFailureException e)
-        {
-            e.printStackTrace();
-        }
+//        try
+//        {
+//            Time t = dataCache.getTime();
+//        } catch (SourceFailureException e)
+//        {
+//            e.printStackTrace();
+//        }
         System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
         System.out.println("look here");
     }
@@ -590,7 +593,15 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.getCrestCallList();
+                CrestCallList cl = dataCache.getCrestCallList();
+//                List<EndpointGroup> groups = cl.getCallGroups();
+//                TabToLevel format = new TabToLevel();
+//                format.ttl("\nCall Groups:");
+//                format.inc();
+//                for(EndpointGroup group : groups)
+//                    group.toString(format);
+//                log.info(format.toString());
+                cl.walk();
 //                dataCache.getTime();
 //                dataAccessor.isUp();
 //                dataCache.getServerStatus();
