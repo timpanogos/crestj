@@ -16,7 +16,9 @@
 */
 package com.ccc.crest.core.cache;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
@@ -27,7 +29,6 @@ import com.ccc.crest.core.cache.account.ApiKeyInfo;
 import com.ccc.crest.core.cache.account.Characters;
 import com.ccc.crest.core.cache.api.ApiCallList;
 import com.ccc.crest.core.cache.api.ApiInterfaces;
-import com.ccc.crest.core.cache.api.CrestCallList;
 import com.ccc.crest.core.cache.api.Time;
 import com.ccc.crest.core.cache.character.AccountBalance;
 import com.ccc.crest.core.cache.character.AssetList;
@@ -71,6 +72,14 @@ import com.ccc.crest.core.cache.character.WalletTransactions;
 import com.ccc.crest.core.cache.corporation.CorporationInterfaces;
 import com.ccc.crest.core.cache.eve.AllianceList;
 import com.ccc.crest.core.cache.eve.EveInterfaces;
+import com.ccc.crest.core.cache.schema.CcpType;
+import com.ccc.crest.core.cache.schema.CrestCallList;
+import com.ccc.crest.core.cache.schema.CrestOptions;
+import com.ccc.crest.core.cache.schema.Endpoint;
+import com.ccc.crest.core.cache.schema.EndpointGroup;
+import com.ccc.crest.core.cache.schema.Representation;
+import com.ccc.crest.core.cache.schema.Representations;
+import com.ccc.crest.core.cache.schema.SchemaInterfaces;
 import com.ccc.crest.core.cache.server.ServerInterfaces;
 import com.ccc.crest.core.cache.server.ServerStatus;
 import com.ccc.crest.core.client.CrestResponseCallback;
@@ -78,8 +87,10 @@ import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 
 @SuppressWarnings("javadoc")
-public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces, ServerInterfaces
+public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces, ServerInterfaces, SchemaInterfaces
 {
+    public static final String CrestOverallVersion = "application/vnd.ccp.eve.Api-v5+json";
+    
     private final HashMap<String, CacheData> cache;
     private final DataCacheCallback callback;
     private final CrestController controller;
@@ -439,21 +450,6 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
         throw new RuntimeException("not implemented yet");
     }
 
-    private class DataCacheCallback implements CrestResponseCallback
-    {
-        @Override
-        public void received(CrestRequestData requestData, EveData data)
-        {
-            synchronized (cache)
-            {
-                CacheData previousData = cache.put(requestData.url, new CacheData(data));
-                if(previousData == null || previousData.data.equals(data))
-                    controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
-                controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
-            }
-        }
-    }
-
     @Override
     public AllianceList getAllianceList(CrestClientInfo clientInfo) throws SourceFailureException
     {
@@ -518,15 +514,9 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     @Override
     public CrestCallList getCrestCallList() throws SourceFailureException
     {
-        CacheData data = cache.get(CrestCallList.getCrestUrl());
-        if (data != null)
-        {
-            data.data.accessed();
-            return (CrestCallList) data.data;
-        }
         try
         {
-            CrestCallList callList = (CrestCallList) CrestCallList.getCallList(callback).get();
+            CrestCallList callList = (CrestCallList) CrestCallList.getCallList(null).get();
             callList.accessed();
             return callList;
         } catch (Exception e)
@@ -534,6 +524,68 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
             throw new SourceFailureException("Failed to obtain requested url: " + CrestCallList.getCrestUrl());
+        }
+    }
+    
+    @Override
+    public CrestOptions getCrestOptions(String url) throws SourceFailureException
+    {
+        try
+        {
+            CrestOptions options = (CrestOptions) CrestOptions.getOptions(url, null).get();
+            options.accessed();
+            return options;
+        } catch (Exception e)
+        {
+            CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
+            controller.fireCommunicationEvent(null, type);
+            throw new SourceFailureException("Failed to obtain requested url: " + CrestOptions.getCrestUrl());
+        }
+    }
+    
+    public List<String> checkSchema() throws SourceFailureException
+    {
+        List<String> list = new ArrayList<>();
+        Representations representations = getCrestOptions(null).getRepresentations();
+        List<EndpointGroup> groups = getCrestCallList().getCallGroups();
+        Representation schemaSchema = representations.representations.get(0);
+        Representation endpointSchema = representations.representations.get(1);
+        if(!CrestOptions.Version.equals(schemaSchema.acceptType.name))
+            list.add(schemaSchema.acceptType.name);
+        if(!CrestOverallVersion.equals(endpointSchema.acceptType.name))
+            list.add(endpointSchema.acceptType.name);
+        for(CcpType type : endpointSchema.acceptType.ccpType.children)
+        {
+            for(EndpointGroup group : groups)
+            {
+                for(Endpoint endpoint : group.getEndpoints())
+                {
+                    Representations reps = getCrestOptions(endpoint.uri).getRepresentations();
+                    Representation rep0 = reps.representations.get(0);
+                    Representation rep1 = reps.representations.get(1);
+                    String rep0Version = rep0.acceptType.name;
+                    String rep1Version = rep1.acceptType.name;
+                    System.out.println("look here");
+                    
+                }
+            }
+        }
+        System.out.println("look here");
+        return list;
+    }
+    
+    private class DataCacheCallback implements CrestResponseCallback
+    {
+        @Override
+        public void received(CrestRequestData requestData, EveData data)
+        {
+            synchronized (cache)
+            {
+                CacheData previousData = cache.put(requestData.url, new CacheData(data));
+                if(previousData == null || previousData.data.equals(data))
+                    controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
+                controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
+            }
         }
     }
 }

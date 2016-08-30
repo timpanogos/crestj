@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.cache.api.CrestCallList;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -593,15 +592,7 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                CrestCallList cl = dataCache.getCrestCallList();
-//                List<EndpointGroup> groups = cl.getCallGroups();
-//                TabToLevel format = new TabToLevel();
-//                format.ttl("\nCall Groups:");
-//                format.inc();
-//                for(EndpointGroup group : groups)
-//                    group.toString(format);
-//                log.info(format.toString());
-                cl.walk();
+                dataCache.checkSchema();
 //                dataCache.getTime();
 //                dataAccessor.isUp();
 //                dataCache.getServerStatus();

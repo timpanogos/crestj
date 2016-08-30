@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.api;
+package com.ccc.crest.core.cache.schema;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -22,7 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -31,7 +30,6 @@ import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
-import com.ccc.crest.core.cache.api.schema.Representations;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.GsonBuilder;
@@ -62,10 +60,12 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
     private volatile String serverName;
     private volatile String serviceStatus;
     private volatile List<EndpointGroup> callGroups;
+    private volatile Representations representations;
 
     public CrestCallList()
     {
         callGroups = new ArrayList<>();
+        representations = new Representations();
     }
 
     public List<EndpointGroup> getCallGroups()
@@ -83,47 +83,15 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
     public static Future<EveData> getCallList(CrestResponseCallback callback) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        //        CrestCallListJson parser = new CrestCallListJson();
         gson.registerTypeAdapter(CrestCallList.class, new CrestCallList());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getCrestUrl(),
-                        gson.create(), null, CrestCallList.class,
-                        callback,
-                        ReadScope, Version, continueRefresh);
+                    null, getCrestUrl(),
+                    gson.create(), null, CrestCallList.class,
+                    callback,
+                    ReadScope, Version, continueRefresh);
         //@formatter:on
-//        CrestController.getCrestController().crestClient.getOptions(rdata);
         return CrestController.getCrestController().crestClient.getCrest(rdata);
-    }
-
-    public void walk() throws InterruptedException, ExecutionException
-    {
-//        Gson gson = new Gson();
-        GsonBuilder gson = new GsonBuilder();
-//        CrestCallList ccl = new CrestCallList();
-        Representations representations = new Representations();
-//        gson.registerTypeAdapter(CrestCallList.class, ccl);
-        gson.registerTypeAdapter(Representations.class, representations);
-        for (int i = 0; i < callGroups.size(); i++)
-        {
-            EndpointGroup group = callGroups.get(i);
-            List<Endpoint> endpoints = group.getEndpoints();
-            for (Endpoint endpoint : endpoints)
-            {
-                //@formatter:off
-                CrestRequestData rdata = new CrestRequestData(
-                                null, endpoint.uri,
-                                gson.create(), null, Representations.class/*CrestCallList.class*/,
-                                null,
-                                ReadScope, Version, continueRefresh);
-                //@formatter:on
-                log.info("requesting url: " + rdata.url);
-CrestController.getCrestController().crestClient.getOptions(rdata);
-              Future<EveData> data = CrestController.getCrestController().crestClient.getCrest(rdata);
-                EveData d = data.get();
-                log.info(d.toString());
-            }
-        }
     }
 
     private static final String UserCountKey = "userCount";

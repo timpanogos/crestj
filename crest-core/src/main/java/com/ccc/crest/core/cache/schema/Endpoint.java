@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.api;
+package com.ccc.crest.core.cache.schema;
 
 import com.ccc.tools.TabToLevel;
 
