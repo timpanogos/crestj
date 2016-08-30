@@ -16,9 +16,89 @@
 */
 package com.ccc.crest.core.cache.api.schema;
 
+import java.lang.reflect.Type;
+import java.util.Iterator;
+import java.util.Map.Entry;
+
+import com.ccc.tools.TabToLevel;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
 @SuppressWarnings("javadoc")
-public class Representation
+public class Representation implements JsonDeserializer<Representation>
 {
-    public volatile String version_str;
-    public volatile SchemaType acceptType;
+    public volatile String versionStr;
+    public volatile AcceptType acceptType;
+    public volatile String verb;
+    public volatile int version;
+    public volatile boolean thirdParty;
+    
+    private static final String AcceptVersionStrKey = "version_str";
+    private static final String AcceptTypeKey = "acceptType";
+    private static final String VerbKey = "verb";
+    private static final String VersionKey = "version";
+    private static final String ThirdPartyKey = "thirdParty";
+    
+    @Override
+    public Representation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        Iterator<Entry<String, JsonElement>> repIter = ((JsonObject)json).entrySet().iterator();
+        Entry<String, JsonElement> entry = repIter.next();
+        if (!entry.getKey().equals(AcceptVersionStrKey))
+            throw new JsonParseException("Expected: " + AcceptVersionStrKey + " rec: " + entry.getKey());
+        versionStr = entry.getValue().getAsString();
+        
+        entry = repIter.next();
+        if (!entry.getKey().equals(AcceptTypeKey))
+            throw new JsonParseException("Expected: " + AcceptTypeKey + " rec: " + entry.getKey());
+        acceptType = new AcceptType();
+        acceptType.deserialize(entry.getValue(), typeOfT, context);
+        
+        entry = repIter.next();
+        if (!entry.getKey().equals(VerbKey))
+            throw new JsonParseException("Expected: " + VerbKey + " rec: " + entry.getKey());
+        verb = entry.getValue().getAsString();
+        
+        entry = repIter.next();
+        if (!entry.getKey().equals(VersionKey))
+            throw new JsonParseException("Expected: " + VersionKey + " rec: " + entry.getKey());
+        version = entry.getValue().getAsInt();
+        
+        entry = repIter.next();
+        if (!entry.getKey().equals(ThirdPartyKey))
+            throw new JsonParseException("Expected: " + ThirdPartyKey + " rec: " + entry.getKey());
+        thirdParty = entry.getValue().getAsBoolean();
+        
+        return this;
+    }
+    
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        format.ttl(getClass().getSimpleName());
+        format.inc();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("versionStr: ", versionStr);
+        format.ttl("verb: ", verb);
+        format.ttl("version: ", version);
+        format.ttl("thirdParty: ", thirdParty);
+        if(acceptType == null)
+            format.ttl("acceptType: null");
+        else
+        {
+            format.ttl("acceptType: ");
+            format.inc();
+            acceptType.toString(format);
+            format.dec();
+        }
+        return format;
+    }
 }
