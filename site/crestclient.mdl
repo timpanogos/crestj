@@ -1,0 +1,1821 @@
+
+(object Petal
+    version    	42
+    _written   	"Rose 4.5.8054a"
+    charSet    	0)
+
+(object Design "Logical View"
+    is_unit    	TRUE
+    is_loaded  	TRUE
+    quid       	"57C687E403DB"
+    defaults   	(object defaults
+	rightMargin 	0.250000
+	leftMargin 	0.250000
+	topMargin  	0.250000
+	bottomMargin 	0.500000
+	pageOverlap 	0.250000
+	clipIconLabels 	TRUE
+	autoResize 	TRUE
+	snapToGrid 	TRUE
+	gridX      	16
+	gridY      	16
+	defaultFont 	(object Font
+	    size       	10
+	    face       	"Arial"
+	    bold       	FALSE
+	    italics    	FALSE
+	    underline  	FALSE
+	    strike     	FALSE
+	    color      	0
+	    default_color 	TRUE)
+	showMessageNum 	1
+	showClassOfObject 	TRUE
+	notation   	"Unified")
+    root_usecase_package 	(object Class_Category "Use Case View"
+	quid       	"57C687E403DD"
+	exportControl 	"Public"
+	global     	TRUE
+	logical_models 	(list unit_reference_list)
+	logical_presentations 	(list unit_reference_list
+	    (object UseCaseDiagram "Main"
+		quid       	"57C687E5014C"
+		title      	"Main"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list))))
+    root_category 	(object Class_Category "Logical View"
+	quid       	"57C687E403DC"
+	exportControl 	"Public"
+	global     	TRUE
+	subsystem  	"Component View"
+	quidu      	"57C687E403DE"
+	logical_models 	(list unit_reference_list
+	    (object Class "CrestClient"
+		quid       	"57C687EC03AF"
+		operations 	(list Operations
+		    (object Operation "getCrest"
+			quid       	"57C68F310387"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "getXml"
+			quid       	"57C68F370283"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "getOptions"
+			quid       	"57C68F3C030B"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		language   	"Java")
+	    (object Class "CrestGetTask"
+		quid       	"57C6896100ED"
+		language   	"Java")
+	    (object Class "QueueTask"
+		quid       	"57C6897202C2"
+		language   	"Java")
+	    (object Class "CrestController"
+		quid       	"57C6898101BF"
+		operations 	(list Operations
+		    (object Operation "fireCommunicationsEvent"
+			quid       	"57C68E51016A"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "fireCacheRefreshed"
+			quid       	"57C68F8300D7"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "fireCacheChanged"
+			quid       	"57C68F9A0110"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0)
+		    (object Operation "fireVersionChanged"
+			quid       	"57C69224029F"
+			concurrency 	"Sequential"
+			opExportControl 	"Public"
+			uid        	0))
+		language   	"Java")
+	    (object Class "PriorityQueue"
+		quid       	"57C689BB036D"
+		language   	"Java")
+	    (object Class "ScheduledExecutor"
+		quid       	"57C68A330066"
+		language   	"Java")
+	    (object Class "ExecutorService"
+		quid       	"57C68A49015F"
+		stereotype 	"Interface"
+		language   	"Java")
+	    (object Class "ClientElement"
+		quid       	"57C68B26029B"
+		language   	"Java")
+	    (object Class "RequestThrottle"
+		quid       	"57C68C040313"
+		language   	"Java")
+	    (object Class "CloseableHttpClient"
+		quid       	"57C68C1F0238"
+		language   	"Java")
+	    (object Class "CrestResponseCallback"
+		quid       	"57C68EBE0085"
+		stereotype 	"Interface"
+		language   	"Java")
+	    (object Class "DataCacheCallback"
+		quid       	"57C68ED402F5"
+		realized_interfaces 	(list realize_rel_list
+		    (object Realize_Relationship
+			quid       	"57C68EE803B6"
+			supplier   	"Logical View::CrestResponseCallback"
+			quidu      	"57C68EBE0085"))
+		language   	"Java")
+	    (object Class "DataCache"
+		quid       	"57C690F203D6"
+		language   	"Java")
+	    (object Association "$UNNAMED$0"
+		quid       	"57C689920193"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$1"
+			quid       	"57C689930254"
+			supplier   	"Logical View::CrestClient"
+			quidu      	"57C687EC03AF"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$2"
+			quid       	"57C689930260"
+			supplier   	"Logical View::CrestController"
+			quidu      	"57C6898101BF"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$3"
+		quid       	"57C68A94001C"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$4"
+			quid       	"57C68A950141"
+			supplier   	"Logical View::CrestClient"
+			quidu      	"57C687EC03AF"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$5"
+			quid       	"57C68A950142"
+			supplier   	"Logical View::ExecutorService"
+			quidu      	"57C68A49015F"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$6"
+		quid       	"57C68A9900D2"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$7"
+			quid       	"57C68A9A0206"
+			supplier   	"Logical View::CrestClient"
+			quidu      	"57C687EC03AF"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$8"
+			quid       	"57C68A9A0207"
+			supplier   	"Logical View::PriorityQueue"
+			quidu      	"57C689BB036D"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$9"
+		quid       	"57C68A9C0111"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$10"
+			quid       	"57C68A9D0227"
+			supplier   	"Logical View::CrestClient"
+			quidu      	"57C687EC03AF"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$11"
+			quid       	"57C68A9D0228"
+			supplier   	"Logical View::ScheduledExecutor"
+			quidu      	"57C68A330066"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$12"
+		quid       	"57C68B0700FD"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$13"
+			quid       	"57C68B080182"
+			supplier   	"Logical View::CrestGetTask"
+			quidu      	"57C6896100ED"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$14"
+			quid       	"57C68B080183"
+			supplier   	"Logical View::ExecutorService"
+			quidu      	"57C68A49015F"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$15"
+		quid       	"57C68B10011E"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$16"
+			quid       	"57C68B110071"
+			supplier   	"Logical View::ScheduledExecutor"
+			quidu      	"57C68A330066"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$17"
+			quid       	"57C68B110072"
+			supplier   	"Logical View::QueueTask"
+			quidu      	"57C6897202C2"
+			is_navigable 	TRUE)))
+	    (object Association "20 crest"
+		quid       	"57C68BBD0114"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$18"
+			quid       	"57C68BBE02B9"
+			supplier   	"Logical View::CrestClient"
+			quidu      	"57C687EC03AF"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$19"
+			quid       	"57C68BBE02BA"
+			supplier   	"Logical View::ClientElement"
+			quidu      	"57C68B26029B"
+			is_navigable 	TRUE)))
+	    (object Association "20 xmlApi"
+		quid       	"57C68BBF021C"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$20"
+			quid       	"57C68BC000DE"
+			supplier   	"Logical View::CrestClient"
+			quidu      	"57C687EC03AF"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$21"
+			quid       	"57C68BC000DF"
+			supplier   	"Logical View::ClientElement"
+			quidu      	"57C68B26029B"
+			is_navigable 	TRUE)))
+	    (object Association "xmlApi"
+		quid       	"57C68C4D020C"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$22"
+			quid       	"57C68C4D03AE"
+			supplier   	"Logical View::ClientElement"
+			quidu      	"57C68B26029B"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$23"
+			quid       	"57C68C4D03AF"
+			supplier   	"Logical View::RequestThrottle"
+			quidu      	"57C68C040313"
+			is_navigable 	TRUE)))
+	    (object Association "crest"
+		quid       	"57C68C4E02F8"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$24"
+			quid       	"57C68C4F020B"
+			supplier   	"Logical View::ClientElement"
+			quidu      	"57C68B26029B"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$25"
+			quid       	"57C68C4F020C"
+			supplier   	"Logical View::RequestThrottle"
+			quidu      	"57C68C040313"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$26"
+		quid       	"57C68C50016C"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$27"
+			quid       	"57C68C520002"
+			supplier   	"Logical View::ClientElement"
+			quidu      	"57C68B26029B"
+			is_navigable 	TRUE
+			is_aggregate 	TRUE)
+		    (object Role "$UNNAMED$28"
+			quid       	"57C68C520003"
+			supplier   	"Logical View::CloseableHttpClient"
+			quidu      	"57C68C1F0238"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$29"
+		quid       	"57C690FF031A"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$30"
+			quid       	"57C69100018D"
+			supplier   	"Logical View::DataCache"
+			quidu      	"57C690F203D6"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$31"
+			quid       	"57C69100018E"
+			supplier   	"Logical View::DataCacheCallback"
+			quidu      	"57C68ED402F5"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$32"
+		quid       	"57C6914C0252"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$33"
+			quid       	"57C6914D02EF"
+			supplier   	"Logical View::DataCacheCallback"
+			quidu      	"57C68ED402F5"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$34"
+			quid       	"57C6914D02F0"
+			supplier   	"Logical View::CrestController"
+			quidu      	"57C6898101BF"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$35"
+		quid       	"57C69173018B"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$36"
+			quid       	"57C6917402C7"
+			supplier   	"Logical View::CrestGetTask"
+			quidu      	"57C6896100ED"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$37"
+			quid       	"57C6917402C8"
+			supplier   	"Logical View::CrestResponseCallback"
+			quidu      	"57C68EBE0085"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$38"
+		quid       	"57C691B9027D"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$39"
+			quid       	"57C691BA0139"
+			supplier   	"Logical View::QueueTask"
+			quidu      	"57C6897202C2"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$40"
+			quid       	"57C691BA013A"
+			supplier   	"Logical View::PriorityQueue"
+			quidu      	"57C689BB036D"
+			is_navigable 	TRUE)))
+	    (object Association "$UNNAMED$41"
+		quid       	"57C697EF02EA"
+		roles      	(list role_list
+		    (object Role "$UNNAMED$42"
+			quid       	"57C697F100CE"
+			supplier   	"Logical View::CrestController"
+			quidu      	"57C6898101BF"
+			is_navigable 	TRUE)
+		    (object Role "$UNNAMED$43"
+			quid       	"57C697F100D0"
+			supplier   	"Logical View::CrestGetTask"
+			quidu      	"57C6896100ED"
+			is_navigable 	TRUE))))
+	logical_presentations 	(list unit_reference_list
+	    (object ClassDiagram "Main"
+		quid       	"57C687E5014D"
+		title      	"Main"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list
+		    (object ClassView "Class" "Logical View::ExecutorService" @1
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1008, 1120)
+			label      	(object ItemLabel
+			    Parent_View 	@1
+			    location   	(844, 1091)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	328
+			    justify    	0
+			    label      	"ExecutorService")
+			stereotype 	(object ItemLabel
+			    Parent_View 	@1
+			    location   	(844, 1041)
+			    fill_color 	13434879
+			    anchor     	10
+			    nlines     	1
+			    max_width  	328
+			    justify    	0
+			    label      	"<<Interface>>")
+			icon       	"Interface"
+			icon_style 	"Label"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68A49015F"
+			width      	346
+			height     	182
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::ScheduledExecutor" @2
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(432, 704)
+			label      	(object ItemLabel
+			    Parent_View 	@2
+			    location   	(241, 653)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	382
+			    justify    	0
+			    label      	"ScheduledExecutor")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68A330066"
+			width      	400
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::ClientElement" @3
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1712, 448)
+			label      	(object ItemLabel
+			    Parent_View 	@3
+			    location   	(1568, 397)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	288
+			    justify    	0
+			    label      	"ClientElement")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68B26029B"
+			width      	306
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::ClientElement" @4
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1472, 304)
+			label      	(object ItemLabel
+			    Parent_View 	@4
+			    location   	(1328, 253)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	288
+			    justify    	0
+			    label      	"ClientElement")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68B26029B"
+			width      	306
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CrestClient" @5
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1008, 704)
+			label      	(object ItemLabel
+			    Parent_View 	@5
+			    location   	(872, 573)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	272
+			    justify    	0
+			    label      	"CrestClient")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C687EC03AF"
+			compartment 	(object Compartment
+			    Parent_View 	@5
+			    location   	(872, 633)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	4
+			    max_width  	269)
+			width      	290
+			height     	286
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$3" @6
+			location   	(1008, 937)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68A94001C"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$4" @7
+				Parent_View 	@6
+				location   	(560, 601)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68A950141"
+				client     	@6
+				supplier   	@5
+				line_style 	0)
+			    (object RoleView "$UNNAMED$5" @8
+				Parent_View 	@6
+				location   	(560, 601)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68A950142"
+				client     	@6
+				supplier   	@1
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$9" @9
+			location   	(747, 704)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68A9C0111"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$10" @10
+				Parent_View 	@9
+				location   	(-293, -176)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68A9D0227"
+				client     	@9
+				supplier   	@5
+				line_style 	0)
+			    (object RoleView "$UNNAMED$11" @11
+				Parent_View 	@9
+				location   	(-293, -176)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68A9D0228"
+				client     	@9
+				supplier   	@2
+				line_style 	0)))
+		    (object AssociationViewNew "20 crest" @12
+			location   	(1355, 577)
+			label      	(object SegLabel @13
+			    Parent_View 	@12
+			    location   	(1400, 570)
+			    font       	(object Font
+				italics    	TRUE)
+			    anchor     	1
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	144
+			    justify    	0
+			    label      	"20 crest"
+			    pctDist    	1.266667
+			    height     	8
+			    orientation 	0)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68BBD0114"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$18" @14
+				Parent_View 	@12
+				location   	(-837, 305)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68BBE02B9"
+				client     	@12
+				supplier   	@5
+				line_style 	0)
+			    (object RoleView "$UNNAMED$19" @15
+				Parent_View 	@12
+				location   	(-837, 305)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68BBE02BA"
+				client     	@12
+				supplier   	@3
+				line_style 	0)))
+		    (object AssociationViewNew "20 xmlApi" @16
+			location   	(1275, 473)
+			label      	(object SegLabel @17
+			    Parent_View 	@16
+			    location   	(1290, 431)
+			    font       	(object Font
+				italics    	TRUE)
+			    anchor     	1
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	180
+			    justify    	0
+			    label      	"20 xmlApi"
+			    pctDist    	0.766667
+			    height     	43
+			    orientation 	0)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68BBF021C"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$20" @18
+				Parent_View 	@16
+				location   	(-613, 313)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68BC000DE"
+				client     	@16
+				supplier   	@5
+				line_style 	0)
+			    (object RoleView "$UNNAMED$21" @19
+				Parent_View 	@16
+				location   	(-613, 313)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68BC000DF"
+				client     	@16
+				supplier   	@4
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::RequestThrottle" @20
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2128, 400)
+			label      	(object ItemLabel
+			    Parent_View 	@20
+			    location   	(1972, 349)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	312
+			    justify    	0
+			    label      	"RequestThrottle")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68C040313"
+			width      	330
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::RequestThrottle" @21
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2480, 400)
+			label      	(object ItemLabel
+			    Parent_View 	@21
+			    location   	(2324, 349)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	312
+			    justify    	0
+			    label      	"RequestThrottle")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68C040313"
+			width      	330
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::CloseableHttpClient" @22
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1776, 112)
+			label      	(object ItemLabel
+			    Parent_View 	@22
+			    location   	(1583, 61)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	386
+			    justify    	0
+			    label      	"CloseableHttpClient")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68C1F0238"
+			width      	404
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::ClientElement" @23
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2272, 112)
+			label      	(object ItemLabel
+			    Parent_View 	@23
+			    location   	(2128, 61)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	288
+			    justify    	0
+			    label      	"ClientElement")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68B26029B"
+			width      	306
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "xmlApi" @24
+			location   	(2199, 255)
+			label      	(object SegLabel @25
+			    Parent_View 	@24
+			    location   	(2184, 276)
+			    font       	(object Font
+				italics    	TRUE)
+			    anchor     	1
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	143
+			    justify    	0
+			    label      	"xmlApi"
+			    pctDist    	0.250000
+			    height     	21
+			    orientation 	1)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68C4D020C"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$22" @26
+				Parent_View 	@24
+				location   	(2007, -497)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68C4D03AE"
+				client     	@24
+				supplier   	@23
+				line_style 	0)
+			    (object RoleView "$UNNAMED$23" @27
+				Parent_View 	@24
+				location   	(2007, -497)
+				label      	(object SegLabel @28
+				    Parent_View 	@27
+				    location   	(2130, 302)
+				    hidden     	TRUE
+				    anchor     	1
+				    anchor_loc 	1
+				    nlines     	1
+				    max_width  	372
+				    justify    	0
+				    label      	""
+				    pctDist    	0.800000
+				    height     	42
+				    orientation 	1)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68C4D03AF"
+				client     	@24
+				supplier   	@20
+				line_style 	0)))
+		    (object AssociationViewNew "crest" @29
+			location   	(2375, 255)
+			label      	(object SegLabel @30
+			    Parent_View 	@29
+			    location   	(2373, 276)
+			    font       	(object Font
+				italics    	TRUE)
+			    anchor     	1
+			    anchor_loc 	1
+			    nlines     	1
+			    max_width  	113
+			    justify    	0
+			    label      	"crest"
+			    pctDist    	0.483333
+			    height     	21
+			    orientation 	1)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68C4E02F8"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$24" @31
+				Parent_View 	@29
+				location   	(1879, -689)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68C4F020B"
+				client     	@29
+				supplier   	@23
+				line_style 	0)
+			    (object RoleView "$UNNAMED$25" @32
+				Parent_View 	@29
+				location   	(1879, -689)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68C4F020C"
+				client     	@29
+				supplier   	@21
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$26" @33
+			location   	(2048, 112)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68C50016C"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$27" @34
+				Parent_View 	@33
+				location   	(1232, -1056)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68C520002"
+				client     	@33
+				supplier   	@23
+				line_style 	0)
+			    (object RoleView "$UNNAMED$28" @35
+				Parent_View 	@33
+				location   	(1232, -1056)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68C520003"
+				client     	@33
+				supplier   	@22
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::DataCache" @36
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(3040, 1024)
+			label      	(object ItemLabel
+			    Parent_View 	@36
+			    location   	(2924, 973)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	232
+			    justify    	0
+			    label      	"DataCache")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C690F203D6"
+			width      	250
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object ClassView "Class" "Logical View::DataCacheCallback" @37
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2560, 1024)
+			label      	(object ItemLabel
+			    Parent_View 	@37
+			    location   	(2363, 973)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	394
+			    justify    	0
+			    label      	"DataCacheCallback")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68ED402F5"
+			width      	412
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$29" @38
+			location   	(2840, 1024)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C690FF031A"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$30" @39
+				Parent_View 	@38
+				location   	(88, -400)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C69100018D"
+				client     	@38
+				supplier   	@36
+				line_style 	0)
+			    (object RoleView "$UNNAMED$31" @40
+				Parent_View 	@38
+				location   	(88, -400)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C69100018E"
+				client     	@38
+				supplier   	@37
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CrestResponseCallback" @41
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(2560, 720)
+			label      	(object ItemLabel
+			    Parent_View 	@41
+			    location   	(2324, 691)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	472
+			    justify    	0
+			    label      	"CrestResponseCallback")
+			stereotype 	(object ItemLabel
+			    Parent_View 	@41
+			    location   	(2324, 641)
+			    fill_color 	13434879
+			    anchor     	10
+			    nlines     	1
+			    max_width  	472
+			    justify    	0
+			    label      	"<<Interface>>")
+			icon       	"Interface"
+			icon_style 	"Label"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C68EBE0085"
+			width      	490
+			height     	182
+			annotation 	8
+			autoResize 	TRUE)
+		    (object RealizeView "" @42
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68EE803B6"
+			client     	@37
+			supplier   	@41
+			line_style 	0)
+		    (object ClassView "Class" "Logical View::PriorityQueue" @43
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1008, 352)
+			label      	(object ItemLabel
+			    Parent_View 	@43
+			    location   	(871, 301)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	274
+			    justify    	0
+			    label      	"PriorityQueue")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C689BB036D"
+			width      	292
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$6" @44
+			location   	(1008, 487)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68A9900D2"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$7" @45
+				Parent_View 	@44
+				location   	(192, -137)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68A9A0206"
+				client     	@44
+				supplier   	@5
+				line_style 	0)
+			    (object RoleView "$UNNAMED$8" @46
+				Parent_View 	@44
+				location   	(192, -137)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68A9A0207"
+				client     	@44
+				supplier   	@43
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::QueueTask" @47
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(432, 352)
+			label      	(object ItemLabel
+			    Parent_View 	@47
+			    location   	(315, 301)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	234
+			    justify    	0
+			    label      	"QueueTask")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C6897202C2"
+			width      	252
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$15" @48
+			location   	(432, 527)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68B10011E"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$16" @49
+				Parent_View 	@48
+				location   	(-592, 15)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68B110071"
+				client     	@48
+				supplier   	@2
+				line_style 	0)
+			    (object RoleView "$UNNAMED$17" @50
+				Parent_View 	@48
+				location   	(-592, 15)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68B110072"
+				client     	@48
+				supplier   	@47
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$38" @51
+			location   	(709, 352)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C691B9027D"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$39" @52
+				Parent_View 	@51
+				location   	(-219, 96)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C691BA0139"
+				client     	@51
+				supplier   	@47
+				line_style 	0)
+			    (object RoleView "$UNNAMED$40" @53
+				Parent_View 	@51
+				location   	(-219, 96)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C691BA013A"
+				client     	@51
+				supplier   	@43
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CrestGetTask" @54
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1472, 1120)
+			label      	(object ItemLabel
+			    Parent_View 	@54
+			    location   	(1330, 1069)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	284
+			    justify    	0
+			    label      	"CrestGetTask")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C6896100ED"
+			width      	302
+			height     	126
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$12" @55
+			location   	(1250, 1120)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C68B0700FD"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$13" @56
+				Parent_View 	@55
+				location   	(-206, 320)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68B080182"
+				client     	@55
+				supplier   	@54
+				line_style 	0)
+			    (object RoleView "$UNNAMED$14" @57
+				Parent_View 	@55
+				location   	(-206, 320)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C68B080183"
+				client     	@55
+				supplier   	@1
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$35" @58
+			location   	(1968, 936)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C69173018B"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$36" @59
+				Parent_View 	@58
+				location   	(-592, 216)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C6917402C7"
+				client     	@58
+				supplier   	@54
+				line_style 	0)
+			    (object RoleView "$UNNAMED$37" @60
+				Parent_View 	@58
+				location   	(-592, 216)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C6917402C8"
+				client     	@58
+				supplier   	@41
+				line_style 	0)))
+		    (object ClassView "Class" "Logical View::CrestController" @61
+			ShowCompartmentStereotypes 	TRUE
+			IncludeAttribute 	TRUE
+			IncludeOperation 	TRUE
+			location   	(1840, 704)
+			label      	(object ItemLabel
+			    Parent_View 	@61
+			    location   	(1575, 548)
+			    fill_color 	13434879
+			    nlines     	1
+			    max_width  	530
+			    justify    	0
+			    label      	"CrestController")
+			icon_style 	"Icon"
+			line_color 	3342489
+			fill_color 	13434879
+			quidu      	"57C6898101BF"
+			compartment 	(object Compartment
+			    Parent_View 	@61
+			    location   	(1575, 608)
+			    icon_style 	"Icon"
+			    fill_color 	13434879
+			    anchor     	2
+			    nlines     	5
+			    max_width  	528)
+			width      	548
+			height     	336
+			annotation 	8
+			autoResize 	TRUE)
+		    (object AssociationViewNew "$UNNAMED$0" @62
+			location   	(1359, 704)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C689920193"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$1" @63
+				Parent_View 	@62
+				location   	(-881, 240)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C689930254"
+				client     	@62
+				supplier   	@5
+				line_style 	0)
+			    (object RoleView "$UNNAMED$2" @64
+				Parent_View 	@62
+				location   	(-881, 240)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C689930260"
+				client     	@62
+				supplier   	@61
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$32" @65
+			location   	(2266, 892)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C6914C0252"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$33" @66
+				Parent_View 	@65
+				location   	(426, 188)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C6914D02EF"
+				client     	@65
+				supplier   	@37
+				line_style 	0)
+			    (object RoleView "$UNNAMED$34" @67
+				Parent_View 	@65
+				location   	(426, 188)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C6914D02F0"
+				client     	@65
+				supplier   	@61
+				line_style 	0)))
+		    (object AssociationViewNew "$UNNAMED$41" @68
+			location   	(1608, 964)
+			stereotype 	TRUE
+			line_color 	3342489
+			quidu      	"57C697EF02EA"
+			roleview_list 	(list RoleViews
+			    (object RoleView "$UNNAMED$42" @69
+				Parent_View 	@68
+				location   	(136, -156)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C697F100CE"
+				client     	@68
+				supplier   	@61
+				line_style 	0)
+			    (object RoleView "$UNNAMED$43" @70
+				Parent_View 	@68
+				location   	(136, -156)
+				stereotype 	TRUE
+				line_color 	3342489
+				quidu      	"57C697F100D0"
+				client     	@68
+				supplier   	@54
+				line_style 	0)))))))
+    root_subsystem 	(object SubSystem "Component View"
+	quid       	"57C687E403DE"
+	physical_models 	(list unit_reference_list)
+	physical_presentations 	(list unit_reference_list
+	    (object Module_Diagram "Main"
+		quid       	"57C687E5014B"
+		title      	"Main"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list))))
+    process_structure 	(object Processes
+	quid       	"57C687E403DF"
+	ProcsNDevs 	(list
+	    (object Process_Diagram "Deployment View"
+		quid       	"57C687E403E1"
+		title      	"Deployment View"
+		zoom       	100
+		max_height 	28350
+		max_width  	21600
+		origin_x   	0
+		origin_y   	0
+		items      	(list diagram_item_list))))
+    properties 	(object Properties
+	attributes 	(list Attribute_Set
+	    (object Attribute
+		tool       	"DDL"
+		name       	"propertyId"
+		value      	"809135966")
+	    (object Attribute
+		tool       	"DDL"
+		name       	"default__Project"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"DDL"
+			name       	"DataBase"
+			value      	("DataBaseSet" 800))
+		    (object Attribute
+			tool       	"DDL"
+			name       	"DataBaseSet"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"DDL"
+				name       	"ANSI"
+				value      	800)
+			    (object Attribute
+				tool       	"DDL"
+				name       	"Oracle"
+				value      	801)
+			    (object Attribute
+				tool       	"DDL"
+				name       	"SQLServer"
+				value      	802)
+			    (object Attribute
+				tool       	"DDL"
+				name       	"Sybase"
+				value      	803)
+			    (object Attribute
+				tool       	"DDL"
+				name       	"Watcom"
+				value      	804)))
+		    (object Attribute
+			tool       	"DDL"
+			name       	"PrimaryKeyColumnName"
+			value      	"Id")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"PrimaryKeyColumnType"
+			value      	"NUMBER(5)")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"ViewName"
+			value      	"V_")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"TableName"
+			value      	"T_")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"InheritSuffix"
+			value      	"_V")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"DropClause"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"DDL"
+			name       	"BaseViews"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"DDL"
+			name       	"DDLScriptFilename"
+			value      	"DDL1.SQL")))
+	    (object Attribute
+		tool       	"DDL"
+		name       	"default__Attribute"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"DDL"
+			name       	"ColumnType"
+			value      	"VARCHAR")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"Length"
+			value      	"")
+		    (object Attribute
+			tool       	"DDL"
+			name       	"NullsOK"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"DDL"
+			name       	"PrimaryKey"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"DDL"
+			name       	"Unique"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"DDL"
+			name       	"CompositeUnique"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"DDL"
+			name       	"CheckConstraint"
+			value      	"")))
+	    (object Attribute
+		tool       	"DDL"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"IDL"
+		name       	"propertyId"
+		value      	"809135966")
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Project"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"CreateMissingDirectories"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"StopOnError"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"Directory"
+			value      	"AUTO GENERATE")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GeneratePreserveRegions"
+			value      	TRUE)))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"ImplementationType"
+			value      	"")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"ConstValue"
+			value      	"")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateDefaultSpecifier"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"DefaultSpecifier"
+			value      	"")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IDLElement"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IDLSpecificationType"
+			value      	("IDLSpecSet" 22))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IDLSpecSet"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Interface"
+				value      	22)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Typedef"
+				value      	54)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Enumeration"
+				value      	8)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Const"
+				value      	71)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Exception"
+				value      	61)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Struct"
+				value      	51)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Union"
+				value      	81)))))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Module-Spec"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"CmIdentification"
+			value      	(value Text "  %X% %Q% %Z% %W%"))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"CopyrightNotice"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"FileName"
+			value      	"AUTO GENERATE")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateIDLModule"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"InclusionProtectionSymbol"
+			value      	"AUTO GENERATE")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"AdditionalIncludes"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IncludeBySimpleName"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Module-Body"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"CmIdentification"
+			value      	(value Text "  %X% %Q% %Z% %W%"))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"CopyrightNotice"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"FileName"
+			value      	"AUTO GENERATE")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"AdditionalIncludes"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IncludeBySimpleName"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Operation"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"OperationIsOneWay"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"Context"
+			value      	"")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"Raises"
+			value      	"")))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Attribute"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"CaseSpecifier"
+			value      	"")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateDataMember"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"DataMemberName"
+			value      	"$relationship")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IsReadOnly"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IsConst"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"ConstValue"
+			value      	"")))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Has"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"NameIfUnlabeled"
+			value      	"the_$supplier")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateDataMember"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"DataMemberName"
+			value      	"$relationship")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateForwardReference"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IsReadOnly"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"BoundedHasRelType"
+			value      	("HasRelTypeSet" 47))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"HasRelTypeSet"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Array"
+				value      	24)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Sequence"
+				value      	47)))))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Role"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"NameIfUnlabeled"
+			value      	"the_$supplier")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateDataMember"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"DataMemberName"
+			value      	"$relationship")
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateForwardReference"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"IsReadOnly"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"IDL"
+			name       	"BoundedRoleType"
+			value      	("AssocTypeSet" 47))
+		    (object Attribute
+			tool       	"IDL"
+			name       	"AssocTypeSet"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Array"
+				value      	24)
+			    (object Attribute
+				tool       	"IDL"
+				name       	"Sequence"
+				value      	47)))))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Uses"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"GenerateForwardReference"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"default__Subsystem"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"IDL"
+			name       	"Directory"
+			value      	"AUTO GENERATE")))
+	    (object Attribute
+		tool       	"IDL"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"Java"
+		name       	"propertyId"
+		value      	"809135966")
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Project"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"CreateMissingDirectories"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"StopOnError"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Directory"
+			value      	"AUTO GENERATE")
+		    (object Attribute
+			tool       	"Java"
+			name       	"UsePrefixes"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"InstanceVariablePrefix"
+			value      	"m_")
+		    (object Attribute
+			tool       	"Java"
+			name       	"ClassVariablePrefix"
+			value      	"s_")
+		    (object Attribute
+			tool       	"Java"
+			name       	"DefaultAttributeDataType"
+			value      	"int")
+		    (object Attribute
+			tool       	"Java"
+			name       	"DefaultOperationReturnType"
+			value      	"void")))
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Class"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"Final"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"GenerateDefaultConstructor"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"ConstructorIs"
+			value      	("Ctor_Set" 62))
+		    (object Attribute
+			tool       	"Java"
+			name       	"Ctor_Set"
+			value      	(list Attribute_Set
+			    (object Attribute
+				tool       	"Java"
+				name       	"Public"
+				value      	62)
+			    (object Attribute
+				tool       	"Java"
+				name       	"Protected"
+				value      	63)
+			    (object Attribute
+				tool       	"Java"
+				name       	"Private"
+				value      	64)))
+		    (object Attribute
+			tool       	"Java"
+			name       	"GenerateFinalizer"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"GenerateStaticInitializer"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"GenerateInstanceInitializer"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Module-Spec"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"CmIdentification"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"Java"
+			name       	"CopyrightNotice"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"Java"
+			name       	"AdditionalImports"
+			value      	(value Text ""))))
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Module-Body"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"Generate"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"CmIdentification"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"Java"
+			name       	"CopyrightNotice"
+			value      	(value Text ""))
+		    (object Attribute
+			tool       	"Java"
+			name       	"AdditionalImports"
+			value      	(value Text ""))))
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Operation"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"Abstract"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Static"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Final"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Native"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Synchronized"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Attribute"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"GenerateDataMember"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Final"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Transient"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Volatile"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"Java"
+		name       	"default__Role"
+		value      	(list Attribute_Set
+		    (object Attribute
+			tool       	"Java"
+			name       	"GenerateDataMember"
+			value      	TRUE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"ContainerClass"
+			value      	"")
+		    (object Attribute
+			tool       	"Java"
+			name       	"InitialValue"
+			value      	"")
+		    (object Attribute
+			tool       	"Java"
+			name       	"Final"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Transient"
+			value      	FALSE)
+		    (object Attribute
+			tool       	"Java"
+			name       	"Volatile"
+			value      	FALSE)))
+	    (object Attribute
+		tool       	"Java"
+		name       	"HiddenTool"
+		value      	FALSE)
+	    (object Attribute
+		tool       	"SCC"
+		name       	"HiddenTool"
+		value      	FALSE))
+	quid       	"57C687E403E0"))
