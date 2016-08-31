@@ -293,7 +293,7 @@ img {
 <body>
 <h1>Asynchronous CrestClient Design</h1>
 <p>The CrestClient is the heart of crestj.  It handles the http connectivity with eve delivering the results to the DataCache as well as reporting status events to the CrestController.</p>
-<p><img src="crestClient.png" /></p>
+<p><img src="CrestClient.png" /></p>
 <h2>CrestClient class</h2>
 <p>The various EveData classes (described here) call the CrestClient's getCrest, getXml and getOptions methods to trigger an asynchronous client.  The CrestRequestData objects passed into these three methods contain all of the state needed for the for this subsystem to complete these three getters.</p>
 <p>The three getters will instantiate a CrestGetTask and submit it to the ExecutorService for execution on a different thread.  These methods will return, non-blocking.</p>
