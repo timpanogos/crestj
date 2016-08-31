@@ -84,7 +84,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String OauthScopeDefault = "publicData";
     public static final String CrestUrlDefault = "https://crest-tq.eveonline.com";
     public static final String XmlUrlDefault = "https://api.eveonline.com";
-    public static final String UserAgentDefault = "Chad Adams (Salgare) cadams@xmission.com Nee-d";
+    public static final String UserAgentDefault = "Chad Adams (Salgare) cadams@xmission.com crestj";
     public static final String CreateApiKeyUrlDefault = "https://community.eveonline.com/support/api-key/CreatePredefined"; //?accessMask=133038347
 
     public final DataCache dataCache;
