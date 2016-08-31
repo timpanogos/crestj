@@ -16,72 +16,59 @@
 */
 package com.ccc.crest.core.cache;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
-import com.ccc.crest.core.cache.account.AccountCallList;
-import com.ccc.crest.core.cache.account.AccountInterfaces;
-import com.ccc.crest.core.cache.account.AccountStatus;
-import com.ccc.crest.core.cache.account.ApiKeyInfo;
-import com.ccc.crest.core.cache.account.Characters;
-import com.ccc.crest.core.cache.api.ApiCallList;
-import com.ccc.crest.core.cache.api.ApiInterfaces;
-import com.ccc.crest.core.cache.api.Time;
-import com.ccc.crest.core.cache.character.AccountBalance;
-import com.ccc.crest.core.cache.character.AssetList;
-import com.ccc.crest.core.cache.character.Blueprints;
-import com.ccc.crest.core.cache.character.Bookmarks;
-import com.ccc.crest.core.cache.character.CalendarEventAttendees;
-import com.ccc.crest.core.cache.character.CharacterInterfaces;
-import com.ccc.crest.core.cache.character.CharacterSheet;
-import com.ccc.crest.core.cache.character.ChatChannels;
-import com.ccc.crest.core.cache.character.Clones;
-import com.ccc.crest.core.cache.character.ContactList;
-import com.ccc.crest.core.cache.character.ContactNotifications;
-import com.ccc.crest.core.cache.character.ContractBids;
-import com.ccc.crest.core.cache.character.ContractItems;
-import com.ccc.crest.core.cache.character.Contracts;
-import com.ccc.crest.core.cache.character.FacWarStats;
-import com.ccc.crest.core.cache.character.IndustryJobs;
-import com.ccc.crest.core.cache.character.IndustryJobsHistory;
-import com.ccc.crest.core.cache.character.KillLog;
-import com.ccc.crest.core.cache.character.KillMails;
-import com.ccc.crest.core.cache.character.Locations;
-import com.ccc.crest.core.cache.character.MailBodies;
-import com.ccc.crest.core.cache.character.MailMessages;
-import com.ccc.crest.core.cache.character.MailingLists;
-import com.ccc.crest.core.cache.character.MarketOrders;
-import com.ccc.crest.core.cache.character.Medals;
-import com.ccc.crest.core.cache.character.NotificationTexts;
-import com.ccc.crest.core.cache.character.Notifications;
-import com.ccc.crest.core.cache.character.PlanetaryColonies;
-import com.ccc.crest.core.cache.character.PlanetaryLinks;
-import com.ccc.crest.core.cache.character.PlanetaryPins;
-import com.ccc.crest.core.cache.character.PlanetaryRoutes;
-import com.ccc.crest.core.cache.character.Research;
-import com.ccc.crest.core.cache.character.SkillInTraining;
-import com.ccc.crest.core.cache.character.SkillQueue;
-import com.ccc.crest.core.cache.character.Skills;
-import com.ccc.crest.core.cache.character.Standings;
-import com.ccc.crest.core.cache.character.UpcomingCalendarEvents;
-import com.ccc.crest.core.cache.character.WalletJournal;
-import com.ccc.crest.core.cache.character.WalletTransactions;
-import com.ccc.crest.core.cache.corporation.CorporationInterfaces;
-import com.ccc.crest.core.cache.eve.AllianceList;
-import com.ccc.crest.core.cache.eve.EveInterfaces;
-import com.ccc.crest.core.cache.schema.CcpType;
-import com.ccc.crest.core.cache.schema.CrestCallList;
-import com.ccc.crest.core.cache.schema.CrestOptions;
-import com.ccc.crest.core.cache.schema.Endpoint;
-import com.ccc.crest.core.cache.schema.EndpointGroup;
-import com.ccc.crest.core.cache.schema.Representation;
-import com.ccc.crest.core.cache.schema.Representations;
-import com.ccc.crest.core.cache.schema.SchemaInterfaces;
-import com.ccc.crest.core.cache.server.ServerInterfaces;
-import com.ccc.crest.core.cache.server.ServerStatus;
+import com.ccc.crest.core.cache.crest.character.ContactList;
+import com.ccc.crest.core.cache.crest.schema.SchemaInterfaces;
+import com.ccc.crest.core.cache.crest.schema.endpoint.CrestCallList;
+import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
+import com.ccc.crest.core.cache.crest.time.Time;
+import com.ccc.crest.core.cache.xmlapi.account.AccountCallList;
+import com.ccc.crest.core.cache.xmlapi.account.AccountStatus;
+import com.ccc.crest.core.cache.xmlapi.account.ApiKeyInfo;
+import com.ccc.crest.core.cache.xmlapi.account.Characters;
+import com.ccc.crest.core.cache.xmlapi.api.ApiCallList;
+import com.ccc.crest.core.cache.xmlapi.character.AccountBalance;
+import com.ccc.crest.core.cache.xmlapi.character.AssetList;
+import com.ccc.crest.core.cache.xmlapi.character.Blueprints;
+import com.ccc.crest.core.cache.xmlapi.character.Bookmarks;
+import com.ccc.crest.core.cache.xmlapi.character.CalendarEventAttendees;
+import com.ccc.crest.core.cache.xmlapi.character.CharacterSheet;
+import com.ccc.crest.core.cache.xmlapi.character.ChatChannels;
+import com.ccc.crest.core.cache.xmlapi.character.Clones;
+import com.ccc.crest.core.cache.xmlapi.character.ContactNotifications;
+import com.ccc.crest.core.cache.xmlapi.character.ContractBids;
+import com.ccc.crest.core.cache.xmlapi.character.ContractItems;
+import com.ccc.crest.core.cache.xmlapi.character.Contracts;
+import com.ccc.crest.core.cache.xmlapi.character.FacWarStats;
+import com.ccc.crest.core.cache.xmlapi.character.IndustryJobs;
+import com.ccc.crest.core.cache.xmlapi.character.IndustryJobsHistory;
+import com.ccc.crest.core.cache.xmlapi.character.KillLog;
+import com.ccc.crest.core.cache.xmlapi.character.KillMails;
+import com.ccc.crest.core.cache.xmlapi.character.Locations;
+import com.ccc.crest.core.cache.xmlapi.character.MailBodies;
+import com.ccc.crest.core.cache.xmlapi.character.MailMessages;
+import com.ccc.crest.core.cache.xmlapi.character.MailingLists;
+import com.ccc.crest.core.cache.xmlapi.character.MarketOrders;
+import com.ccc.crest.core.cache.xmlapi.character.Medals;
+import com.ccc.crest.core.cache.xmlapi.character.NotificationTexts;
+import com.ccc.crest.core.cache.xmlapi.character.Notifications;
+import com.ccc.crest.core.cache.xmlapi.character.PlanetaryColonies;
+import com.ccc.crest.core.cache.xmlapi.character.PlanetaryLinks;
+import com.ccc.crest.core.cache.xmlapi.character.PlanetaryPins;
+import com.ccc.crest.core.cache.xmlapi.character.PlanetaryRoutes;
+import com.ccc.crest.core.cache.xmlapi.character.Research;
+import com.ccc.crest.core.cache.xmlapi.character.SkillInTraining;
+import com.ccc.crest.core.cache.xmlapi.character.SkillQueue;
+import com.ccc.crest.core.cache.xmlapi.character.Skills;
+import com.ccc.crest.core.cache.xmlapi.character.Standings;
+import com.ccc.crest.core.cache.xmlapi.character.UpcomingCalendarEvents;
+import com.ccc.crest.core.cache.xmlapi.character.WalletJournal;
+import com.ccc.crest.core.cache.xmlapi.character.WalletTransactions;
+import com.ccc.crest.core.cache.xmlapi.eve.AllianceList;
+import com.ccc.crest.core.cache.xmlapi.server.ServerStatus;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
@@ -89,8 +76,6 @@ import com.ccc.crest.core.events.CommsEventListener;
 @SuppressWarnings("javadoc")
 public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces, ServerInterfaces, SchemaInterfaces
 {
-    public static final String CrestOverallVersion = "application/vnd.ccp.eve.Api-v5+json";
-    
     private final HashMap<String, CacheData> cache;
     private final DataCacheCallback callback;
     private final CrestController controller;
@@ -440,7 +425,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             //            if(!data.data.isFromCrest())
             //            type = CommsEventListener.Type.XmlDown;
             //            controller.fireCommunicationEvent(clientInfo, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl(), e);
+            throw new SourceFailureException("Failed to obtain requested url: " + Time.getUrl(), e);
         }
     }
 
@@ -458,7 +443,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     }
 
     @Override
-    public com.ccc.crest.core.cache.corporation.AccountBalance getCorpAccountBalance(CrestClientInfo clientInfo) throws SourceFailureException
+    public com.ccc.crest.core.cache.xmlapi.corporation.AccountBalance getCorpAccountBalance(CrestClientInfo clientInfo) throws SourceFailureException
     {
         // TODO Auto-generated method stub
         return null;
@@ -467,7 +452,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
     @Override
     public Time getTime() throws SourceFailureException
     {
-        CacheData data = cache.get(Time.getCrestUrl());
+        CacheData data = cache.get(Time.getUrl());
         if (data != null)
         {
             data.data.accessed();
@@ -475,7 +460,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
         }
         try
         {
-            Time time = (Time) Time.getTime(callback).get();
+            Time time = (Time) Time.getFuture(callback).get();
             time.accessed();
             return time;
         } catch (Exception e)
@@ -485,7 +470,7 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             //            if(!data.data.isFromCrest())
             //            type = CommsEventListener.Type.XmlDown;
             //            controller.fireCommunicationEvent(clientInfo, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + Time.getCrestUrl());
+            throw new SourceFailureException("Failed to obtain requested url: " + Time.getUrl());
         }
     }
 
@@ -541,37 +526,6 @@ public class DataCache implements AccountInterfaces, CharacterInterfaces, ApiInt
             controller.fireCommunicationEvent(null, type);
             throw new SourceFailureException("Failed to obtain requested url: " + CrestOptions.getCrestUrl());
         }
-    }
-    
-    public List<String> checkSchema() throws SourceFailureException
-    {
-        List<String> list = new ArrayList<>();
-        Representations representations = getCrestOptions(null).getRepresentations();
-        List<EndpointGroup> groups = getCrestCallList().getCallGroups();
-        Representation schemaSchema = representations.representations.get(0);
-        Representation endpointSchema = representations.representations.get(1);
-        if(!CrestOptions.Version.equals(schemaSchema.acceptType.name))
-            list.add(schemaSchema.acceptType.name);
-        if(!CrestOverallVersion.equals(endpointSchema.acceptType.name))
-            list.add(endpointSchema.acceptType.name);
-        for(CcpType type : endpointSchema.acceptType.ccpType.children)
-        {
-            for(EndpointGroup group : groups)
-            {
-                for(Endpoint endpoint : group.getEndpoints())
-                {
-                    Representations reps = getCrestOptions(endpoint.uri).getRepresentations();
-                    Representation rep0 = reps.representations.get(0);
-                    Representation rep1 = reps.representations.get(1);
-                    String rep0Version = rep0.acceptType.name;
-                    String rep1Version = rep1.acceptType.name;
-                    System.out.println("look here");
-                    
-                }
-            }
-        }
-        System.out.println("look here");
-        return list;
     }
     
     private class DataCacheCallback implements CrestResponseCallback

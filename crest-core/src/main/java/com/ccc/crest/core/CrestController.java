@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
+import com.ccc.crest.core.cache.crest.schema.SchemaMap;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -592,7 +593,7 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.checkSchema();
+                SchemaMap.schemaMap.checkSchema();
 //                dataCache.getTime();
 //                dataAccessor.isUp();
 //                dataCache.getServerStatus();
