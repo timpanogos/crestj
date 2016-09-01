@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.alliance;
+package com.ccc.crest.core.cache.crest.authEndpoint;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.Future;
@@ -34,18 +34,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class AllianceCollection extends BaseEveData implements JsonDeserializer<AllianceCollection>
+public class AuthenticationEndpoint extends BaseEveData implements JsonDeserializer<AuthenticationEndpoint>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
-    public static final String VersionBase = "application/vnd.ccp.eve.AllianceCollection";
+    public static final String VersionBase = "application/vnd.ccp.eve.AuthenticationEndpoint";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
     private static final String Uri1 = "";
 
-    public AllianceCollection()
+    public AuthenticationEndpoint()
     {
     }
 
@@ -64,11 +64,11 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
         if(url == null)
             url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(AllianceCollection.class, new AllianceCollection());
+        gson.registerTypeAdapter(AuthenticationEndpoint.class, new AuthenticationEndpoint());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, url,
-                        gson.create(), null, AllianceCollection.class,
+                        gson.create(), null, AuthenticationEndpoint.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
@@ -76,7 +76,7 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     }
 
     @Override
-    public AllianceCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public AuthenticationEndpoint deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         return null;
     }

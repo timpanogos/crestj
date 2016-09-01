@@ -157,6 +157,7 @@ public class CrestClient
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
         ClientElement client = null;
+        //TODO: this should check for all taken and block
         synchronized (crestClients)
         {
             int idx = crestClientIndex.incrementAndGet();
@@ -170,6 +171,7 @@ public class CrestClient
     public Future<EveData> getXml(CrestRequestData requestData)
     {
         ClientElement client = null;
+        //TODO: this should check for all taken and block
         synchronized (xmlClients)
         {
             int idx = xmlClientIndex.incrementAndGet();
