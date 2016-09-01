@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.client.CrestResponseCallback;
+import com.ccc.tools.TabToLevel;
 import com.google.gson.Gson;
 
 @SuppressWarnings("javadoc")
@@ -70,12 +71,6 @@ public class CrestRequestData implements Comparable<CrestRequestData>
     }
 
     @Override
-    public String toString()
-    {
-        return url;
-    }
-
-    @Override
     public int compareTo(CrestRequestData arg0)
     {
         if(arg0.nextRefresh == nextRefresh)
@@ -83,5 +78,28 @@ public class CrestRequestData implements Comparable<CrestRequestData>
         if(arg0.nextRefresh <= nextRefresh)
             return +1;
         return -1;
+    }
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        format.ttl(getClass().getSimpleName());
+        format.inc();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl("url: ", url);
+        format.ttl("version: ", version);
+        format.ttl("scope: ", scope);
+        format.ttl("nextRefresh: ", nextRefresh);
+        format.ttl("continueRefresh: ", continueRefresh);
+        format.ttl("deprecated: ", deprecated);
+        format.ttl("clazz: ", clazz);
+        format.ttl("callback: ", callback);
+        format.ttl("baseEveData: ", baseEveData);
+        format.ttl("clientInfo: ", clientInfo);
+        return format;
     }
 }

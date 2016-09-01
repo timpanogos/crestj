@@ -44,7 +44,6 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
-    private static final String Uri1 = "";
 
     private volatile Representations representations;
 
@@ -65,9 +64,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
     
     public static String getCrestUrl()
     {
-        StringBuilder url = new StringBuilder();
-        url.append(CrestClient.getCrestBaseUri()).append(Uri1);
-        return url.toString();
+        return CrestClient.getCrestBaseUri();
     }
 
     public static Future<EveData> getOptions(String url, CrestResponseCallback callback) throws Exception

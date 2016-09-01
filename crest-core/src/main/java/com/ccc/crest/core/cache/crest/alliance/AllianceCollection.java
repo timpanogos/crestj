@@ -43,7 +43,6 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
-    private static final String Uri1 = "";
 
     public AllianceCollection()
     {
@@ -59,15 +58,13 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
-    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
-        if(url == null)
-            url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(AllianceCollection.class, new AllianceCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, url,
+                        null, getCrestUrl(),
                         gson.create(), null, AllianceCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);

@@ -64,6 +64,7 @@ import com.ccc.crest.core.cache.crest.tournament.TournamentCollection;
 import com.ccc.crest.core.cache.crest.virtualGoodStore.VirtualGoodStore;
 import com.ccc.crest.core.cache.crest.war.WarsCollection;
 import com.ccc.crest.core.client.CrestClient;
+import com.ccc.tools.TabToLevel;
 
 @SuppressWarnings("javadoc")
 public class SchemaMap
@@ -99,13 +100,19 @@ public class SchemaMap
         }
     }
     
+    public static void init()
+    {
+        // just need to reference this class and cause it to load
+        // nothing to do static initializer will cause everything to setup
+    }
+    
     private void initializeVersions() throws Exception
     {
         addElement(CrestOptions.class,                  "-v1+json", "",                         "");
         addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
         addElement(ItemGroupCollection.class,           "-v1+json", "/inventory/groups/",       "itemGroups.href");
         addElement(CorporationCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
-        addElement(AllianceCollection.class,            "-v2+json", "/alliances/",              "alliances.href");
+/*was 2*/        addElement(AllianceCollection.class,            "-v1+json", "/alliances/",              "alliances.href");
         addElement(ItemTypeCollection.class,            "-v1+json", "/inventory/types/",        "itemTypes.href");
         addElement(TokenDecode.class,                   "-v1+json", "/decode/",                 "decode.href"); // swapped in second representation
         addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");
@@ -183,18 +190,20 @@ public class SchemaMap
                 SchemaMapElement e = uriToSchema.get(key);
                 if(e == null)
                 {
-                    log.warn("\nCannot map the endpoint to a schema: " + group.toString());
+                    log.warn("\nCannot map the endpoint to a schema: \n" + group.toString());
                     continue;
                 }
-                String uri = endpoint.uri;
+                String reportedUri = endpoint.uri;
                 String base = CrestClient.getCrestBaseUri();
-                if(!uri.startsWith(base))
+                if(!reportedUri.startsWith(base))
                 {
-                    log.warn("\nCannot map the endpoint to a schema: " + group.toString());
+                    log.warn("\nCannot map the endpoint to a schema: \n" + group.toString() +e.toString());
                     continue;
                 }
-                uri = uri.substring(base.length());
-                e.setUri(endpoint.uri);
+                reportedUri = reportedUri.substring(base.length());
+                if(!reportedUri.equals(e.currentUri))
+                    log.info("A new uri was reported for: \n" + group.toString() + "new: " + reportedUri + "\n" +e.toString());
+                e.setUri(reportedUri);
             }
         }
     }
@@ -359,29 +368,31 @@ public class SchemaMap
         
         public synchronized String getUri()
         {
-            return currentUri;
+            return CrestClient.getCrestBaseUri() + currentUri;
         }
         
         public synchronized void setUri(String uri)
         {
             currentUri = uri;
         }
+        
+        @Override
+        public String toString()
+        {
+            TabToLevel format = new TabToLevel();
+            format.ttl(getClass().getSimpleName());
+            format.inc();
+            return toString(format).toString();
+        }
+        
+        public TabToLevel toString(TabToLevel format)
+        {
+            format.ttl("clazz: ", clazz);
+            format.ttl("applicationName: ", applicationName);
+            format.ttl("currentVersion: ", currentVersion);
+            format.ttl("currentUri: ", currentUri);
+            format.ttl("key: ", key);
+            return format;
+        }
     }
-    
-//    public class EndpointMapElement
-//    {
-//        public final String applicationName;
-//        public final String currentUri;
-//
-//        public EndpointMapElement(String applicationName, String currentUri)
-//        {
-//            this.applicationName = applicationName;
-//            this.currentUri = currentUri;
-//        }
-//
-//        public String getVersion()
-//        {
-//            return applicationName + currentUri;
-//        }
-//    }
 }

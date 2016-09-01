@@ -26,7 +26,6 @@ import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -44,7 +43,6 @@ public class MarketTypeCollection extends BaseEveData implements JsonDeserialize
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
-    private static final String Uri1 = "";
 
     public MarketTypeCollection()
     {
@@ -57,9 +55,7 @@ public class MarketTypeCollection extends BaseEveData implements JsonDeserialize
     
     public static String getCrestUrl()
     {
-        StringBuilder url = new StringBuilder();
-        url.append(CrestClient.getCrestBaseUri()).append(Uri1);
-        return url.toString();
+        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
     public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception

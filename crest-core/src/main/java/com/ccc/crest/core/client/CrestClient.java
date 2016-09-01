@@ -56,7 +56,8 @@ import com.github.scribejava.core.model.OAuth2AccessToken;
 @SuppressWarnings("javadoc")
 public class CrestClient
 {
-    private static final String CrestDeprecatedHeader = "X-Deprecated";
+    private static final String AccessControlExposeHeader = "Access-Control-Expose-Headers";
+    private static final String CrestDeprecatedHeader = "X-DEPRECATED";
     private static final int NoLongerSupported = 406;
     private static final String CacheControlHeader = "Cache-Control";
     private static final String CacheControlMaxAge = "max-age";
@@ -245,7 +246,10 @@ public class CrestClient
                         int status = response.getStatusLine().getStatusCode();
                         if (status < 200 || status > 299)
                         {
-                            String msg = "Unexpected response status: " + status + " " + response.getStatusLine().getReasonPhrase();
+                            String msg = "Unexpected response status: " + status;
+                            if (status == NoLongerSupported)
+                                msg += rdata.url + " is not longer supported";
+                            msg += " " + response.getStatusLine().getReasonPhrase();
                             msg += " : " + response.toString();
                             log.warn(msg);
                             throw new ClientProtocolException(msg);
@@ -254,40 +258,24 @@ public class CrestClient
                         }
                         if (rdata.gson != null)
                         {
-                            Header[] headers = response.getHeaders(CacheControlHeader);
-                            boolean found = false;
-                            if (headers != null && headers.length > 0)
-                                for (int i = 0; i < headers.length; i++)
-                                {
-                                    HeaderElement[] headerElements = headers[i].getElements();
-                                    for (int j = 0; j < headerElements.length; j++)
-                                        if (headerElements[i].getName().equals(CacheControlMaxAge))
-                                        {
-                                            cacheTime.set(Integer.parseInt(headerElements[i].getValue()));
-                                            found = true;
-                                            break;
-                                        }
-                                }
-                            if (!found)
+                            String cacheTimeStr = getHeaderElement(response, CacheControlHeader, CacheControlMaxAge);
+                            if (cacheTimeStr == null)
                             {
                                 String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
                                 log.warn(msg);
                                 throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
                             }
-                            headers = response.getHeaders(CrestDeprecatedHeader);
-                            if (headers != null && headers.length > 0)
+                            cacheTime.set(Integer.parseInt(cacheTimeStr));
+                            
+                            String deprecatedStr = getHeaderElement(response, AccessControlExposeHeader, CrestDeprecatedHeader);
+                            if(deprecatedStr != null)
                             {
+                                StringBuilder sb = new StringBuilder();
+                                sb.append(rdata.url).append(" ").append(rdata.version).append(" is deprecated see class: ").append(rdata.clazz);
+                                controller.fireEndpointDeprecatedEvent(sb.toString());
                                 rdata.deprecated.set(true);
-                                log.warn("Requested Endpoint version is deprecated: " + rdata.url + " " + rdata.version);
                             }
                         }
-                        if (status == NoLongerSupported)
-                        {
-                            String msg = "Endpoint no longer supported: " + status + " " + response.getStatusLine().getReasonPhrase();
-                            log.warn(msg);
-                            throw new ClientProtocolException(msg);
-                        }
-
                         if (status >= 200 && status < 300)
                         {
                             if(status != 200)
@@ -304,6 +292,24 @@ public class CrestClient
                                 }
                             return body;
                         }
+                        return null;
+                    }
+                    
+                    private String getHeaderElement(HttpResponse response, String headerKey, String elementKey)
+                    {
+                        Header[] headers = response.getHeaders(headerKey);
+                        if (headers != null && headers.length > 0)
+                            for (int i = 0; i < headers.length; i++)
+                            {
+                                HeaderElement[] headerElements = headers[i].getElements();
+                                for (int j = 0; j < headerElements.length; j++)
+                                    if (headerElements[j].getName().equals(elementKey))
+                                    {
+                                        if(elementKey.equals(CrestDeprecatedHeader))
+                                            return "true";
+                                        return headerElements[j].getValue();
+                                    }
+                            }
                         return null;
                     }
                 };

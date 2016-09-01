@@ -40,6 +40,7 @@ import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.crest.core.events.CommsLatch;
+import com.ccc.crest.core.events.DeprecatedEventListener;
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
@@ -92,6 +93,7 @@ public class CrestController extends CoreController implements AuthEventListener
     private final List<CommsEventListener> commsEventListeners;
     private final List<ApiKeyEventListener> apiKeyEventListeners;
     private final List<CacheEventListener> cacheEventListeners;
+    private final List<DeprecatedEventListener> deprecatedEventListeners;
     private final CommsLatch commsLatch;
     public final Scope scopes;
 
@@ -105,6 +107,7 @@ public class CrestController extends CoreController implements AuthEventListener
         commsEventListeners = new ArrayList<>();
         cacheEventListeners = new ArrayList<>();
         apiKeyEventListeners = new ArrayList<>();
+        deprecatedEventListeners = new ArrayList<>();
         registerCommunicationEventListener(this);
         scopes = new Scope();
         commsLatch = new CommsLatch();
@@ -194,6 +197,11 @@ public class CrestController extends CoreController implements AuthEventListener
         }
     }
 
+    public void fireEndpointDeprecatedEvent(String endpointInfo)
+    {
+        executor.submit(new FireDeprecatedEventTask(endpointInfo));
+    }
+
     public void fireCacheEvent(CrestClientInfo clientInfo, String url, CacheEventListener.Type type)
     {
         executor.submit(new FireCacheEventTask(clientInfo, url, type));
@@ -241,6 +249,7 @@ public class CrestController extends CoreController implements AuthEventListener
         String userAgent = properties.getProperty(UserAgentKey, UserAgentDefault);
         crestClient = new CrestClient(this, crestUrl, xmlUrl, userAgent, executor);
         crestClient.init();
+        SchemaMap.init();
         executor.submit(new CheckHealthTask());
         //TODO: add a scheduled task that will hit CheckHealthTask so dbIsUp is checked.
     }
@@ -585,6 +594,33 @@ public class CrestController extends CoreController implements AuthEventListener
             return null;
         }
     }
+    
+    private class FireDeprecatedEventTask implements Callable<Void>
+    {
+        private final String endpointInfo;
+
+        private FireDeprecatedEventTask(String endpointInfo)
+        {
+            this.endpointInfo = endpointInfo;
+        }
+
+        @Override
+        public Void call() throws Exception
+        {
+            try
+            {
+                synchronized (apiKeyEventListeners)
+                {
+                    for (DeprecatedEventListener listener : deprecatedEventListeners)
+                        listener.deprecated(endpointInfo);
+                }
+            } catch (Exception e)
+            {
+                LoggerFactory.getLogger(getClass()).warn("An communicationsEventListener has thrown an exception", e);
+            }
+            return null;
+        }
+    }
 
     private class CheckHealthTask implements Callable<Void>
     {
@@ -593,10 +629,11 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                SchemaMap.schemaMap.checkSchema();
-//                dataCache.getTime();
-//                dataAccessor.isUp();
-//                dataCache.getServerStatus();
+//                SchemaMap.schemaMap.checkSchema();
+                dataCache.getAllianceCollection(null);
+                dataCache.getTime();
+                dataAccessor.isUp();
+                dataCache.getServerStatus();
             } catch (Throwable e)
             {
                 log.warn("GetTime failed: ", e);

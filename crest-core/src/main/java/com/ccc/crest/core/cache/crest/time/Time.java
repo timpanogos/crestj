@@ -30,7 +30,6 @@ import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.Gson;
 
@@ -43,7 +42,6 @@ public class Time extends BaseEveData
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
-    private static final String Uri1 = "/time/";
 
     private volatile String time;
     public volatile Date eveTime;
@@ -72,9 +70,7 @@ public class Time extends BaseEveData
 
     public static String getUrl()
     {
-        StringBuilder url = new StringBuilder();
-        url.append(CrestClient.getCrestBaseUri()).append(Uri1);
-        return url.toString();
+        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
     public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception

@@ -50,7 +50,6 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
 
-    private static final String Uri1 = "";
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
@@ -76,9 +75,7 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
     
     public static String getCrestUrl()
     {
-        StringBuilder url = new StringBuilder();
-        url.append(CrestClient.getCrestBaseUri()).append(Uri1);
-        return url.toString();
+        return CrestClient.getCrestBaseUri();
     }
 
     public static Future<EveData> getCallList(CrestResponseCallback callback) throws Exception

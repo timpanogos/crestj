@@ -43,7 +43,6 @@ public class AuthenticationEndpoint extends BaseEveData implements JsonDeseriali
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
-    private static final String Uri1 = "";
 
     public AuthenticationEndpoint()
     {
