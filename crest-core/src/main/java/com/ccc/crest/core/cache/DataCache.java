@@ -629,7 +629,21 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     @Override
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(BloodlineCollection.getCrestUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (BloodlineCollection) data.data;
+        }
+        try
+        {
+            BloodlineCollection value = (BloodlineCollection) BloodlineCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
+        }
     }
 
     @Override

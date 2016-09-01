@@ -112,7 +112,7 @@ public class SchemaMap
         addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
         addElement(ItemGroupCollection.class,           "-v1+json", "/inventory/groups/",       "itemGroups.href");
         addElement(CorporationCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
-/*was 2*/        addElement(AllianceCollection.class,            "-v1+json", "/alliances/",              "alliances.href");
+        addElement(AllianceCollection.class,            "-v2+json", "/alliances/",              "alliances.href");
         addElement(ItemTypeCollection.class,            "-v1+json", "/inventory/types/",        "itemTypes.href");
         addElement(TokenDecode.class,                   "-v1+json", "/decode/",                 "decode.href"); // swapped in second representation
         addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");

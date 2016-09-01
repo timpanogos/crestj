@@ -58,15 +58,13 @@ public class BloodlineCollection extends BaseEveData implements JsonDeserializer
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
-    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
-        if(url == null)
-            url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(BloodlineCollection.class, new BloodlineCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, url,
+                        null, getCrestUrl(),
                         gson.create(), null, BloodlineCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);

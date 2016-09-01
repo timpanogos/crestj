@@ -630,7 +630,7 @@ public class CrestController extends CoreController implements AuthEventListener
             try
             {
 //                SchemaMap.schemaMap.checkSchema();
-                dataCache.getAllianceCollection(null);
+//                dataCache.getBloodlineCollection(null);
                 dataCache.getTime();
                 dataAccessor.isUp();
                 dataCache.getServerStatus();
