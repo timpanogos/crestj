@@ -53,20 +53,18 @@ public class IndustryFacilityCollection extends BaseEveData implements JsonDeser
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
     
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
-    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
-        if(url == null)
-            url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(IndustryFacilityCollection.class, new IndustryFacilityCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, url,
+                        null, getUrl(),
                         gson.create(), null, IndustryFacilityCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);

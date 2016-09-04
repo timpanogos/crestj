@@ -20,6 +20,8 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.slf4j.LoggerFactory;
+
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -72,6 +74,11 @@ public class Representation implements JsonDeserializer<Representation>
             throw new JsonParseException("Expected: " + ThirdPartyKey + " rec: " + entry.getKey());
         thirdParty = entry.getValue().getAsBoolean();
         
+        while(repIter.hasNext())
+        {
+            entry = repIter.next();
+            LoggerFactory.getLogger(getClass()).info("Representation has a field not currently being handled: \n" + entry.toString());
+        }
         return this;
     }
     

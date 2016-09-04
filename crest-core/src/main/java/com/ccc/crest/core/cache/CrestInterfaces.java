@@ -50,33 +50,34 @@ import com.ccc.crest.core.cache.crest.war.WarsCollection;
 @SuppressWarnings("javadoc")
 public interface CrestInterfaces
 {
-	public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public ItemGroupCollection getItemGroupCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public CorporationCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public AllianceCollection getAllianceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public ItemTypeCollection getItemTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public TokenDecode getTokenDecode(CrestClientInfo clientInfo) throws SourceFailureException;
-    public MarketTypePriceCollection getMarketTypePriceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public OpportunityTasksCollection getOpportunityTasksCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public OpportunityGroupsCollection getOpportunityGroupsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public ItemCategoryCollection getItemCategoryCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public RegionCollection getRegionCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public CorporationCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public DogmaAttributeCollection getDogmaAttributeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public DogmaEffectCollection getDogmaEffectCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public IncursionCollection getIncursionCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public IndustryFacilityCollection getIndustryFacilityCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public IndustrySystemCollection getIndustrySystemCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public InsurancePricesCollection getInsurancePricesCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public ItemCategoryCollection getItemCategoryCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public ItemGroupCollection getItemGroupCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public ItemTypeCollection getItemTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public MarketGroupCollection getMarketGroupCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public SystemCollection getSystemCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public MarketTypeCollection getMarketTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public MarketTypePriceCollection getMarketTypePriceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public NPCCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public OpportunityGroupsCollection getOpportunityGroupsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public OpportunityTasksCollection getOpportunityTasksCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public RaceCollection getRaceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public RegionCollection getRegionCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public SovCampaignsCollection getSovCampaignsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public SovStructureCollection getSovStructureCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public SystemCollection getSystemCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public Time getTime() throws SourceFailureException;
+    public TokenDecode getTokenDecode(CrestClientInfo clientInfo) throws SourceFailureException;
     public TournamentCollection getTournamentCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public VirtualGoodStore getVirtualGoodStore(CrestClientInfo clientInfo) throws SourceFailureException;
     public WarsCollection getWarsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public IncursionCollection getIncursionCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public DogmaAttributeCollection getDogmaAttributeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public DogmaEffectCollection getDogmaEffectCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public RaceCollection getRaceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public InsurancePricesCollection getInsurancePricesCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public IndustryFacilityCollection getIndustryFacilityCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public IndustrySystemCollection getIndustrySystemCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public NPCCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public Time getTime(CrestClientInfo clientInfo) throws SourceFailureException;
-    public MarketTypeCollection getMarketTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    
 }

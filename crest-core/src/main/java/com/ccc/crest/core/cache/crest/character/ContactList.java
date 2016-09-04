@@ -75,7 +75,7 @@ public class ContactList extends BaseEveData
         return url.toString();
     }
 
-    public static Future<EveData> getContacts(CrestClientInfo clientInfo, CrestResponseCallback callback) throws RightsException
+    public static Future<EveData> getFuture(CrestClientInfo clientInfo, CrestResponseCallback callback) throws RightsException
     {
         enforceRights(clientInfo, AccessGroup);
         Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();

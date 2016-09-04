@@ -44,7 +44,7 @@ import com.ccc.crest.core.cache.crest.opportunity.OpportunityTasksCollection;
 import com.ccc.crest.core.cache.crest.race.RaceCollection;
 import com.ccc.crest.core.cache.crest.region.RegionCollection;
 import com.ccc.crest.core.cache.crest.schema.SchemaInterfaces;
-import com.ccc.crest.core.cache.crest.schema.endpoint.CrestCallList;
+import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointCollection;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 import com.ccc.crest.core.cache.crest.sovereignty.SovCampaignsCollection;
 import com.ccc.crest.core.cache.crest.sovereignty.SovStructureCollection;
@@ -199,7 +199,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ContactList list = (ContactList) ContactList.getContacts(clientInfo, callback).get();
+            ContactList list = (ContactList) ContactList.getFuture(clientInfo, callback).get();
             list.accessed();
             return list;
         } catch (Exception e)
@@ -421,7 +421,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             //            if(!data.data.isFromCrest())
             //            type = CommsEventListener.Type.XmlDown;
             //            controller.fireCommunicationEvent(clientInfo, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + Time.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain requested url: " + ApiCallList.getXmlUrl(), e);
         }
     }
 
@@ -470,27 +470,27 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
 ******************************************************************************/
     
     @Override
-    public CrestCallList getCrestCallList() throws SourceFailureException
+    public EndpointCollection getEndpointCollection() throws SourceFailureException
     {
         try
         {
-            CrestCallList callList = (CrestCallList) CrestCallList.getCallList(null).get();
+            EndpointCollection callList = (EndpointCollection) EndpointCollection.getFuture(null).get();
             callList.accessed();
             return callList;
         } catch (Exception e)
         {
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + CrestCallList.getCrestUrl());
+            throw new SourceFailureException("Failed to obtain requested url: " + EndpointCollection.getCrestUrl());
         }
     }
 
     @Override
-    public CrestOptions getCrestOptions(String url) throws SourceFailureException
+    public CrestOptions getOptions(String url) throws SourceFailureException
     {
         try
         {
-            CrestOptions options = (CrestOptions) CrestOptions.getOptions(url, null).get();
+            CrestOptions options = (CrestOptions) CrestOptions.getFuture(url, null).get();
             options.accessed();
             return options;
         } catch (Exception e)
@@ -519,9 +519,6 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         {
             CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
             controller.fireCommunicationEvent(null, type);
-            //            if(!data.data.isFromCrest())
-            //            type = CommsEventListener.Type.XmlDown;
-            //            controller.fireCommunicationEvent(clientInfo, type);
             throw new SourceFailureException("Failed to obtain requested url: " + Time.getUrl());
         }
     }
@@ -537,7 +534,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ContactList list = (ContactList) ContactList.getContacts(clientInfo, callback).get();
+            ContactList list = (ContactList) ContactList.getFuture(clientInfo, callback).get();
             list.accessed();
             return list;
         }catch(Exception e)
@@ -549,19 +546,61 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     @Override
     public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(ConstellationCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (ConstellationCollection) data.data;
+        }
+        try
+        {
+            ConstellationCollection value = (ConstellationCollection) ConstellationCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + ConstellationCollection.getUrl());
+        }
     }
 
     @Override
     public ItemGroupCollection getItemGroupCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(ItemGroupCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (ItemGroupCollection) data.data;
+        }
+        try
+        {
+            ItemGroupCollection value = (ItemGroupCollection) ItemGroupCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + ItemGroupCollection.getUrl());
+        }
     }
 
     @Override
     public CorporationCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(CorporationCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (CorporationCollection) data.data;
+        }
+        try
+        {
+            CorporationCollection value = (CorporationCollection) CorporationCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + CorporationCollection.getUrl());
+        }
     }
 
     @Override
@@ -587,49 +626,147 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     @Override
     public ItemTypeCollection getItemTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(ItemTypeCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (ItemTypeCollection) data.data;
+        }
+        try
+        {
+            ItemTypeCollection value = (ItemTypeCollection) ItemTypeCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + ItemTypeCollection.getUrl());
+        }
     }
 
     @Override
     public TokenDecode getTokenDecode(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(TokenDecode.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (TokenDecode) data.data;
+        }
+        try
+        {
+            TokenDecode value = (TokenDecode) TokenDecode.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + TokenDecode.getUrl());
+        }
     }
 
     @Override
     public MarketTypePriceCollection getMarketTypePriceCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(MarketTypePriceCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (MarketTypePriceCollection) data.data;
+        }
+        try
+        {
+            MarketTypePriceCollection value = (MarketTypePriceCollection) MarketTypePriceCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + MarketTypePriceCollection.getUrl());
+        }
     }
 
     @Override
     public OpportunityTasksCollection getOpportunityTasksCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(OpportunityTasksCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (OpportunityTasksCollection) data.data;
+        }
+        try
+        {
+            OpportunityTasksCollection value = (OpportunityTasksCollection) OpportunityTasksCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + OpportunityTasksCollection.getUrl());
+        }
     }
 
     @Override
     public OpportunityGroupsCollection getOpportunityGroupsCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(OpportunityGroupsCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (OpportunityGroupsCollection) data.data;
+        }
+        try
+        {
+            OpportunityGroupsCollection value = (OpportunityGroupsCollection) OpportunityGroupsCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + OpportunityGroupsCollection.getUrl());
+        }
     }
 
     @Override
     public ItemCategoryCollection getItemCategoryCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(ItemCategoryCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (ItemCategoryCollection) data.data;
+        }
+        try
+        {
+            ItemCategoryCollection value = (ItemCategoryCollection) ItemCategoryCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + ItemCategoryCollection.getUrl());
+        }
     }
 
     @Override
     public RegionCollection getRegionCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(RegionCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (RegionCollection) data.data;
+        }
+        try
+        {
+            RegionCollection value = (RegionCollection) RegionCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + RegionCollection.getUrl());
+        }
     }
 
     @Override
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        CacheData data = cache.get(BloodlineCollection.getCrestUrl());
+        CacheData data = cache.get(BloodlineCollection.getUrl());
         if (data != null)
         {
             data.data.accessed();
@@ -642,110 +779,328 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
+            throw new SourceFailureException("Failed to obtain requested url: " + BloodlineCollection.getUrl());
         }
     }
 
     @Override
     public MarketGroupCollection getMarketGroupCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(MarketGroupCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (MarketGroupCollection) data.data;
+        }
+        try
+        {
+            MarketGroupCollection value = (MarketGroupCollection) MarketGroupCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + MarketGroupCollection.getUrl());
+        }
     }
 
     @Override
     public SystemCollection getSystemCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(SystemCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (SystemCollection) data.data;
+        }
+        try
+        {
+            SystemCollection value = (SystemCollection) SystemCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + SystemCollection.getUrl());
+        }
     }
 
     @Override
     public SovCampaignsCollection getSovCampaignsCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(SovCampaignsCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (SovCampaignsCollection) data.data;
+        }
+        try
+        {
+            SovCampaignsCollection value = (SovCampaignsCollection) SovCampaignsCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + SovCampaignsCollection.getUrl());
+        }
     }
 
     @Override
     public SovStructureCollection getSovStructureCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(SovStructureCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (SovStructureCollection) data.data;
+        }
+        try
+        {
+            SovStructureCollection value = (SovStructureCollection) SovStructureCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + SovStructureCollection.getUrl());
+        }
     }
 
     @Override
     public TournamentCollection getTournamentCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(TournamentCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (TournamentCollection) data.data;
+        }
+        try
+        {
+            TournamentCollection value = (TournamentCollection) TournamentCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + TournamentCollection.getUrl());
+        }
     }
 
     @Override
     public VirtualGoodStore getVirtualGoodStore(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(VirtualGoodStore.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (VirtualGoodStore) data.data;
+        }
+        try
+        {
+            VirtualGoodStore value = (VirtualGoodStore) VirtualGoodStore.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + VirtualGoodStore.getUrl());
+        }
     }
 
     @Override
     public WarsCollection getWarsCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(WarsCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (WarsCollection) data.data;
+        }
+        try
+        {
+            WarsCollection value = (WarsCollection) WarsCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + WarsCollection.getUrl());
+        }
     }
 
     @Override
     public IncursionCollection getIncursionCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(IncursionCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (IncursionCollection) data.data;
+        }
+        try
+        {
+            IncursionCollection value = (IncursionCollection) IncursionCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + IncursionCollection.getUrl());
+        }
     }
 
     @Override
     public DogmaAttributeCollection getDogmaAttributeCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(DogmaAttributeCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (DogmaAttributeCollection) data.data;
+        }
+        try
+        {
+            DogmaAttributeCollection value = (DogmaAttributeCollection) DogmaAttributeCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + DogmaAttributeCollection.getUrl());
+        }
     }
 
     @Override
     public DogmaEffectCollection getDogmaEffectCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(DogmaEffectCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (DogmaEffectCollection) data.data;
+        }
+        try
+        {
+            DogmaEffectCollection value = (DogmaEffectCollection) DogmaEffectCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + DogmaEffectCollection.getUrl());
+        }
     }
 
     @Override
     public RaceCollection getRaceCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(RaceCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (RaceCollection) data.data;
+        }
+        try
+        {
+            RaceCollection value = (RaceCollection) RaceCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + RaceCollection.getUrl());
+        }
     }
 
     @Override
     public InsurancePricesCollection getInsurancePricesCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(InsurancePricesCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (InsurancePricesCollection) data.data;
+        }
+        try
+        {
+            InsurancePricesCollection value = (InsurancePricesCollection) InsurancePricesCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + InsurancePricesCollection.getUrl());
+        }
     }
 
     @Override
     public IndustryFacilityCollection getIndustryFacilityCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(IndustryFacilityCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (IndustryFacilityCollection) data.data;
+        }
+        try
+        {
+            IndustryFacilityCollection value = (IndustryFacilityCollection) IndustryFacilityCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + IndustryFacilityCollection.getUrl());
+        }
     }
 
     @Override
     public IndustrySystemCollection getIndustrySystemCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(IndustrySystemCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (IndustrySystemCollection) data.data;
+        }
+        try
+        {
+            IndustrySystemCollection value = (IndustrySystemCollection) IndustrySystemCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + IndustrySystemCollection.getUrl());
+        }
     }
 
     @Override
     public NPCCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
-    }
-
-    @Override
-    public Time getTime(CrestClientInfo clientInfo) throws SourceFailureException
-    {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(NPCCorporationsCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (NPCCorporationsCollection) data.data;
+        }
+        try
+        {
+            NPCCorporationsCollection value = (NPCCorporationsCollection) NPCCorporationsCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + NPCCorporationsCollection.getUrl());
+        }
     }
 
     @Override
     public MarketTypeCollection getMarketTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        throw new SourceFailureException("not implemented yet");
+        CacheData data = cache.get(MarketTypeCollection.getUrl());
+        if (data != null)
+        {
+            data.data.accessed();
+            return (MarketTypeCollection) data.data;
+        }
+        try
+        {
+            MarketTypeCollection value = (MarketTypeCollection) MarketTypeCollection.getFuture(callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + MarketTypeCollection.getUrl());
+        }
     }
 
     private class DataCacheCallback implements CrestResponseCallback

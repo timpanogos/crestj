@@ -16,12 +16,10 @@
 */
 package com.ccc.crest.core.cache;
 
-import com.ccc.crest.core.cache.crest.time.Time;
 import com.ccc.crest.core.cache.xmlapi.api.ApiCallList;
 
 @SuppressWarnings("javadoc")
 public interface ApiInterfaces
 {
     public ApiCallList getApiCallList() throws SourceFailureException;
-    public Time getTime() throws SourceFailureException;
 }

@@ -43,7 +43,6 @@ public class CorporationCollection extends BaseEveData implements JsonDeserializ
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
-    private static final String Uri1 = "";
 
     public CorporationCollection()
     {
@@ -54,20 +53,18 @@ public class CorporationCollection extends BaseEveData implements JsonDeserializ
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
     
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
-    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
-        if(url == null)
-            url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(CorporationCollection.class, new CorporationCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, url,
+                        null, getUrl(),
                         gson.create(), null, CorporationCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);

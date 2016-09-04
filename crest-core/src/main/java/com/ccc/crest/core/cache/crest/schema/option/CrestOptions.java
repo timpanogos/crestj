@@ -45,7 +45,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    private volatile Representations representations;
+    public volatile Representations representations;
 
     public CrestOptions()
     {
@@ -67,7 +67,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
         return CrestClient.getCrestBaseUri();
     }
 
-    public static Future<EveData> getOptions(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
     {
         if(url == null)
             url = getCrestUrl();

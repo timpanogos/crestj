@@ -53,20 +53,18 @@ public class DogmaEffectCollection extends BaseEveData implements JsonDeserializ
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
     
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
-    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
-        if(url == null)
-            url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(DogmaEffectCollection.class, new DogmaEffectCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, url,
+                        null, getUrl(),
                         gson.create(), null, DogmaEffectCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);

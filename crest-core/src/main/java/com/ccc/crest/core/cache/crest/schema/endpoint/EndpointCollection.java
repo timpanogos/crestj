@@ -30,7 +30,6 @@ import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
-import com.ccc.crest.core.cache.crest.schema.option.Representations;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.GsonBuilder;
@@ -41,11 +40,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class CrestCallList extends BaseEveData implements JsonDeserializer<CrestCallList>
+public class EndpointCollection extends BaseEveData implements JsonDeserializer<EndpointCollection>
 {
     private static final long serialVersionUID = -7096257178892270648L;
 
-    private static final String Version = "application/vnd.ccp.eve.Api-v3+json";
+    private static final String Version = "application/vnd.ccp.eve.Api-v5+json";
 
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
@@ -55,17 +54,15 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
 
     public static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
 
-    private volatile int userCount;
+    private volatile long userCount;
     private volatile String serverVersion;
     private volatile String serverName;
     private volatile String serviceStatus;
     private volatile List<EndpointGroup> callGroups;
-    private volatile Representations representations;
 
-    public CrestCallList()
+    public EndpointCollection()
     {
         callGroups = new ArrayList<>();
-        representations = new Representations();
     }
 
     public List<EndpointGroup> getCallGroups()
@@ -78,14 +75,14 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
         return CrestClient.getCrestBaseUri();
     }
 
-    public static Future<EveData> getCallList(CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(CrestCallList.class, new CrestCallList());
+        gson.registerTypeAdapter(EndpointCollection.class, new EndpointCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                     null, getCrestUrl(),
-                    gson.create(), null, CrestCallList.class,
+                    gson.create(), null, EndpointCollection.class,
                     callback,
                     ReadScope, Version, continueRefresh);
         //@formatter:on
@@ -99,7 +96,7 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
     private static final String ServerStatusKey = "serviceStatus";
 
     @Override
-    public CrestCallList deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public EndpointCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         JsonObject topObj = (JsonObject) json;
         Set<Entry<String, JsonElement>> topSet = topObj.entrySet();
@@ -113,7 +110,7 @@ public class CrestCallList extends BaseEveData implements JsonDeserializer<Crest
             JsonElement topElement = topEntry.getValue();
             if (topKey.equals(UserCountKey))
             {
-                userCount = Integer.parseInt(topElement.getAsString());
+                userCount = Long.parseLong(topElement.getAsString());
                 continue;
             }
             if (topKey.equals(UserCountStrKey))

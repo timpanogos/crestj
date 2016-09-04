@@ -18,8 +18,11 @@ package com.ccc.crest.core.cache.crest.schema.option;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.tools.TabToLevel;
@@ -46,7 +49,8 @@ public class Representations extends BaseEveData implements JsonDeserializer<Rep
     @Override
     public Representations deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Entry<String, JsonElement> representationsEntry = ((JsonObject)json).entrySet().iterator().next(); 
+        Iterator<Entry<String, JsonElement>> repIter = ((JsonObject)json).entrySet().iterator();
+        Entry<String, JsonElement> representationsEntry = repIter.next(); 
         if (!representationsEntry.getKey().equals(RepresentationsKey))
             throw new JsonParseException("Expected topObj key: " + RepresentationsKey + " : " + representationsEntry.getKey());
         JsonElement representationsElement = representationsEntry.getValue();
@@ -59,6 +63,11 @@ public class Representations extends BaseEveData implements JsonDeserializer<Rep
             Representation representation = new Representation();
             representations.add(representation);
             representation.deserialize(repElement, typeOfT, context);
+        }
+        while(repIter.hasNext())
+        {
+            Entry<String, JsonElement> entry = repIter.next();
+            LoggerFactory.getLogger(getClass()).info("Representations has a field not currently being handled: \n" + entry.toString());
         }
         return this;
     }

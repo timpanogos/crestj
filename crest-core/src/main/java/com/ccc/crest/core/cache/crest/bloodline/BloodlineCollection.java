@@ -53,7 +53,7 @@ public class BloodlineCollection extends BaseEveData implements JsonDeserializer
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
     
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
@@ -64,7 +64,7 @@ public class BloodlineCollection extends BaseEveData implements JsonDeserializer
         gson.registerTypeAdapter(BloodlineCollection.class, new BloodlineCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getCrestUrl(),
+                        null, getUrl(),
                         gson.create(), null, BloodlineCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);

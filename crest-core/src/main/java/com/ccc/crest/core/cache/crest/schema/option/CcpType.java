@@ -22,6 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.slf4j.LoggerFactory;
+
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -100,6 +102,11 @@ public class CcpType implements JsonDeserializer<CcpType>
         if (!entry.getKey().equals(TypeKey))
             throw new JsonParseException("Expected: " + TypeKey + " rec: " + entry.getKey());
         type = checkNull(entry.getValue());
+        while(fieldIter.hasNext())
+        {
+            entry = fieldIter.next();
+            LoggerFactory.getLogger(getClass()).info("CcpType has a field not currently being handled: \n" + entry.toString());
+        }
         return this;
     }
     

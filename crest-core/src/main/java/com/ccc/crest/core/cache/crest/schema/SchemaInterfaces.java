@@ -17,12 +17,12 @@
 package com.ccc.crest.core.cache.crest.schema;
 
 import com.ccc.crest.core.cache.SourceFailureException;
-import com.ccc.crest.core.cache.crest.schema.endpoint.CrestCallList;
+import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointCollection;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 
 @SuppressWarnings("javadoc")
 public interface SchemaInterfaces
 {
-    public CrestCallList getCrestCallList() throws SourceFailureException;
-    public CrestOptions getCrestOptions(String url) throws SourceFailureException;
+    public EndpointCollection getEndpointCollection() throws SourceFailureException;
+    public CrestOptions getOptions(String url) throws SourceFailureException;
 }

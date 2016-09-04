@@ -108,74 +108,74 @@ public class SchemaMap
     
     private void initializeVersions() throws Exception
     {
-        addElement(CrestOptions.class,                  "-v1+json", "",                         "");
-        addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
-        addElement(ItemGroupCollection.class,           "-v1+json", "/inventory/groups/",       "itemGroups.href");
-        addElement(CorporationCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
         addElement(AllianceCollection.class,            "-v2+json", "/alliances/",              "alliances.href");
-        addElement(ItemTypeCollection.class,            "-v1+json", "/inventory/types/",        "itemTypes.href");
-        addElement(TokenDecode.class,                   "-v1+json", "/decode/",                 "decode.href"); // swapped in second representation
-        addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");
-        addElement(OpportunityTasksCollection.class,    "-v1+json", "/opportunities/tasks/",    "opportunities.tasks");
-        addElement(OpportunityGroupsCollection.class,   "-v1+json", "/opportunities/groups/",   "opportunities.groups");
-        addElement(ItemCategoryCollection.class,        "-v1+json", "/inventory/categories/",   "itemCategories.href");
-        addElement(RegionCollection.class,              "-v1+json", "/regions/",                "regions.href");
+//      addElement(AuthenticationEndpoint.class,        "-v1+json", "/oauth/token/",            "authEndpoint.href");
         addElement(BloodlineCollection.class,           "-v2+json", "/bloodlines/",             "bloodlines.href");
+        addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
+        addElement(CorporationCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
+        addElement(CrestOptions.class,                  "-v1+json", "",                         "");
+        addElement(DogmaAttributeCollection.class,      "-v1+json", "/dogma/attributes/",       "dogma.attributes");
+        addElement(DogmaEffectCollection.class,         "-v1+json", "/dogma/effects/",          "dogma.effects");
+        addElement(IncursionCollection.class,           "-v1+json", "/incursions/",             "incursions.href");
+        addElement(IndustryFacilityCollection.class,    "-v1+json", "/industry/facilities/",    "industry.facilities");
+        addElement(IndustrySystemCollection.class,      "-v1+json", "/industry/systems/",       "industry.systems");
+        addElement(InsurancePricesCollection.class,     "-v1+json", "/insuranceprices/",        "insurancePrices.href");
+        addElement(ItemCategoryCollection.class,        "-v1+json", "/inventory/categories/",   "itemCategories.href");
+        addElement(ItemGroupCollection.class,           "-v1+json", "/inventory/groups/",       "itemGroups.href");
+        addElement(ItemTypeCollection.class,            "-v1+json", "/inventory/types/",        "itemTypes.href");
         addElement(MarketGroupCollection.class,         "-v1+json", "/market/groups/",          "marketGroups.href");
-        addElement(SystemCollection.class,              "-v1+json", "/solarsystems/",           "systems.href");
+        addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");
+        addElement(MarketTypeCollection.class,          "-v1+json", "/market/types/",           "marketTypes.href");
+        addElement(NPCCorporationsCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
+        addElement(OpportunityGroupsCollection.class,   "-v1+json", "/opportunities/groups/",   "opportunities.groups");
+        addElement(OpportunityTasksCollection.class,    "-v1+json", "/opportunities/tasks/",    "opportunities.tasks");
+        addElement(RaceCollection.class,                "-v3+json", "/races/",                  "races.href");
+        addElement(RegionCollection.class,              "-v1+json", "/regions/",                "regions.href");
         addElement(SovCampaignsCollection.class,        "-v1+json", "/sovereignty/campaigns/",  "sovereignty.campaigns");
         addElement(SovStructureCollection.class,        "-v1+json", "/sovereignty/structures/", "sovereignty.structures");
+        addElement(SystemCollection.class,              "-v1+json", "/solarsystems/",           "systems.href");
+        addElement(Time.class,                          "-v1+json", "/time/",                   "time.href");
+        addElement(TokenDecode.class,                   "-v1+json", "/decode/",                 "decode.href"); // swapped in second representation
         addElement(TournamentCollection.class,          "-v1+json", "/tournaments/",            "tournaments.href");
         addElement(VirtualGoodStore.class,              "-v1+json", "/virtualGoodStore/",       "virtualGoodStore.href"); // group: virtualGoodStore href: https://vgs-tq.eveonline.com/ HTTP/1.1 405 Method Not Allowed
         addElement(WarsCollection.class,                "-v1+json", "/wars/",                   "wars.href");
-        addElement(IncursionCollection.class,           "-v1+json", "/incursions/",             "incursions.href");
-        addElement(DogmaAttributeCollection.class,      "-v1+json", "/dogma/attributes/",       "dogma.attributes");
-        addElement(DogmaEffectCollection.class,         "-v1+json", "/dogma/effects/",          "dogma.effects");
-        addElement(RaceCollection.class,                "-v3+json", "/races/",                  "races.href");
-        addElement(InsurancePricesCollection.class,     "-v1+json", "/insuranceprices/",        "insurancePrices.href");
-//        addElement(AuthenticationEndpoint.class,        "-v1+json", "/oauth/token/",            "authEndpoint.href");
-        addElement(IndustryFacilityCollection.class,    "-v1+json", "/industry/facilities/",    "industry.facilities");
-        addElement(IndustrySystemCollection.class,      "-v1+json", "/industry/systems/",       "industry.systems");
-        addElement(NPCCorporationsCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
-        addElement(Time.class,                          "-v1+json", "/time/",                   "time.href");
-        addElement(MarketTypeCollection.class,          "-v1+json", "/market/types/",           "marketTypes.href");
     }
     
     private void initializeGroupsMap()
     {
-        groupMap.put("constellations", "constellations");
-        groupMap.put("itemGroups", "itemGroups");
-        groupMap.put("corporations", "corporations");
         groupMap.put("alliances", "alliances");
-        groupMap.put("itemTypes", "itemTypes");
-        groupMap.put("decode", "decode");
-        groupMap.put("marketPrices", "marketPrices");
-        groupMap.put("opportunities", "opportunities");
-        groupMap.put("itemCategories", "itemCategories");
-        groupMap.put("regions", "regions");
+        groupMap.put("authEndpoint", "authEndpoint");
         groupMap.put("bloodlines", "bloodlines");
+        groupMap.put("constellations", "constellations");
+        groupMap.put("corporations", "corporations");
+        groupMap.put("decode", "decode");
+        groupMap.put("dogma", "dogma");
+        groupMap.put("incursions", "incursions");
+        groupMap.put("industry", "industry");
+        groupMap.put("insurancePrices", "insurancePrices");
+        groupMap.put("itemCategories", "itemCategories");
+        groupMap.put("itemGroups", "itemGroups");
+        groupMap.put("itemTypes", "itemTypes");
         groupMap.put("marketGroups", "marketGroups");
-        groupMap.put("systems", "systems");
+        groupMap.put("marketPrices", "marketPrices");
+        groupMap.put("marketTypes", "marketTypes");
+        groupMap.put("npcCorporations", "npcCorporations");
+        groupMap.put("opportunities", "opportunities");
+        groupMap.put("races", "races");
+        groupMap.put("regions", "regions");
         groupMap.put("sovereignty", "sovereignty");
+        groupMap.put("systems", "systems");
+        groupMap.put("time", "time");
         groupMap.put("tournaments", "tournaments");
         groupMap.put("virtualGoodStore", "virtualGoodStore");
         groupMap.put("wars", "wars");
-        groupMap.put("incursions", "incursions");
-        groupMap.put("dogma", "dogma");
-        groupMap.put("races", "races");
-        groupMap.put("insurancePrices", "insurancePrices");
-        groupMap.put("authEndpoint", "authEndpoint");
-        groupMap.put("industry", "industry");
-        groupMap.put("npcCorporations", "npcCorporations");
-        groupMap.put("time", "time");
-        groupMap.put("marketTypes", "marketTypes");
     }
 
     private void initializeEndpoints() throws SourceFailureException
     {
         HashMap<String, String> checkMap = new HashMap<>();
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
-        List<EndpointGroup> groups = cache.getCrestCallList().getCallGroups();
+        List<EndpointGroup> groups = cache.getEndpointCollection().getCallGroups();
         for (EndpointGroup group : groups)
         {
             List<Endpoint> endpoints = group.getEndpoints();
@@ -190,7 +190,8 @@ public class SchemaMap
                 SchemaMapElement e = uriToSchema.get(key);
                 if(e == null)
                 {
-                    log.warn("\nCannot map the endpoint to a schema: \n" + group.toString());
+                    if(!"authEndpoint.href".equals(key))
+                        log.warn("\nCannot map the endpoint to a schema: \n" + group.toString());
                     continue;
                 }
                 String reportedUri = endpoint.uri;
@@ -231,8 +232,9 @@ public class SchemaMap
 
         List<String> list = new ArrayList<>();
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
-        Representations representations = cache.getCrestOptions(null).getRepresentations();
-        List<EndpointGroup> groups = cache.getCrestCallList().getCallGroups();
+        Representations representations = cache.getOptions(null).getRepresentations();
+log.info("\n"+representations.toString());        
+        List<EndpointGroup> groups = cache.getEndpointCollection().getCallGroups();
         Representation schemaSchema = representations.representations.get(0);
         String optionsVersion = schemaSchema.acceptType.name;
         int idx = optionsVersion.indexOf("-v");
@@ -261,7 +263,7 @@ public class SchemaMap
 
             for (Endpoint endpoint : group.getEndpoints())
             {
-                Representations reps = cache.getCrestOptions(endpoint.uri).getRepresentations();
+                Representations reps = cache.getOptions(endpoint.uri).getRepresentations();
                 int size = reps.representations.size();
                 Representation rep0 = null;
                 Representation rep1 = null;

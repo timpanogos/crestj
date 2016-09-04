@@ -20,6 +20,8 @@ import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.slf4j.LoggerFactory;
+
 import com.ccc.tools.TabToLevel;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -54,6 +56,11 @@ public class AcceptType implements JsonDeserializer<AcceptType>
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(CcpType.class, schemaTypeElement);
         ccpType = gson.create().fromJson(entry.getValue().getAsString(), CcpType.class);
+        while(acceptIter.hasNext())
+        {
+            entry = acceptIter.next();
+            LoggerFactory.getLogger(getClass()).info("AcceptType has a field not currently being handled: \n" + entry.toString());
+        }
         return this;
     }
     
