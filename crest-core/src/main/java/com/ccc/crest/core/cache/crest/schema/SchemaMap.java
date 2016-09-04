@@ -233,7 +233,7 @@ public class SchemaMap
         List<String> list = new ArrayList<>();
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
         Representations representations = cache.getOptions(null).getRepresentations();
-log.info("\n"+representations.toString());        
+//log.info("\n"+representations.toString());        
         List<EndpointGroup> groups = cache.getEndpointCollection().getCallGroups();
         Representation schemaSchema = representations.representations.get(0);
         String optionsVersion = schemaSchema.acceptType.name;

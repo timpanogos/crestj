@@ -69,7 +69,7 @@ public class RaceCollection extends BaseEveData implements JsonDeserializer<Race
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
-        return CrestController.getCrestController().crestClient.getOptions(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override

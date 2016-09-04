@@ -69,7 +69,7 @@ public class SystemCollection extends BaseEveData implements JsonDeserializer<Sy
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
-        return CrestController.getCrestController().crestClient.getOptions(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override

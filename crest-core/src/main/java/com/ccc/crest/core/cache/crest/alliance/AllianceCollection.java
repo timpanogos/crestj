@@ -43,11 +43,18 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
-
+    
+    private volatile Alliances alliances;
+    
     public AllianceCollection()
     {
     }
 
+    public Alliances getAlliances()
+    {
+        return alliances;
+    }
+    
     public static String getVersion()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
@@ -69,12 +76,14 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
-        return CrestController.getCrestController().crestClient.getOptions(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override
     public AllianceCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return null;
+        alliances = new Alliances();
+        alliances.deserialize(json, typeOfT, context);
+        return this;
     }
 }

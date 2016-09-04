@@ -50,7 +50,7 @@ import com.ccc.crest.core.cache.crest.war.WarsCollection;
 @SuppressWarnings("javadoc")
 public interface CrestInterfaces
 {
-    public AllianceCollection getAllianceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public AllianceCollection getAllianceCollection() throws SourceFailureException;
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public CorporationCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException;

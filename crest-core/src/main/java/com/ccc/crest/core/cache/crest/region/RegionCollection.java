@@ -70,7 +70,7 @@ public class RegionCollection extends BaseEveData implements JsonDeserializer<Re
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
-        return CrestController.getCrestController().crestClient.getOptions(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override

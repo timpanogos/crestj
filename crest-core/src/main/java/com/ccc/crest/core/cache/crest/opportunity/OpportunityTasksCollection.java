@@ -69,7 +69,7 @@ public class OpportunityTasksCollection extends BaseEveData implements JsonDeser
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
-        return CrestController.getCrestController().crestClient.getOptions(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override

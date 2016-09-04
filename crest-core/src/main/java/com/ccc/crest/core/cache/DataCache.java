@@ -604,7 +604,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public AllianceCollection getAllianceCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public AllianceCollection getAllianceCollection() throws SourceFailureException
     {
         CacheData data = cache.get(AllianceCollection.getCrestUrl());
         if (data != null)
