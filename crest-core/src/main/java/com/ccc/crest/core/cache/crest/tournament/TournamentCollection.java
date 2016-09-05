@@ -44,10 +44,17 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
+    private volatile Tournaments tournaments;
+    
     public TournamentCollection()
     {
     }
 
+    public Tournaments getTournaments()
+    {
+        return tournaments;
+    }
+    
     public static String getVersion()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
@@ -75,6 +82,8 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
     @Override
     public TournamentCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return null;
+        tournaments = new Tournaments();
+        tournaments.deserialize(json, typeOfT, context);
+        return this;
     }
 }

@@ -76,7 +76,7 @@ public interface CrestInterfaces
     public SystemCollection getSystemCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public Time getTime() throws SourceFailureException;
     public TokenDecode getTokenDecode(CrestClientInfo clientInfo) throws SourceFailureException;
-    public TournamentCollection getTournamentCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public TournamentCollection getTournamentCollection() throws SourceFailureException;
     public VirtualGoodStore getVirtualGoodStore(CrestClientInfo clientInfo) throws SourceFailureException;
     public WarsCollection getWarsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     

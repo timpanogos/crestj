@@ -864,7 +864,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public TournamentCollection getTournamentCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public TournamentCollection getTournamentCollection() throws SourceFailureException
     {
         CacheData data = cache.get(TournamentCollection.getUrl());
         if (data != null)
