@@ -87,7 +87,7 @@ public class TournamentGetTournament extends BaseEveData implements JsonDeserial
                         null, url,
                         gson.create(), null, TournamentGetTournament.class,
                         callback,
-                        ReadScope, getVersion(), continueRefresh);
+                        ReadScope, getVersion(), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }

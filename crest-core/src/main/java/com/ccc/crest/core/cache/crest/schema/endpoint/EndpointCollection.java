@@ -84,7 +84,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
                     null, getCrestUrl(),
                     gson.create(), null, EndpointCollection.class,
                     callback,
-                    ReadScope, Version, continueRefresh);
+                    ReadScope, Version, continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }

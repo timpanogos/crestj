@@ -36,6 +36,7 @@ public class CrestRequestData implements Comparable<CrestRequestData>
     public final String version;
     public final AtomicBoolean continueRefresh;
     public final AtomicBoolean deprecated;  
+    public final boolean logJson;
     private long nextRefresh;
     public Throwable throwable;
 
@@ -46,6 +47,19 @@ public class CrestRequestData implements Comparable<CrestRequestData>
                     CrestResponseCallback callback,
                     String scope, String version,
                     AtomicBoolean continueRefresh)
+    {
+        this(clientInfo, url, gson, eveJsonData, clazz, callback, scope, version, continueRefresh, false);
+    }
+    //@formatter:on
+    
+    //@formatter:off
+    public CrestRequestData(
+                    CrestClientInfo clientInfo, String url,
+                    Gson gson, EveJsonData eveJsonData, Class<? extends EveJsonData> clazz,
+                    CrestResponseCallback callback,
+                    String scope, String version,
+                    AtomicBoolean continueRefresh,
+                    boolean logJson)
     //@formatter:on
     {
         this.clientInfo = clientInfo;
@@ -57,6 +71,7 @@ public class CrestRequestData implements Comparable<CrestRequestData>
         this.scope = scope;
         this.version = version;
         this.continueRefresh = continueRefresh;
+        this.logJson = logJson;
         deprecated = new AtomicBoolean(false);
     }
 

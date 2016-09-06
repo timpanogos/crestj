@@ -315,6 +315,8 @@ public class CrestClient
                     }
                 };
                 String body = client.client.execute(get, responseHandler);
+                if(rdata.logJson)
+                    log.info("\n" + rdata.url + " returned:\n" + body + "\n");
                 EveData data = null;
                 if (rdata.gson != null)
                     data = (EveData)rdata.gson.fromJson(body, rdata.clazz);

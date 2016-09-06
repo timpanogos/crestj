@@ -629,7 +629,8 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.getTournament(9);
+//                dataCache.getTournamentCollection();
+//                dataCache.getTournament(9);
                 dataCache.getTournamentSeries(9);
 //                SchemaMap.schemaMap.checkSchema();
                 dataCache.getTime();
