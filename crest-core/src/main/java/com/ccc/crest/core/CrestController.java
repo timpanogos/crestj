@@ -594,7 +594,7 @@ public class CrestController extends CoreController implements AuthEventListener
             return null;
         }
     }
-    
+
     private class FireDeprecatedEventTask implements Callable<Void>
     {
         private final String endpointInfo;
@@ -629,6 +629,18 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
+                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/");
+                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/");
+                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
+                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/");
+                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/matches/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/0/");
+  //              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/static/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/1/static/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/2/static/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/");
+
 //                dataCache.getTournamentCollection();
 //                dataCache.getTournament(9);
                 dataCache.getTournamentSeries(9);

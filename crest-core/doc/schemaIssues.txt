@@ -1,0 +1,83 @@
+1. EndpointCollection cache time is 20 seconds - expected much longer
+
+2. in the schema of schema application/vnd.ccp.eve.Options-v1+json - 
+   representation 1.  I did not see this "contentType" field in the returned data
+   
+	name: contentType
+	description: null
+	optional: true
+	extraData: null
+	typePrettyName: Dictionary
+	type: Dict
+	
+3. see the options.txt dump, search "look here" and find the "corporations"
+   only the schema representation is returned not the value representation.
+    
+4. see the options.txt dump, 3rd look here or so.  DecodeToken's two 
+representations are swapped compared to all others I've seen.
+
+5. route /virtualGoodStore/ reported by EndpointCollection fails the request with
+href: https://vgs-tq.eveonline.com/ HTTP/1.1 405 Method Not Allowed
+
+6. If an endpoints "acceptType->name:" ("Access") base (string short the version) 
+from the schema was included in the EndpointCollection schema an application 
+would not have to kludge up a key to be able to map the two together. 
+
+7. /inventory/types/ reported by EndpointCollection is not found in the schema reported from root
+
+8. naming on decode/TokenDecode is inconsistent in Options verses EndpointCollection - very minor
+
+9. all endpoints should be in a group.  As reported by EndpointCollection the following violate this:
+/alliances/
+/bloodlines/
+/constellations/
+/corporations/ 
+/incursions/
+/insuranceprices/
+/races/
+/regions/
+/solarsystems/
+/time/
+/decode/
+/tournaments/
+/virtualGoodStore/
+/wars/
+
+10. The following are found in current documentation but are not found in the schema or EndpointCollection.  
+Note TokenDecode (per crestexplorerjs) is not a solution as it returns values not schema.  A program should
+be able determine all the endpoints/schema without being authenticated.
+
+Character
+Contacts and Contact
+Fittings and Fitting
+OpportunitiesRead
+Waypoints
+Location
+Open Window
+Planets and Planet
+Stargate
+War  (WarCollection is there but seems incomplete, war is missing)
+
+11. the following are missing from the documentation
+corporations
+npcCorporations
+industryFacilities
+industrySystems
+tokenDecode
+virtualGoodStore
+
+12. AllianceCollection first json entry is 'totalCount_str="2988"' totalCount_str 
+is not mentioned in the schema, it comes first.  Why would we have any "_str" on 
+long values anyway? schema indicates "pageCount" should be the first element and 
+be of type long.  The declared 3rd element, id Long is missing.
+12.a Alliance id_str not declared in schema its declared as id Long.  Once again
+out of order.
+12.b pageCount_str not in schema
+
+13. I'm going to assume all the rest are similar to 12 and quit logging them.
+
+14. avoid wrapping simple href's in their own objects. 
+
+
+
+

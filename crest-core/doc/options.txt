@@ -1,0 +1,3906 @@
+The following is from logging HTTP OPTIONS calls to each endpoint reported by 
+EndpointCollection (old CallGroups).
+
+json has been converted to a java Object Graph and I've done a java "toString" 
+on each object graph that was returned. The following is the result.
+
+The purpose here is to give you an idea of the schema information available 
+for me, already in a java friendly form from which I can auto-gen at least 
+the ###Data segments or the entire .md if desired.
+
+Search for "look here" for a few points of interest
+
+note: schema of schema (2nd representation) was edited out to reduce the size 
+(by about half) of this information.  It is information that is not interesting 
+for our needs.
+
+
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.ConstellationCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.ConstellationCollectionItem-v1
+				typePrettyName: Collection of vnd.ccp.eve.ConstellationCollectionItem-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.ConstellationCollectionItem-v1
+					typePrettyName: Array of vnd.ccp.eve.ConstellationCollectionItem-v1
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: Constellation
+						typePrettyName: Uri to Constellation
+						type: Uri
+						children: 
+							none
+						name: id
+						description: ID for the constellation.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: Name of the constellation.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+13:38:52.775 DEBUG [CccBlockingExecutor-10] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/inventory/groups/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:33 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@13bc5e3f}
+13:38:52.780 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.ItemGroupCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Ref
+				typePrettyName: Collection of Ref
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Ref
+					typePrettyName: Array of Ref
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: ItemGroup
+						typePrettyName: Uri to ItemGroup
+						type: Uri
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+look here
+#corporations is broken
+only returning one representation and its the schema of the schema
+
+13:38:53.775 DEBUG [CccBlockingExecutor-12] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/corporations/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:52 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@2ca9567a}
+13:38:53.779 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: OPTIONS
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.Options-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: null
+				typePrettyName: Dictionary
+				type: Dict
+				children: 
+					name: representations
+					description: null
+					optional: false
+					extraData: Dict
+					typePrettyName: Array of Dict
+					type: Array
+					children: 
+						name: acceptType
+						description: null
+						optional: true
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: jsonDumpOfStructure
+							description: null
+							optional: true
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: verb
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: contentType
+						description: null
+						optional: true
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: jsonDumpOfStructure
+							description: null
+							optional: true
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: version
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: thirdParty
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Boolean value (bool)
+						type: Bool
+						children: 
+							none
+
+13:38:54.763 DEBUG [CccBlockingExecutor-14] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/alliances/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:35 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@2bec0d8e}
+13:38:54.768 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+
+look here
+# sweet note both versions are given here!
+
+	representations:
+		versionStr: 2
+		verb: GET
+		version: 2
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.AllianceCollection-v2+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Dict
+				typePrettyName: Collection of Dict
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Dict
+					typePrettyName: Array of Dict
+					type: Array
+					children: 
+						name: shortName
+						description: Short name, a.k.a. ticker, for the alliance
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: href
+						description: Link to a single alliance
+						optional: false
+						extraData: Alliance
+						typePrettyName: Uri to Alliance
+						type: Uri
+						children: 
+							none
+						name: id
+						description: Unique ID for the alliance
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: Name of the alliance
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.AllianceCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Dict
+				typePrettyName: Collection of Dict
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Dict
+					typePrettyName: Array of Dict
+					type: Array
+					children: 
+						name: href
+						description: Link to a single alliance
+						optional: false
+						extraData: Alliance
+						typePrettyName: Reference to Alliance
+						type: Ref
+						children: 
+							name: shortName
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: href
+							description: null
+							optional: false
+							extraData: Alliance
+							typePrettyName: Uri to Alliance
+							type: Uri
+							children: 
+								none
+							name: id
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: Name of the alliance
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:38:55.765 DEBUG [CccBlockingExecutor-16] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/inventory/types/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:36 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@49a89245}
+13:38:55.770 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.ItemTypeCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Ref
+				typePrettyName: Collection of Ref
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Ref
+					typePrettyName: Array of Ref
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: ItemType
+						typePrettyName: Uri to ItemType
+						type: Uri
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+look here
+# note that decode returned the schema of schema 
+as the first representation, where others always return it second
+a bug was written against this
+
+13:38:56.759 DEBUG [CccBlockingExecutor-18] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/decode/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:55 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@649ab56c}
+13:38:56.763 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: OPTIONS
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.Options-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: null
+				typePrettyName: Dictionary
+				type: Dict
+				children: 
+					name: representations
+					description: null
+					optional: false
+					extraData: Dict
+					typePrettyName: Array of Dict
+					type: Array
+					children: 
+						name: acceptType
+						description: null
+						optional: true
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: jsonDumpOfStructure
+							description: null
+							optional: true
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: verb
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: contentType
+						description: null
+						optional: true
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: jsonDumpOfStructure
+							description: null
+							optional: true
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: version
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: thirdParty
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Boolean value (bool)
+						type: Bool
+						children: 
+							none
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.TokenDecode-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: null
+				typePrettyName: Dictionary
+				type: Dict
+				children: 
+					name: character
+					description: Reference to the character bound to this token
+					optional: true
+					extraData: Character
+					typePrettyName: Reference to Character
+					type: Ref
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: Character
+						typePrettyName: Uri to Character
+						type: Uri
+						children: 
+							none
+
+13:38:57.751 DEBUG [CccBlockingExecutor-20] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/market/prices/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:56 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@36430b16}
+13:38:57.755 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.MarketTypePriceCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.MarketTypePrice-v1
+				typePrettyName: Collection of vnd.ccp.eve.MarketTypePrice-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.MarketTypePrice-v1
+					typePrettyName: Array of vnd.ccp.eve.MarketTypePrice-v1
+					type: Array
+					children: 
+						name: adjustedPrice
+						description: Adjusted price for the item
+						optional: true
+						extraData: null
+						typePrettyName: Float
+						type: Float
+						children: 
+							none
+						name: averagePrice
+						description: Average market price for the item
+						optional: true
+						extraData: null
+						typePrettyName: Float
+						type: Float
+						children: 
+							none
+						name: type
+						description: null
+						optional: false
+						extraData: ItemType
+						typePrettyName: Reference to ItemType
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: ItemType
+							typePrettyName: Uri to ItemType
+							type: Uri
+							children: 
+								none
+							name: id
+							description: The items typeID
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: Name of the item
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:38:58.747 DEBUG [CccBlockingExecutor-22] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/opportunities/tasks/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:39 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@1251c4c6}
+13:38:58.751 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.OpportunityTasksCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.OpportunityTask-v1
+				typePrettyName: Collection of vnd.ccp.eve.OpportunityTask-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.OpportunityTask-v1
+					typePrettyName: Array of vnd.ccp.eve.OpportunityTask-v1
+					type: Array
+					children: 
+						name: notificationText
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: description
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:38:59.744 DEBUG [CccBlockingExecutor-24] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/opportunities/groups/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:58 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@9379a6a}
+13:38:59.748 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.OpportunityGroupsCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.OpportunityGroup-v1
+				typePrettyName: Collection of vnd.ccp.eve.OpportunityGroup-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.OpportunityGroup-v1
+					typePrettyName: Array of vnd.ccp.eve.OpportunityGroup-v1
+					type: Array
+					children: 
+						name: groupConnections
+						description: null
+						optional: true
+						extraData: Ref
+						typePrettyName: Array of Ref
+						type: Array
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: OpportunityGroup
+							typePrettyName: Uri to OpportunityGroup
+							type: Uri
+							children: 
+								none
+							name: id
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: description
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: notificationText
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: achievementTasks
+						description: null
+						optional: true
+						extraData: Ref
+						typePrettyName: Array of Ref
+						type: Array
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: OpportunityTask
+							typePrettyName: Uri to OpportunityTask
+							type: Uri
+							children: 
+								none
+							name: id
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+13:39:00.735 DEBUG [CccBlockingExecutor-26] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/inventory/categories/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:41 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@5a2eff8d}
+13:39:00.740 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.ItemCategoryCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Ref
+				typePrettyName: Collection of Ref
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Ref
+					typePrettyName: Array of Ref
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: ItemCategory
+						typePrettyName: Uri to ItemCategory
+						type: Uri
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:01.721 DEBUG [CccBlockingExecutor-28] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/regions/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:00 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@6f4b829e}
+13:39:01.725 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.RegionCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.RegionCollectionItem-v1
+				typePrettyName: Collection of vnd.ccp.eve.RegionCollectionItem-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.RegionCollectionItem-v1
+					typePrettyName: Array of vnd.ccp.eve.RegionCollectionItem-v1
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: Region
+						typePrettyName: Uri to Region
+						type: Uri
+						children: 
+							none
+						name: id
+						description: ID for the region.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: Name of the region.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:02.735 DEBUG [CccBlockingExecutor-30] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/bloodlines/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:43 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@11f2e054}
+13:39:02.740 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+
+look here
+# another multi version
+	representations:
+		versionStr: 2
+		verb: GET
+		version: 2
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.BloodlineCollection-v2+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.Bloodline-v2
+				typePrettyName: Collection of vnd.ccp.eve.Bloodline-v2
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.Bloodline-v2
+					typePrettyName: Array of vnd.ccp.eve.Bloodline-v2
+					type: Array
+					children: 
+						name: race
+						description: The race the bloodline belongs to.
+						optional: false
+						extraData: Race
+						typePrettyName: Reference to Race
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: Race
+							typePrettyName: Uri to Race
+							type: Uri
+							children: 
+								none
+						name: description
+						description: Description of the bloodline.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: name
+						description: Name of the bloodline
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: href
+						description: A reference to the bloodline
+						optional: false
+						extraData: Bloodline
+						typePrettyName: Uri to Bloodline
+						type: Uri
+						children: 
+							none
+						name: id
+						description: Numerical identifier for this bloodline
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: icon
+						description: Reference to the icon that represents this bloodline
+						optional: false
+						extraData: null
+						typePrettyName: External reference
+						type: ExternalRef
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.BloodlineCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.Bloodline-v1
+				typePrettyName: Collection of vnd.ccp.eve.Bloodline-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.Bloodline-v1
+					typePrettyName: Array of vnd.ccp.eve.Bloodline-v1
+					type: Array
+					children: 
+						name: href
+						description: A reference to the bloodline
+						optional: false
+						extraData: Bloodline
+						typePrettyName: Uri to Bloodline
+						type: Uri
+						children: 
+							none
+						name: name
+						description: Name of the bloodline
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: race
+						description: The race the bloodline belongs to.
+						optional: false
+						extraData: Race
+						typePrettyName: Reference to Race
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: Race
+							typePrettyName: Uri to Race
+							type: Uri
+							children: 
+								none
+						name: description
+						description: Description of the bloodline.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:03.782 DEBUG [CccBlockingExecutor-32] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/market/groups/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:02 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@2ead5e8c}
+13:39:03.786 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.MarketGroupCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.MarketGroup-v1
+				typePrettyName: Collection of vnd.ccp.eve.MarketGroup-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.MarketGroup-v1
+					typePrettyName: Array of vnd.ccp.eve.MarketGroup-v1
+					type: Array
+					children: 
+						name: name
+						description: The market group's name
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: parentGroup
+						description: A reference to the parent market group
+						optional: true
+						extraData: MarketGroup
+						typePrettyName: Reference to MarketGroup
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: MarketGroup
+							typePrettyName: Uri to MarketGroup
+							type: Uri
+							children: 
+								none
+							name: id
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: href
+						description: A URI for this market group
+						optional: false
+						extraData: MarketGroup
+						typePrettyName: Uri to MarketGroup
+						type: Uri
+						children: 
+							none
+						name: id
+						description: ID for the market group.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: types
+						description: A reference to the list of types available in this market group
+						optional: false
+						extraData: MarketTypes
+						typePrettyName: Reference to MarketTypes
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: MarketTypes
+							typePrettyName: Uri to MarketTypes
+							type: Uri
+							children: 
+								none
+						name: description
+						description: The market group's description
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:04.785 DEBUG [CccBlockingExecutor-34] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/solarsystems/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:03 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@756a82b9}
+13:39:04.789 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.SystemCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.SystemCollectionItem-v1
+				typePrettyName: Collection of vnd.ccp.eve.SystemCollectionItem-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.SystemCollectionItem-v1
+					typePrettyName: Array of vnd.ccp.eve.SystemCollectionItem-v1
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: System
+						typePrettyName: Uri to System
+						type: Uri
+						children: 
+							none
+						name: id
+						description: ID for the solar system.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: Name of the solar system.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:05.778 DEBUG [CccBlockingExecutor-36] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/sovereignty/campaigns/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:04 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@45c5d9a}
+13:39:05.925 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.SovCampaignsCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.SovCampaignsItem-v1
+				typePrettyName: Collection of vnd.ccp.eve.SovCampaignsItem-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.SovCampaignsItem-v1
+					typePrettyName: Array of vnd.ccp.eve.SovCampaignsItem-v1
+					type: Array
+					children: 
+						name: campaignID
+						description: Unique ID for this campaign.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: eventType
+						description: Type of event this campaign is for. 1 = TCU defense, 2 = iHub defense, 3 = Station defense, 4 = Station freeport.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: sourceSolarsystem
+						description: The solar system the structure is located in.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the solar system resource.
+							optional: false
+							extraData: System
+							typePrettyName: Uri to System
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: attackers
+						description: This is an optional field that is present in eventType 1, 2, and 3.
+						optional: true
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: score
+							description: Score for all attacking parties.
+							optional: false
+							extraData: null
+							typePrettyName: Float
+							type: Float
+							children: 
+								none
+						name: sourceItemID
+						description: The structure item ID that is related to this campaign.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: startTime
+						description: Time the event is scheduled  to start.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: scores
+						description: This is an optional field that is present in eventType 4.
+						optional: true
+						extraData: Dict
+						typePrettyName: Array of Dict
+						type: Array
+						children: 
+							name: score
+							description: Score for the specified alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Float
+							type: Float
+							children: 
+								none
+							name: team
+							description: Alliance participating in the event.
+							optional: false
+							extraData: null
+							typePrettyName: Dictionary
+							type: Dict
+							children: 
+								name: href
+								description: Link to the alliance resource.
+								optional: false
+								extraData: Alliance
+								typePrettyName: Uri to Alliance
+								type: Uri
+								children: 
+									none
+								name: id
+								description: ID for the alliance.
+								optional: false
+								extraData: null
+								typePrettyName: Long (64bit integer)
+								type: Long
+								children: 
+									none
+								name: name
+								description: Name of the alliance.
+								optional: false
+								extraData: null
+								typePrettyName: Unicode string (unicode)
+								type: String
+								children: 
+									none
+						name: defender
+						description: This is an optional field that is present in eventType 1, 2, and 3.
+						optional: true
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: defender
+							description: Defending alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Dictionary
+							type: Dict
+							children: 
+								name: href
+								description: Link to the alliance resource.
+								optional: false
+								extraData: Alliance
+								typePrettyName: Uri to Alliance
+								type: Uri
+								children: 
+									none
+								name: id
+								description: ID for the alliance.
+								optional: false
+								extraData: null
+								typePrettyName: Long (64bit integer)
+								type: Long
+								children: 
+									none
+								name: name
+								description: Name of the alliance.
+								optional: false
+								extraData: null
+								typePrettyName: Unicode string (unicode)
+								type: String
+								children: 
+									none
+							name: score
+							description: Score for the defending alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Float
+							type: Float
+							children: 
+								none
+						name: constellation
+						description: The constellation in which the campaign will take place.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the constellation resource.
+							optional: false
+							extraData: Constellation
+							typePrettyName: Uri to Constellation
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for constellation.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name for constellation.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:06.935 DEBUG [CccBlockingExecutor-38] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/sovereignty/structures/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:48 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@6c0f6e9d}
+13:39:07.083 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.SovStructureCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.SovStructureItem-v1
+				typePrettyName: Collection of vnd.ccp.eve.SovStructureItem-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.SovStructureItem-v1
+					typePrettyName: Array of vnd.ccp.eve.SovStructureItem-v1
+					type: Array
+					children: 
+						name: alliance
+						description: The alliance that owns the structure.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the alliance resource.
+							optional: false
+							extraData: Alliance
+							typePrettyName: Uri to Alliance
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for the alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: Name of the alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: vulnerabilityOccupancyLevel
+						description: The occupancy level for the next or current vulnerability window. This takes into account all development indexes and capital system bonuses. Also known as Activity Defense Multiplier from in the client.  It increases the time that attackers must spend using their entosis links on the structure.
+						optional: true
+						extraData: null
+						typePrettyName: Float
+						type: Float
+						children: 
+							none
+						name: structureID
+						description: Unique item ID for this structure.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: vulnerableStartTime
+						description: The next time at which the structure will become vulnerable. Or the start time of the current window if current time is between this and vulnerableEndTime.
+						optional: true
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: solarSystem
+						description: Solar system in which the structure is located.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the solar system resource.
+							optional: false
+							extraData: System
+							typePrettyName: Uri to System
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: vulnerableEndTime
+						description: The time at which the next or current vulnerability window ends. At the end of a vulnerability window the next window is recalculated and locked in along with the vulnerabilityOccupancyLevel. If the structure is not in 100% entosis control of the defender, it will go in to 'overtime' and stay vulnerable for as long as that situation persists. Only once the defenders have 100% entosis control and has the vulnerableEndTime passed does the vulnerability interval expire and a new one is calculated.
+						optional: true
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: type
+						description: A reference to the type of structure this is.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the ItemType resource.
+							optional: false
+							extraData: ItemType
+							typePrettyName: Uri to ItemType
+							type: Uri
+							children: 
+								none
+							name: id
+							description: The items typeID.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name of the item.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: icons
+							description: null
+							optional: true
+							extraData: null
+							typePrettyName: Dictionary
+							type: Dict
+							children: 
+								name: 32x32
+								description: A URI to the image server which returns a 32x32 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 64x64
+								description: A URI to the image server which returns a 64x64 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 128x128
+								description: A URI to the image server which returns a 128x128 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 256x256
+								description: A URI to the image server which returns a 256x256 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 512x512
+								description: A URI to the image server which returns a 256x256 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:08.051 DEBUG [CccBlockingExecutor-40] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/tournaments/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:06 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@615bd405}
+13:39:08.056 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.TournamentCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Dict
+				typePrettyName: Collection of Dict
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Dict
+					typePrettyName: Array of Dict
+					type: Array
+					children: 
+						name: href
+						description: Link to a tournament resource
+						optional: false
+						extraData: Tournament
+						typePrettyName: Reference to Tournament
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: Tournament
+							typePrettyName: Uri to Tournament
+							type: Uri
+							children: 
+								none
+							name: name
+							description: The name of the tournament
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:08.217 DEBUG [CccBlockingExecutor-42] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/wars/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:06 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@f7187dd}
+13:39:08.221 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.WarsCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Ref
+				typePrettyName: Collection of Ref
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Ref
+					typePrettyName: Array of Ref
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: War
+						typePrettyName: Uri to War
+						type: Uri
+						children: 
+							none
+						name: id
+						description: ID of a specific war.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:08.404 DEBUG [CccBlockingExecutor-44] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/incursions/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:49 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@7b45878c}
+13:39:08.553 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.IncursionCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.Incursion-v1
+				typePrettyName: Collection of vnd.ccp.eve.Incursion-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.Incursion-v1
+					typePrettyName: Array of vnd.ccp.eve.Incursion-v1
+					type: Array
+					children: 
+						name: aggressorFactionID
+						description: Link to the attacking faction
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the alliance resource.
+							optional: false
+							extraData: Alliance
+							typePrettyName: Uri to Alliance
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for the alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: Name of the alliance.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: stagingSolarSystem
+						description: Staging solar system for the incursion.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the solar system resource.
+							optional: false
+							extraData: System
+							typePrettyName: Uri to System
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: influence
+						description: influence of the incursion as a float from 0 to 1
+						optional: false
+						extraData: null
+						typePrettyName: Float
+						type: Float
+						children: 
+							none
+						name: incursionType
+						description: Incursion type; spreading or constellation based.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: state
+						description: possible states are withdrawing, mobilizing, or established
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: hasBoss
+						description: boolean for if the final encounter has spawned or not
+						optional: false
+						extraData: null
+						typePrettyName: Boolean value (bool)
+						type: Bool
+						children: 
+							none
+						name: infestedSolarSystems
+						description: list of infested solar systems that are a part of the incursion.
+						optional: false
+						extraData: Dict
+						typePrettyName: Array of Dict
+						type: Array
+						children: 
+							name: href
+							description: Link to the solar system resource.
+							optional: false
+							extraData: System
+							typePrettyName: Uri to System
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name for solar system.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: constellation
+						description: Constellation which the incursion takes place.
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the constellation resource.
+							optional: false
+							extraData: Constellation
+							typePrettyName: Uri to Constellation
+							type: Uri
+							children: 
+								none
+							name: id
+							description: ID for constellation.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name for constellation.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:08.734 DEBUG [CccBlockingExecutor-46] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/dogma/attributes/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:49 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@6e74851a}
+13:39:08.738 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.DogmaAttributeCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Ref
+				typePrettyName: Collection of Ref
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Ref
+					typePrettyName: Array of Ref
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: DogmaAttribute
+						typePrettyName: Uri to DogmaAttribute
+						type: Uri
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:08.911 DEBUG [CccBlockingExecutor-48] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/dogma/effects/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:07 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@27550f3}
+13:39:08.914 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.DogmaEffectCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: Ref
+				typePrettyName: Collection of Ref
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: Ref
+					typePrettyName: Array of Ref
+					type: Array
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: DogmaEffect
+						typePrettyName: Uri to DogmaEffect
+						type: Uri
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:09.093 DEBUG [CccBlockingExecutor-50] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/races/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:50 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@47b9ee54}
+13:39:09.096 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 3
+		verb: GET
+		version: 3
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.RaceCollection-v3+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.Race-v3
+				typePrettyName: Collection of vnd.ccp.eve.Race-v3
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.Race-v3
+					typePrettyName: Array of vnd.ccp.eve.Race-v3
+					type: Array
+					children: 
+						name: name
+						description: Name of the race
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: href
+						description: A reference to the race
+						optional: false
+						extraData: Race
+						typePrettyName: Uri to Race
+						type: Uri
+						children: 
+							none
+						name: description
+						description: Description of the race
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: icon
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: 64x64
+							description: Reference to the 64x64 icon for the race
+							optional: false
+							extraData: null
+							typePrettyName: External reference
+							type: ExternalRef
+							children: 
+								name: href
+								description: null
+								optional: false
+								extraData: null
+								typePrettyName: Unicode string (unicode)
+								type: String
+								children: 
+									none
+							name: 128x128
+							description: Reference to the 128x128 icon for the race
+							optional: false
+							extraData: null
+							typePrettyName: External reference
+							type: ExternalRef
+							children: 
+								name: href
+								description: null
+								optional: false
+								extraData: null
+								typePrettyName: Unicode string (unicode)
+								type: String
+								children: 
+									none
+							name: 32x32
+							description: Reference to the 32x32 icon for the race
+							optional: false
+							extraData: null
+							typePrettyName: External reference
+							type: ExternalRef
+							children: 
+								name: href
+								description: null
+								optional: false
+								extraData: null
+								typePrettyName: Unicode string (unicode)
+								type: String
+								children: 
+									none
+						name: id
+						description: Numerical identifier for the race
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:09.343 DEBUG [CccBlockingExecutor-52] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/insuranceprices/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:07 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@7f1d0e3a}
+13:39:09.347 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.InsurancePricesCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.InsurancePrice-v1
+				typePrettyName: Collection of vnd.ccp.eve.InsurancePrice-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.InsurancePrice-v1
+					typePrettyName: Array of vnd.ccp.eve.InsurancePrice-v1
+					type: Array
+					children: 
+						name: type
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: href
+							description: Link to the ItemType resource.
+							optional: false
+							extraData: ItemType
+							typePrettyName: Uri to ItemType
+							type: Uri
+							children: 
+								none
+							name: id
+							description: The items typeID.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: String name of the item.
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: icons
+							description: null
+							optional: true
+							extraData: null
+							typePrettyName: Dictionary
+							type: Dict
+							children: 
+								name: 32x32
+								description: A URI to the image server which returns a 32x32 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 64x64
+								description: A URI to the image server which returns a 64x64 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 128x128
+								description: A URI to the image server which returns a 128x128 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 256x256
+								description: A URI to the image server which returns a 256x256 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+								name: 512x512
+								description: A URI to the image server which returns a 256x256 icon
+								optional: false
+								extraData: null
+								typePrettyName: External reference
+								type: ExternalRef
+								children: 
+									name: href
+									description: null
+									optional: false
+									extraData: null
+									typePrettyName: Unicode string (unicode)
+									type: String
+									children: 
+										none
+						name: insurance
+						description: null
+						optional: false
+						extraData: Dict
+						typePrettyName: Array of Dict
+						type: Array
+						children: 
+							name: payout
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Float
+							type: Float
+							children: 
+								none
+							name: cost
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Float
+							type: Float
+							children: 
+								none
+							name: level
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:09.539 DEBUG [CccBlockingExecutor-54] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/industry/facilities/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:50 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@2c360a33}
+13:39:09.543 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.IndustryFacilityCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.IndustryFacility-v1
+				typePrettyName: Collection of vnd.ccp.eve.IndustryFacility-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.IndustryFacility-v1
+					typePrettyName: Array of vnd.ccp.eve.IndustryFacility-v1
+					type: Array
+					children: 
+						name: facilityID
+						description: ID of the facility.
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: solarSystem
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: id
+							description: solar system ID where the facility is.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: name
+						description: Name of the facility.
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: region
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: id
+							description: region ID where the facility is.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: tax
+						description: Tax imposed by the facility.
+						optional: true
+						extraData: null
+						typePrettyName: Float
+						type: Float
+						children: 
+							none
+						name: owner
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: id
+							description: owner of the facility.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: type
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Dictionary
+						type: Dict
+						children: 
+							name: id
+							description: type ID of the facility.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:09.716 DEBUG [CccBlockingExecutor-56] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/industry/systems/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:50 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@18bc6745}
+13:39:09.718 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.IndustrySystemCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.IndustrySystem-v1
+				typePrettyName: Collection of vnd.ccp.eve.IndustrySystem-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.IndustrySystem-v1
+					typePrettyName: Array of vnd.ccp.eve.IndustrySystem-v1
+					type: Array
+					children: 
+						name: systemCostIndices
+						description: null
+						optional: false
+						extraData: Dict
+						typePrettyName: Array of Dict
+						type: Array
+						children: 
+							name: costIndex
+							description: value of the index
+							optional: false
+							extraData: null
+							typePrettyName: Float
+							type: Float
+							children: 
+								none
+							name: activityID
+							description: id of the activty
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: activityName
+							description: name of the activity
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: solarSystem
+						description: Solar system.
+						optional: false
+						extraData: System
+						typePrettyName: Reference to System
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: System
+							typePrettyName: Uri to System
+							type: Uri
+							children: 
+								none
+							name: id
+							description: solarSystemID for the system the team resides in.
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:09.901 DEBUG [CccBlockingExecutor-58] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/corporations/npccorps/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:08 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@66403741}
+13:39:09.902 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.NPCCorporationsCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.NPCCorporation-v1
+				typePrettyName: Collection of vnd.ccp.eve.NPCCorporation-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.NPCCorporation-v1
+					typePrettyName: Array of vnd.ccp.eve.NPCCorporation-v1
+					type: Array
+					children: 
+						name: description
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: headquarters
+						description: null
+						optional: false
+						extraData: Station
+						typePrettyName: Reference to Station
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: Station
+							typePrettyName: Uri to Station
+							type: Uri
+							children: 
+								none
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+						name: href
+						description: null
+						optional: false
+						extraData: Corporation
+						typePrettyName: Uri to Corporation
+						type: Uri
+						children: 
+							none
+						name: loyaltyStore
+						description: null
+						optional: false
+						extraData: LoyaltyStore
+						typePrettyName: Reference to LoyaltyStore
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: LoyaltyStore
+							typePrettyName: Uri to LoyaltyStore
+							type: Uri
+							children: 
+								none
+						name: ticker
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+						name: name
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+
+13:39:10.074 DEBUG [CccBlockingExecutor-60] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/time/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:39:08 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@6c244a73}
+13:39:10.078 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.Time-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: null
+				typePrettyName: Dictionary
+				type: Dict
+				children: 
+					name: time
+					description: Current New Eden time in an ISO-8601 formatted string.
+					optional: false
+					extraData: null
+					typePrettyName: Unicode string (unicode)
+					type: String
+					children: 
+						none
+
+13:39:10.286 DEBUG [CccBlockingExecutor-62] c.ccc.crest.core.client.CrestClient - handling response for: https://crest-tq.eveonline.com/market/types/ response: HttpResponseProxy{HTTP/1.1 200 OK [Server: nginx/1.8.1, Date: Fri, 02 Sep 2016 19:38:51 GMT, Content-Type: application/vnd.ccp.eve.Options-v1+json; charset=utf-8, Transfer-Encoding: chunked, Connection: keep-alive, Vary: Accept-Encoding, Access-Control-Allow-Headers: AUTHORIZATION, X-REQUESTED-WITH, CONTENT-TYPE, ACCEPT, Access-Control-Max-Age: 1728000, Access-Control-Expose-Headers: CONTENT-TYPE, X-DEPRECATED, Access-Control-Allow-Origin: *, Access-Control-Allow-Methods: GET, PUT, POST, DELETE, HEAD, OPTIONS, Access-Control: allow <*>, Cache-Control: max-age=300] org.apache.http.client.entity.DecompressingEntity@151b255}
+13:39:10.289 INFO  [CccBlockingExecutor-3] c.c.c.c.c.crest.schema.SchemaMap - Representations
+	representations:
+		versionStr: 1
+		verb: GET
+		version: 1
+		thirdParty: true
+		acceptType: 
+			name: application/vnd.ccp.eve.MarketTypeCollection-v1+json
+			ccpType: 
+				name: jsonDumpOfStructure
+				description: null
+				optional: false
+				extraData: vnd.ccp.eve.MarketType-v1
+				typePrettyName: Collection of vnd.ccp.eve.MarketType-v1
+				type: Collection
+				children: 
+					name: pageCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: items
+					description: null
+					optional: false
+					extraData: vnd.ccp.eve.MarketType-v1
+					typePrettyName: Array of vnd.ccp.eve.MarketType-v1
+					type: Array
+					children: 
+						name: marketGroup
+						description: A reference to the market group this type belongs in
+						optional: false
+						extraData: MarketGroup
+						typePrettyName: Reference to MarketGroup
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: MarketGroup
+							typePrettyName: Uri to MarketGroup
+							type: Uri
+							children: 
+								none
+							name: id
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+						name: type
+						description: The actual static type referenced by this market type
+						optional: false
+						extraData: ItemType
+						typePrettyName: Reference to ItemType
+						type: Ref
+						children: 
+							name: href
+							description: null
+							optional: false
+							extraData: ItemType
+							typePrettyName: Uri to ItemType
+							type: Uri
+							children: 
+								none
+							name: id
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Long (64bit integer)
+							type: Long
+							children: 
+								none
+							name: name
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: Unicode string (unicode)
+							type: String
+							children: 
+								none
+							name: icon
+							description: null
+							optional: false
+							extraData: null
+							typePrettyName: External reference
+							type: ExternalRef
+							children: 
+								name: href
+								description: null
+								optional: false
+								extraData: null
+								typePrettyName: Unicode string (unicode)
+								type: String
+								children: 
+									none
+						name: id
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Long (64bit integer)
+						type: Long
+						children: 
+							none
+					name: totalCount
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: Long (64bit integer)
+					type: Long
+					children: 
+						none
+					name: next
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+					name: previous
+					description: null
+					optional: true
+					extraData: null
+					typePrettyName: External reference
+					type: ExternalRef
+					children: 
+						name: href
+						description: null
+						optional: false
+						extraData: null
+						typePrettyName: Unicode string (unicode)
+						type: String
+						children: 
+							none
+

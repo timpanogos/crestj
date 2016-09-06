@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -155,7 +155,7 @@ public class CrestClient
         }
         return getOptions(requestData, client);
     }
-    
+
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
         ClientElement client = null;
@@ -200,7 +200,7 @@ public class CrestClient
             get.addHeader("Accept", requestData.version);
         return executor.submit(new CrestGetTask(client, get, requestData));
     }
-    
+
     public Future<EveData> get(CrestRequestData requestData, ClientElement client)
     {
         String accessToken = null;
@@ -247,9 +247,9 @@ public class CrestClient
                         int status = response.getStatusLine().getStatusCode();
                         if (status < 200 || status > 299)
                         {
-                            String msg = "Unexpected response status: " + status;
+                            String msg = rdata.url + " Unexpected response status: " + status;
                             if (status == NoLongerSupported)
-                                msg += rdata.url + " is not longer supported";
+                                msg += " is not longer supported";
                             msg += " " + response.getStatusLine().getReasonPhrase();
                             msg += " : " + response.toString();
                             log.warn(msg);
@@ -262,12 +262,12 @@ public class CrestClient
                             String cacheTimeStr = getHeaderElement(response, CacheControlHeader, CacheControlMaxAge);
                             if (cacheTimeStr == null)
                             {
-                                String msg = "Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
+                                String msg = rdata.url + " Could not find " + CacheControlMaxAge + " " + response.getStatusLine().getReasonPhrase();
                                 log.warn(msg);
                                 throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
                             }
                             cacheTime.set(Integer.parseInt(cacheTimeStr));
-                            
+
                             String deprecatedStr = getHeaderElement(response, AccessControlExposeHeader, CrestDeprecatedHeader);
                             if(deprecatedStr != null)
                             {
@@ -280,7 +280,7 @@ public class CrestClient
                         if (status >= 200 && status < 300)
                         {
                             if(status != 200)
-                                log.warn("received a non 200, but under 300 response: " + response.toString());
+                                log.warn(rdata.url + " received a non 200, but under 300 response: " + response.toString());
                             HttpEntity entity = response.getEntity();
                             String body = entity != null ? EntityUtils.toString(entity) : null;
                             if (rdata.gson == null)
@@ -289,13 +289,13 @@ public class CrestClient
                                     cacheTime.set(EveApi.getCachedUntil(body));
                                 } catch (Exception e)
                                 {
-                                    log.warn(e.getMessage(), e);
+                                    log.warn(rdata.url + " " + e.getMessage(), e);
                                 }
                             return body;
                         }
                         return null;
                     }
-                    
+
                     private String getHeaderElement(HttpResponse response, String headerKey, String elementKey)
                     {
                         Header[] headers = response.getHeaders(headerKey);

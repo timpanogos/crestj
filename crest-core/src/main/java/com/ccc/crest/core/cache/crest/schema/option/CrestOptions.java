@@ -61,7 +61,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
-    
+
     public static String getCrestUrl()
     {
         return CrestClient.getCrestBaseUri();
@@ -78,7 +78,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
                         null, url,
                         gson.create(), null, CrestOptions.class,
                         callback,
-                        ReadScope, getVersion(), continueRefresh, false);
+                        ReadScope, getVersion(), continueRefresh, true);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getOptions(rdata);
     }
