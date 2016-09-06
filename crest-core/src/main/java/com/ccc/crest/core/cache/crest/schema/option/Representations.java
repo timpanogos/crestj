@@ -67,7 +67,7 @@ public class Representations extends BaseEveData implements JsonDeserializer<Rep
         while(repIter.hasNext())
         {
             Entry<String, JsonElement> entry = repIter.next();
-            LoggerFactory.getLogger(getClass()).info("Representations has a field not currently being handled: \n" + entry.toString());
+            LoggerFactory.getLogger(getClass()).warn("Representations has a field not currently being handled: \n" + entry.toString());
         }
         return this;
     }

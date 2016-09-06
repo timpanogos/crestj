@@ -31,6 +31,7 @@ import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.crest.ExternalRef;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.tools.TabToLevel;
@@ -44,7 +45,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class TournamentCollection extends BaseEveData implements JsonDeserializer<TournamentCollection>
+public class TournamentGetTournament extends BaseEveData implements JsonDeserializer<TournamentGetTournament>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
@@ -54,36 +55,37 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    private volatile Tournaments tournaments;
+    private volatile Series series;
 
-    public TournamentCollection()
+    public TournamentGetTournament()
     {
     }
 
-    public Tournaments getTournaments()
+    public Series getSeries()
     {
-        return tournaments;
+        return series;
     }
-
+    
     public static String getVersion()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
-
+    
     public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
     }
 
-    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(long tournamentId, CrestResponseCallback callback) throws Exception
     {
+        String url = getUrl();
+        url += tournamentId + "/";
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(TournamentCollection.class, new TournamentCollection());
-
+        gson.registerTypeAdapter(TournamentGetTournament.class, new TournamentGetTournament());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getUrl(),
-                        gson.create(), null, TournamentCollection.class,
+                        null, url,
+                        gson.create(), null, TournamentGetTournament.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh);
         //@formatter:on
@@ -91,37 +93,34 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
     }
 
     @Override
-    public TournamentCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public TournamentGetTournament deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Gson gson = new Gson();
-        tournaments = new Tournaments();
-        tournaments = tournaments.deserialize(json, typeOfT, context);
-        if(log.isDebugEnabled())
-            log.debug(tournaments.toString());
+        series = new Series();
+        series = series.deserialize(json, typeOfT, context);
+        log.info(series.toString());
         return this;
     }
-
-    public class Tournaments implements JsonDeserializer<Tournaments>
+    
+    public class Series implements JsonDeserializer<Series>
     {
-        public volatile String totalCountStr;
-        public final List<Tournament> tournaments;
-        public volatile long pageCount;
-        public volatile String pageCountStr;
-        public volatile long totalCount;
-
-        public Tournaments()
+        public volatile String name;
+        public volatile String type;
+        public volatile ExternalRef seriesUrl;
+        public final List<TeamStats> teamStats;
+        
+        public Series()
         {
-            tournaments = new ArrayList<>();
+            teamStats = new ArrayList<>();
         }
 
-        private static final String TotalCountStringKey = "totalCount_str";
-        private static final String ItemsKey = "items";
-        private static final String PageCountKey = "pageCount";
-        private static final String PageCountStringKey = "pageCount_str";
-        private static final String TotalCountKey = "totalCount";
+        private static final String NameKey = "name";
+        private static final String TypeKey = "type";
+        private static final String SeriesUrlKey = "series"; 
+        private static final String TeamStatsKey = "entries"; // optional
 
         @Override
-        public Tournaments deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public Series deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
             while (objectIter.hasNext())
@@ -129,28 +128,29 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
                 Entry<String, JsonElement> objectEntry = objectIter.next();
                 String key = objectEntry.getKey();
                 JsonElement value = objectEntry.getValue();
-                if (TotalCountStringKey.equals(key))
-                    totalCountStr = value.getAsString();
-                else if (ItemsKey.equals(key))
+                if (SeriesUrlKey.equals(key))
+                {
+                    seriesUrl = new ExternalRef();
+                    seriesUrl.deserialize(value, typeOfT, context);
+                }
+                else if (TypeKey.equals(key))
+                    type = value.getAsString();
+                else if (NameKey.equals(key))
+                    name = value.getAsString();
+                else if (TeamStatsKey.equals(key))
                 {
                     JsonElement objectElement = objectEntry.getValue();
                     if (!objectElement.isJsonArray())
-                        throw new JsonParseException("Expected " + ItemsKey + " array received json element " + objectElement.toString());
+                        throw new JsonParseException("Expected " + TeamStatsKey + " array received json element " + objectElement.toString());
                     int size = ((JsonArray) objectElement).size();
                     for (int i = 0; i < size; i++)
                     {
                         JsonElement childElement = ((JsonArray) objectElement).get(i);
-                        Tournament child = new Tournament();
-                        tournaments.add(child);
+                        TeamStats child = new TeamStats();
+                        teamStats.add(child);
                         child.deserialize(childElement, typeOfT, context);
                     }
                 }
-                else if (PageCountKey.equals(key))
-                    pageCount = value.getAsLong();
-                else if (PageCountStringKey.equals(key))
-                    pageCountStr = value.getAsString();
-                else if (TotalCountKey.equals(key))
-                    totalCount = value.getAsLong();
                 else
                     LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
             }
@@ -168,81 +168,36 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
 
         public TabToLevel toString(TabToLevel format)
         {
-            format.ttl("pageCount: ", pageCount);
-            format.ttl("pageCountStr: ", pageCountStr);
-            format.ttl("totalCount: ", totalCount);
-            format.ttl("totalCountStr: ", totalCountStr);
-            format.ttl("tournaments: ");
+            format.ttl("name: ", name);
+            format.ttl("type: ", type);
+            format.ttl("SeriesUrl: ");
             format.inc();
-            for (Tournament tournament : tournaments)
-                tournament.toString(format);
+            seriesUrl.toString(format);
             format.dec();
+            format.ttl("teamStats: ");
+            format.inc();
+            for (TeamStats stats : teamStats)
+                stats.toString(format);
             return format;
         }
     }
-
-    public class Tournament implements JsonDeserializer<Tournament>
+    
+    public class TeamStats implements JsonDeserializer<TeamStats>
     {
-        public volatile TournamentHrefWrapper hrefWrapper;
-
-        public Tournament()
-        {
-        }
-
-        private static final String HrefKey = "href";
-
-        @Override
-        public Tournament deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-        {
-            Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
-            while (objectIter.hasNext())
-            {
-                Entry<String, JsonElement> objectEntry = objectIter.next();
-                String key = objectEntry.getKey();
-                JsonElement value = objectEntry.getValue();
-                if (HrefKey.equals(key))
-                {
-                    hrefWrapper = new TournamentHrefWrapper();
-                    hrefWrapper.deserialize(value, typeOfT, context);
-                } else
-                    LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
-            }
-            return this;
-        }
-
-        @Override
-        public String toString()
-        {
-            TabToLevel format = new TabToLevel();
-            format.ttl(getClass().getSimpleName());
-            format.inc();
-            return toString(format).toString();
-        }
-
-        public TabToLevel toString(TabToLevel format)
-        {
-            format.ttl("hrefWrapper: ");
-            format.inc();
-            hrefWrapper.toString(format);
-            format.dec();
-            return format;
-        }
-    }
-
-    public class TournamentHrefWrapper implements JsonDeserializer<TournamentHrefWrapper>
-    {
-        public volatile String tournamentUrl;
+        public volatile ExternalRef matches;
+        public volatile String teamsUrl;
         public volatile String name;
-
-        public TournamentHrefWrapper()
+        
+        public TeamStats()
         {
         }
 
-        private static final String HrefKey = "href";
-        private static final String NameKey = "name";
+        private static final String MatchesKey = "teamStats";
+        private static final String TeamsUrlKey = "href";
+        private static final String NameKey = "name"; 
 
         @Override
-        public TournamentHrefWrapper deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+        public TeamStats deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
             Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
             while (objectIter.hasNext())
@@ -250,8 +205,13 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
                 Entry<String, JsonElement> objectEntry = objectIter.next();
                 String key = objectEntry.getKey();
                 JsonElement value = objectEntry.getValue();
-                if (HrefKey.equals(key))
-                    tournamentUrl = value.getAsString();
+                if (MatchesKey.equals(key))
+                {
+                    matches = new ExternalRef();
+                    matches.deserialize(value, typeOfT, context);
+                }
+                else if (TeamsUrlKey.equals(key))
+                    teamsUrl = value.getAsString();
                 else if (NameKey.equals(key))
                     name = value.getAsString();
                 else
@@ -272,7 +232,11 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
         public TabToLevel toString(TabToLevel format)
         {
             format.ttl("name: ", name);
-            format.ttl("tournamentUrl: ", tournamentUrl);
+            format.ttl("teamsUrl: ", teamsUrl);
+            format.ttl("MatchesUrl: ");
+            format.inc();
+            matches.toString(format);
+            format.dec();
             return format;
         }
     }

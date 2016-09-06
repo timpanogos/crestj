@@ -24,7 +24,6 @@ import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.core.cache.crest.ExternalRef;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -97,22 +96,22 @@ public class Alliances implements JsonDeserializer<Alliances>
 //        totalCount = objectEntry.getValue().getAsLong();
         
         objectEntry = objectIter.next();
-        if (objectEntry.getKey().equals(NextKey))
-            next = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
-        else if (objectEntry.getKey().equals(PreviousKey))
-            previous = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
-        else if (!objectEntry.getKey().equals(TotalCountKey))
-            throw new JsonParseException("Expected " + TotalCountKey + " array received json element " + objectEntry.toString());
-        else totalCount = objectEntry.getValue().getAsLong();
+//        if (objectEntry.getKey().equals(NextKey))
+//            next = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
+//        else if (objectEntry.getKey().equals(PreviousKey))
+//            previous = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
+//        else if (!objectEntry.getKey().equals(TotalCountKey))
+//            throw new JsonParseException("Expected " + TotalCountKey + " array received json element " + objectEntry.toString());
+//        else totalCount = objectEntry.getValue().getAsLong();
         
         if(objectIter.hasNext())
         {
             objectEntry = objectIter.next();
-            if (objectEntry.getKey().equals(PreviousKey))
-                previous = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
-            else if (!objectEntry.getKey().equals(TotalCountKey))
-                throw new JsonParseException("Expected " + TotalCountKey + " array received json element " + objectEntry.toString());
-            else totalCount = objectEntry.getValue().getAsLong();
+//            if (objectEntry.getKey().equals(PreviousKey))
+//                previous = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
+//            else if (!objectEntry.getKey().equals(TotalCountKey))
+//                throw new JsonParseException("Expected " + TotalCountKey + " array received json element " + objectEntry.toString());
+//            else totalCount = objectEntry.getValue().getAsLong();
         }
         if(objectIter.hasNext())
         {
@@ -128,7 +127,7 @@ public class Alliances implements JsonDeserializer<Alliances>
         while(objectIter.hasNext())
         {
             Entry<String, JsonElement> entry = objectIter.next();
-            LoggerFactory.getLogger(getClass()).info(classname + " has a field not currently being handled: \n" + entry.toString());
+            LoggerFactory.getLogger(getClass()).warn(classname + " has a field not currently being handled: \n" + entry.toString());
         }
         return this;
     }

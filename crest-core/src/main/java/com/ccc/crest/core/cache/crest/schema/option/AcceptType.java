@@ -59,7 +59,7 @@ public class AcceptType implements JsonDeserializer<AcceptType>
         while(acceptIter.hasNext())
         {
             entry = acceptIter.next();
-            LoggerFactory.getLogger(getClass()).info("AcceptType has a field not currently being handled: \n" + entry.toString());
+            LoggerFactory.getLogger(getClass()).warn("AcceptType has a field not currently being handled: \n" + entry.toString());
         }
         return this;
     }

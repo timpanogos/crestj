@@ -35,7 +35,7 @@ public class Representation implements JsonDeserializer<Representation>
     public volatile String versionStr;
     public volatile AcceptType acceptType;
     public volatile String verb;
-    public volatile int version;
+    public volatile long version;
     public volatile boolean thirdParty;
     
     private static final String AcceptVersionStrKey = "version_str";
@@ -67,7 +67,7 @@ public class Representation implements JsonDeserializer<Representation>
         entry = repIter.next();
         if (!entry.getKey().equals(VersionKey))
             throw new JsonParseException("Expected: " + VersionKey + " rec: " + entry.getKey());
-        version = entry.getValue().getAsInt();
+        version = entry.getValue().getAsLong();
         
         entry = repIter.next();
         if (!entry.getKey().equals(ThirdPartyKey))
@@ -77,7 +77,7 @@ public class Representation implements JsonDeserializer<Representation>
         while(repIter.hasNext())
         {
             entry = repIter.next();
-            LoggerFactory.getLogger(getClass()).info("Representation has a field not currently being handled: \n" + entry.toString());
+            LoggerFactory.getLogger(getClass()).warn("Representation has a field not currently being handled: \n" + entry.toString());
         }
         return this;
     }

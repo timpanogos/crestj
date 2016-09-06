@@ -629,10 +629,8 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                log.info("Long: " + Long.MAX_VALUE);
-                Long l = Long.MAX_VALUE;
-                String max = Long.toHexString(Long.MAX_VALUE);
-                dataCache.getTournamentCollection();
+                dataCache.getTournament(9);
+                dataCache.getTournamentSeries(9);
 //                SchemaMap.schemaMap.checkSchema();
                 dataCache.getTime();
                 dataAccessor.isUp();

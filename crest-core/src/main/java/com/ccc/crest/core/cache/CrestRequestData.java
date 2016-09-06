@@ -29,8 +29,8 @@ public class CrestRequestData implements Comparable<CrestRequestData>
     public final CrestClientInfo clientInfo;
     public final String url;
     public final Gson gson;
-    public final BaseEveData baseEveData;
-    public final Class<? extends BaseEveData> clazz;
+    public final EveJsonData eveJsonData;
+    public final Class<? extends EveJsonData> clazz;
     public final CrestResponseCallback callback;
     public final String scope;
     public final String version;
@@ -42,7 +42,7 @@ public class CrestRequestData implements Comparable<CrestRequestData>
     //@formatter:off
     public CrestRequestData(
                     CrestClientInfo clientInfo, String url,
-                    Gson gson, BaseEveData baseEveData, Class<? extends BaseEveData> clazz,
+                    Gson gson, EveJsonData eveJsonData, Class<? extends EveJsonData> clazz,
                     CrestResponseCallback callback,
                     String scope, String version,
                     AtomicBoolean continueRefresh)
@@ -51,7 +51,7 @@ public class CrestRequestData implements Comparable<CrestRequestData>
         this.clientInfo = clientInfo;
         this.url = url;
         this.gson = gson;
-        this.baseEveData = baseEveData;
+        this.eveJsonData = eveJsonData;
         this.clazz = clazz;
         this.callback = callback;
         this.scope = scope;
@@ -98,7 +98,7 @@ public class CrestRequestData implements Comparable<CrestRequestData>
         format.ttl("deprecated: ", deprecated);
         format.ttl("clazz: ", clazz);
         format.ttl("callback: ", callback);
-        format.ttl("baseEveData: ", baseEveData);
+        format.ttl("baseEveData: ", eveJsonData);
         format.ttl("clientInfo: ", clientInfo);
         return format;
     }

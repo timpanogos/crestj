@@ -16,22 +16,7 @@
 */
 package com.ccc.crest.core.cache;
 
-import com.ccc.tools.RequestThrottle;
-
 @SuppressWarnings("javadoc")
-public interface EveData extends EveJsonData
+public interface EveJsonData
 {
-    public void init();
-    public void setCacheTimeInSeconds(int seconds);
-    public void setNextRefresh(long time);
-    public int getCacheTimeInSeconds();
-    public RequestThrottle getThrottle(int seconds);
-    public long getLastAccessed();
-    public void accessed();
-    public long getLastRefreshed();
-    public void refreshed();
-    public boolean isContinueRefresh();
-    public void setContinueRefresh(boolean value);
-    public boolean isFromCrest();
-    public void setFromCrest(boolean value);
 }

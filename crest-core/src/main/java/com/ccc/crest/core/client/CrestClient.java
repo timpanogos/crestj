@@ -43,6 +43,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.SourceFailureException;
@@ -316,9 +317,9 @@ public class CrestClient
                 String body = client.client.execute(get, responseHandler);
                 EveData data = null;
                 if (rdata.gson != null)
-                    data = rdata.gson.fromJson(body, rdata.clazz);
+                    data = (EveData)rdata.gson.fromJson(body, rdata.clazz);
                 else
-                    data = new EveApiSaxHandler().getData(body, rdata.baseEveData);
+                    data = new EveApiSaxHandler().getData(body, (BaseEveData)rdata.eveJsonData);
                 data.init();
                 if (rdata.continueRefresh.get())
                     synchronized (refreshQueue)

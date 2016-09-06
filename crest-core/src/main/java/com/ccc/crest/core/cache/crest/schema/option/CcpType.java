@@ -105,7 +105,7 @@ public class CcpType implements JsonDeserializer<CcpType>
         while(fieldIter.hasNext())
         {
             entry = fieldIter.next();
-            LoggerFactory.getLogger(getClass()).info("CcpType has a field not currently being handled: \n" + entry.toString());
+            LoggerFactory.getLogger(getClass()).warn("CcpType has a field not currently being handled: \n" + entry.toString());
         }
         return this;
     }

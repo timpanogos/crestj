@@ -81,7 +81,7 @@ public class Alliance implements JsonDeserializer<Alliance>
         while(classIter.hasNext())
         {
             classEntry = classIter.next();
-            LoggerFactory.getLogger(getClass()).info(getClass().getSimpleName() + " has a field not currently being handled: \n" + classEntry.toString());
+            LoggerFactory.getLogger(getClass()).warn(getClass().getSimpleName() + " has a field not currently being handled: \n" + classEntry.toString());
         }
         if(!idStr.equals(Long.toString(id)))
             LoggerFactory.getLogger(getClass()).warn("idStr is not equal to id " + idStr + ", " +id);

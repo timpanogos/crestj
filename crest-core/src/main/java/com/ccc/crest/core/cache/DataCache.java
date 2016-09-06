@@ -51,6 +51,8 @@ import com.ccc.crest.core.cache.crest.sovereignty.SovStructureCollection;
 import com.ccc.crest.core.cache.crest.system.SystemCollection;
 import com.ccc.crest.core.cache.crest.time.Time;
 import com.ccc.crest.core.cache.crest.tournament.TournamentCollection;
+import com.ccc.crest.core.cache.crest.tournament.TournamentGetSeries;
+import com.ccc.crest.core.cache.crest.tournament.TournamentGetTournament;
 import com.ccc.crest.core.cache.crest.virtualGoodStore.VirtualGoodStore;
 import com.ccc.crest.core.cache.crest.war.WarsCollection;
 import com.ccc.crest.core.cache.xmlapi.account.AccountCallList;
@@ -880,6 +882,48 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }catch(Exception e)
         {
             throw new SourceFailureException("Failed to obtain requested url: " + TournamentCollection.getUrl());
+        }
+    }
+
+    public TournamentGetTournament getTournament(long tournamentId) throws SourceFailureException
+    {
+        String url = TournamentGetTournament.getUrl();
+        url += tournamentId + "/";
+        CacheData data = cache.get(url);
+        if (data != null)
+        {
+            data.data.accessed();
+            return (TournamentGetTournament) data.data;
+        }
+        try
+        {
+            TournamentGetTournament value = (TournamentGetTournament) TournamentGetTournament.getFuture(tournamentId, callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + TournamentGetTournament.getUrl());
+        }
+    }
+
+    public TournamentGetSeries getTournamentSeries(long tournamentId) throws SourceFailureException
+    {
+        String url = TournamentGetSeries.getUrl();
+        url += tournamentId + "/";
+        CacheData data = cache.get(url);
+        if (data != null)
+        {
+            data.data.accessed();
+            return (TournamentGetSeries) data.data;
+        }
+        try
+        {
+            TournamentGetSeries value = (TournamentGetSeries) TournamentGetSeries.getFuture(tournamentId, callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain requested url: " + TournamentGetSeries.getUrl());
         }
     }
 
