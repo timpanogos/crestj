@@ -47,7 +47,7 @@ import com.google.gson.JsonParseException;
 public class TournamentCollection extends BaseEveData implements JsonDeserializer<TournamentCollection>
 {
     private static final long serialVersionUID = -2711682230241156568L;
-    private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
+    private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
     public static final String VersionBase = "application/vnd.ccp.eve.TournamentCollection";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?

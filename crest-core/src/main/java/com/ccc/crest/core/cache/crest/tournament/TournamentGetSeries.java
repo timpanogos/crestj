@@ -47,7 +47,7 @@ import com.google.gson.JsonParseException;
 public class TournamentGetSeries extends BaseEveData implements JsonDeserializer<TournamentGetSeries>
 {
     private static final long serialVersionUID = -2711682230241156568L;
-    private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
+    private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
     public static final String VersionBase = "application/vnd.ccp.eve.TournamentCollection";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
@@ -64,12 +64,12 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
     {
         return series;
     }
-    
+
     public static String getVersion()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
-    
+
     public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
@@ -100,8 +100,8 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
             log.debug(series.toString());
         return this;
     }
-    
-    
+
+
     public class Series implements JsonDeserializer<Series>
     {
         public volatile long pageCount;
@@ -109,7 +109,7 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
         public volatile String totalCountStr;
         public volatile long totalCount;
         public final List<TeamInfo> teamInfos;
-        
+
         public Series()
         {
             teamInfos = new ArrayList<>();
@@ -117,8 +117,8 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
 
         private static final String TotalCountStrKey = "totalCount_str";
         private static final String ItemsKey = "items";
-        private static final String PageCountKey = "pageCount"; 
-        private static final String PageCountStrKey = "pageCount_str"; 
+        private static final String PageCountKey = "pageCount";
+        private static final String PageCountStrKey = "pageCount_str";
         private static final String TotalCountKey = "totalCount";
 
         @Override
@@ -182,20 +182,20 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
             return format;
         }
     }
-    
+
     public class TeamInfo implements JsonDeserializer<TeamInfo>
     {
         public volatile long length;
         public volatile String lengthStr;
         public volatile TeamWrapper redTeam;
-        public volatile TeamWrapper blueTeam; 
+        public volatile TeamWrapper blueTeam;
         public volatile MatchesWon matchesWon;
         public volatile ExternalRef matches;
         public volatile ExternalRef self;
-        public volatile TeamWrapper winner; 
-        public volatile TeamWrapper loser; 
-        public volatile Structure structure; 
-        
+        public volatile TeamWrapper winner;
+        public volatile TeamWrapper loser;
+        public volatile Structure structure;
+
         public TeamInfo()
         {
         }
@@ -321,7 +321,7 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
         public volatile boolean decided;
         public volatile boolean bye;
         public volatile Team team;
-        
+
         public TeamWrapper()
         {
         }
@@ -329,7 +329,7 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
         private static final String TeamKey = "team";
         private static final String DecidedKey = "isDecided";
         private static final String ByeKey = "isBye";
-        
+
         @Override
         public TeamWrapper deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {
@@ -367,21 +367,24 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
             format.inc();
             format.ttl("team: ");
             format.inc();
-            team.toString(format);
+            if(team == null)
+                format.ttl("null");
+            else
+                team.toString(format);
             format.dec();
             format.dec();
             return format;
         }
     }
-    
-    
+
+
     public class MatchesWon implements JsonDeserializer<MatchesWon>
     {
         public volatile String blueTeamStr;
         public volatile long blueTeam;
         public volatile String redTeamStr;
         public volatile long redTeam;
-        
+
         public MatchesWon()
         {
         }
@@ -433,18 +436,18 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
             return format;
         }
     }
-    
+
     public class Team implements JsonDeserializer<Team>
     {
         public volatile String teamUrl;
         public volatile String teamName;
-        
+
         public Team()
         {
         }
 
         private static final String TeamsUrlKey = "href";
-        private static final String NameKey = "teamName"; 
+        private static final String NameKey = "teamName";
 
         @Override
         public Team deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
@@ -482,21 +485,21 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
             return format;
         }
     }
-    
+
     public class Structure implements JsonDeserializer<Structure>
     {
         public volatile ExternalRef outgoingWinner;
         public volatile ExternalRef incomingRed;
         public volatile ExternalRef incomingBlue;
-        
+
         public Structure()
         {
         }
-        
+
         private static final String OutgoingKey = "outgoingWinner";
         private static final String IncomingRedKey = "incomingRed";
         private static final String IncomingBlueKey = "incomingBlue";
-        
+
         @Override
         public Structure deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
         {

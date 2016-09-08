@@ -48,8 +48,8 @@ import com.google.gson.JsonParseException;
 public class TournamentGetTournament extends BaseEveData implements JsonDeserializer<TournamentGetTournament>
 {
     private static final long serialVersionUID = -2711682230241156568L;
-    private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
-    public static final String VersionBase = "application/vnd.ccp.eve.TournamentCollection";
+    private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
+    public static final String VersionBase = "application/vnd.ccp.eve.Tournament";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
@@ -65,12 +65,12 @@ public class TournamentGetTournament extends BaseEveData implements JsonDeserial
     {
         return series;
     }
-    
+
     public static String getVersion()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
     }
-    
+
     public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
@@ -101,14 +101,14 @@ public class TournamentGetTournament extends BaseEveData implements JsonDeserial
         log.info(series.toString());
         return this;
     }
-    
+
     public class Series implements JsonDeserializer<Series>
     {
         public volatile String name;
         public volatile String type;
         public volatile ExternalRef seriesUrl;
         public final List<TeamStats> teamStats;
-        
+
         public Series()
         {
             teamStats = new ArrayList<>();
@@ -116,7 +116,7 @@ public class TournamentGetTournament extends BaseEveData implements JsonDeserial
 
         private static final String NameKey = "name";
         private static final String TypeKey = "type";
-        private static final String SeriesUrlKey = "series"; 
+        private static final String SeriesUrlKey = "series";
         private static final String TeamStatsKey = "entries"; // optional
 
         @Override
@@ -181,20 +181,20 @@ public class TournamentGetTournament extends BaseEveData implements JsonDeserial
             return format;
         }
     }
-    
+
     public class TeamStats implements JsonDeserializer<TeamStats>
     {
         public volatile ExternalRef matches;
         public volatile String teamsUrl;
         public volatile String name;
-        
+
         public TeamStats()
         {
         }
 
         private static final String MatchesKey = "teamStats";
         private static final String TeamsUrlKey = "href";
-        private static final String NameKey = "name"; 
+        private static final String NameKey = "name";
 
         @Override
         public TeamStats deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException

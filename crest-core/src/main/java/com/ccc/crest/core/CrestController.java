@@ -629,17 +629,35 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/");
-                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/");
-                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
-                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/");
-                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/matches/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/0/");
-  //              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/static/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/1/static/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/2/static/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/1/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/");
+//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/matches/");
+
+//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/0/");
+//            dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
+//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/static/");
+//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/1/static/");
+//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/2/static/");
+//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/");
+
+//                dataCache.getTournamentSeries(0);
+                dataCache.getTournamentSeries(1);
+                dataCache.getTournamentSeries(2);
+                dataCache.getTournamentSeries(3);
+                dataCache.getTournamentSeries(4);
+                dataCache.getTournamentSeries(5);
+                dataCache.getTournamentSeries(6);
+                dataCache.getTournamentSeries(7);
+                dataCache.getTournamentSeries(8);
+                dataCache.getTournamentSeries(9);
+                dataCache.getTournamentSeries(10);
+                dataCache.getTournamentSeries(11);
+                dataCache.getTournamentSeries(12);
+                dataCache.getTournamentSeries(13);
+                dataCache.getTournamentSeries(14);
+                dataCache.getTournamentSeries(15);
 
 //                dataCache.getTournamentCollection();
 //                dataCache.getTournament(9);
