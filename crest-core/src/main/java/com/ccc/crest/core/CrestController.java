@@ -35,6 +35,9 @@ import org.slf4j.LoggerFactory;
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
+import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointCollection;
+import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
+import com.ccc.crest.core.cache.crest.tournament.TournamentGetSeries;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -85,7 +88,7 @@ public class CrestController extends CoreController implements AuthEventListener
     public static final String OauthScopeDefault = "publicData";
     public static final String CrestUrlDefault = "https://crest-tq.eveonline.com";
     public static final String XmlUrlDefault = "https://api.eveonline.com";
-    public static final String UserAgentDefault = "Chad Adams (Salgare) cadams@xmission.com crestj";
+    public static final String UserAgentDefault = "Chad Adams (Salgare) cadams@xmission.com, https://github.com/timpanogos/crestj, @evecrestj";
     public static final String CreateApiKeyUrlDefault = "https://community.eveonline.com/support/api-key/CreatePredefined"; //?accessMask=133038347
 
     public final DataCache dataCache;
@@ -629,6 +632,16 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
+                
+//                "https://api-sisi.testeveonline.com/tournaments/teams/1/"
+//                "https://api-sisi.testeveonline.com/tournaments/1/teams/1/"
+
+//                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
+//                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
+//                copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/1/teams/1/");
+//                log.info("\nteam1 stats options:\n" + copts.getRepresentations().toString());
+                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/dogma/");
+                log.info("\n" + copts.getRepresentations().toString());
 //                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/");
 //                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/1/");
 //                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
@@ -642,8 +655,11 @@ public class CrestController extends CoreController implements AuthEventListener
 //              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/2/static/");
 //              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/");
 
-//                dataCache.getTournamentSeries(0);
-                dataCache.getTournamentSeries(1);
+//                dataCache.getTournamentSeries(0)
+                EndpointCollection ec = dataCache.getEndpointCollection();
+                log.info("\n"+ec.toString());
+                TournamentGetSeries series =  dataCache.getTournamentSeries(1);
+                log.info("\n"+series.getSeries().toString());
                 dataCache.getTournamentSeries(2);
                 dataCache.getTournamentSeries(3);
                 dataCache.getTournamentSeries(4);

@@ -32,6 +32,7 @@ import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
+import com.ccc.tools.TabToLevel;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -65,7 +66,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
         callGroups = new ArrayList<>();
     }
 
-    public List<EndpointGroup> getCallGroups()
+    public List<EndpointGroup> getEndpointGroups()
     {
         return new ArrayList<>(callGroups);
     }
@@ -84,7 +85,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
                     null, getCrestUrl(),
                     gson.create(), null, EndpointCollection.class,
                     callback,
-                    ReadScope, Version, continueRefresh, false);
+                    ReadScope, Version, continueRefresh, true);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
@@ -179,5 +180,29 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
             } while (true);
         } while (true);
         return this;
+    }
+    
+    
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl(getClass().getSimpleName(),":");
+        format.inc();
+        format.ttl("userCount: ", userCount);
+        format.ttl("serverVersion: ", serverVersion);
+        format.ttl("serverName: ", serverName);
+        format.ttl("serviceStatus: ", serviceStatus);
+        format.inc();
+        for(EndpointGroup group : callGroups)
+            group.toString(format);
+        format.dec();
+        format.dec();
+        return format;
     }
 }

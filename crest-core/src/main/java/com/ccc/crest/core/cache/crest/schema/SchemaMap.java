@@ -175,7 +175,7 @@ public class SchemaMap
     {
         HashMap<String, String> checkMap = new HashMap<>();
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
-        List<EndpointGroup> groups = cache.getEndpointCollection().getCallGroups();
+        List<EndpointGroup> groups = cache.getEndpointCollection().getEndpointGroups();
         for (EndpointGroup group : groups)
         {
             List<Endpoint> endpoints = group.getEndpoints();
@@ -234,7 +234,7 @@ public class SchemaMap
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
         Representations representations = cache.getOptions(null).getRepresentations();
 //log.info("\n"+representations.toString());        
-        List<EndpointGroup> groups = cache.getEndpointCollection().getCallGroups();
+        List<EndpointGroup> groups = cache.getEndpointCollection().getEndpointGroups();
         Representation schemaSchema = representations.representations.get(0);
         String optionsVersion = schemaSchema.acceptType.name;
         int idx = optionsVersion.indexOf("-v");

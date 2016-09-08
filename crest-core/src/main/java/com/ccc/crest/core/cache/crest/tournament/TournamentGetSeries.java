@@ -489,6 +489,7 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
     public class Structure implements JsonDeserializer<Structure>
     {
         public volatile ExternalRef outgoingWinner;
+        public volatile ExternalRef outgoingLoser;
         public volatile ExternalRef incomingRed;
         public volatile ExternalRef incomingBlue;
 
@@ -496,7 +497,8 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
         {
         }
 
-        private static final String OutgoingKey = "outgoingWinner";
+        private static final String OutgoingLoserKey = "outgoingLoser";
+        private static final String OutgoingWinKey = "outgoingWinner";
         private static final String IncomingRedKey = "incomingRed";
         private static final String IncomingBlueKey = "incomingBlue";
 
@@ -509,7 +511,12 @@ public class TournamentGetSeries extends BaseEveData implements JsonDeserializer
                 Entry<String, JsonElement> objectEntry = objectIter.next();
                 String key = objectEntry.getKey();
                 JsonElement value = objectEntry.getValue();
-                if (OutgoingKey.equals(key))
+                if (OutgoingLoserKey.equals(key))
+                {
+                    outgoingLoser = new ExternalRef();
+                    outgoingLoser.deserialize(value, typeOfT, context);
+                }
+                else if (OutgoingWinKey.equals(key))
                 {
                     outgoingWinner = new ExternalRef();
                     outgoingWinner.deserialize(value, typeOfT, context);
