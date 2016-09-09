@@ -1,0 +1,450 @@
+17:19:29.824 INFO  [main] c.c.c.c.c.json.RootJsonGenerator - 
+{
+  "userCount": 63,
+  "serverVersion": "EVE-2016-HERMINE 14.08.1071672.1071672",
+  "serverName": "SINGULARITY",
+  "serverStatus": "online",
+  "root": {
+    "name": "root",
+    "uid": "application/vnd.ccp.eve.Api-v5+json",
+    "url": "https://api-sisi.testeveonline.com/",
+    "relative": "",
+    "children": [
+      {
+        "name": "alliances",
+        "uid": "application/vnd.ccp.eve.AllianceCollection",
+        "url": "https://api-sisi.testeveonline.com/alliances/",
+        "relative": "/alliances/",
+        "children": []
+      },
+      {
+        "name": "bloodlines",
+        "uid": "application/vnd.ccp.eve.BloodlineCollection",
+        "url": "https://api-sisi.testeveonline.com/bloodlines/",
+        "relative": "/bloodlines/",
+        "children": []
+      },
+      {
+        "name": "character",
+        "uid": "application/vnd.ccp.eve.Character",
+        "url": "https://api-sisi.testeveonline.com",
+        "relative": "(TBD)",
+        "children": []
+      },
+      {
+        "name": "constellations",
+        "uid": "application/vnd.ccp.eve.ConstellationCollection",
+        "url": "https://api-sisi.testeveonline.com/constellations/",
+        "relative": "/constellations/",
+        "children": []
+      },
+      {
+        "name": "corporation",
+        "uid": "application/vnd.ccp.eve.Corporation",
+        "url": "https://api-sisi.testeveonline.com",
+        "relative": "",
+        "children": [
+          {
+            "name": "corporation",
+            "uid": "application/vnd.ccp.eve.CorporationCollection",
+            "url": "https://api-sisi.testeveonline.com/corporations/",
+            "relative": "/corporations/",
+            "children": [
+              {
+                "name": "npcCorporation",
+                "uid": "application/vnd.ccp.eve.NPCCorporationsCollection",
+                "url": "https://api-sisi.testeveonline.com/corporations/npccorps/",
+                "relative": "/npccorps/",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "dogma",
+        "uid": "application/vnd.ccp.eve.Dogma",
+        "url": "https://api-sisi.testeveonline.com/dogma/",
+        "relative": "/dogma/",
+        "children": [
+          {
+            "name": "dogma",
+            "uid": "application/vnd.ccp.eve.(TBD)",
+            "url": "https://api-sisi.testeveonline.com/dogma/attributes/",
+            "relative": "/attributes/",
+            "children": []
+          },
+          {
+            "name": "dogma",
+            "uid": "application/vnd.ccp.eve.(TBD)",
+            "url": "https://api-sisi.testeveonline.com/dogma/effects/",
+            "relative": "/effects/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "fleet",
+        "uid": "application/vnd.ccp.eve.Fleet",
+        "url": "https://api-sisi.testeveonline.comfleets",
+        "relative": "",
+        "children": [
+          {
+            "name": "fleets",
+            "uid": "application/vnd.ccp.eve.Fleet",
+            "url": "https://api-sisi.testeveonline.comfleets/0/",
+            "relative": "/0/",
+            "children": [
+              {
+                "name": "fleetWings",
+                "uid": "application/vnd.ccp.eve.FleetWings",
+                "url": "https://api-sisi.testeveonline.com/fleets/0/wings/",
+                "relative": "/wings/",
+                "children": [
+                  {
+                    "name": "fleetSquads",
+                    "uid": "application/vnd.ccp.eve.FleetSquads(TBD)",
+                    "url": "https://api-sisi.testeveonline.com/fleets/0/wings/0/squads/",
+                    "relative": "/squads/",
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "fleetMembers",
+                "uid": "application/vnd.ccp.eve.FleetMembers",
+                "url": "https://api-sisi.testeveonline.com/fleets/0/members/",
+                "relative": "/members/",
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "incursions",
+        "uid": "application/vnd.ccp.eve.IncursionCollection",
+        "url": "https://api-sisi.testeveonline.com/incursions/",
+        "relative": "/incursions/",
+        "children": []
+      },
+      {
+        "name": "industry",
+        "uid": "application/vnd.ccp.eve.Industry",
+        "url": "https://api-sisi.testeveonline.com/industry/",
+        "relative": "/industry/",
+        "children": [
+          {
+            "name": "facility",
+            "uid": "application/vnd.ccp.eve.IndustryFacilityCollection",
+            "url": "https://api-sisi.testeveonline.com/industry/facility/",
+            "relative": "/facility/",
+            "children": []
+          },
+          {
+            "name": "system",
+            "uid": "application/vnd.ccp.eve.IndustrySystemCollection",
+            "url": "https://api-sisi.testeveonline.com/industry/system/",
+            "relative": "/system/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "inventory",
+        "uid": "application/vnd.ccp.eve.Inventory(TBD)",
+        "url": "https://api-sisi.testeveonline.com/inventory/",
+        "relative": "/inventory/",
+        "children": [
+          {
+            "name": "categories",
+            "uid": "application/vnd.ccp.eve.ItemCategoryCollection",
+            "url": "https://api-sisi.testeveonline.com/inventory/categories/",
+            "relative": "/categories/",
+            "children": []
+          },
+          {
+            "name": "groups",
+            "uid": "application/vnd.ccp.eve.ItemGroupCollection",
+            "url": "https://api-sisi.testeveonline.com/inventory/groups/",
+            "relative": "/groups/",
+            "children": []
+          },
+          {
+            "name": "types",
+            "uid": "application/vnd.ccp.eve.ItemGroupCollection",
+            "url": "https://api-sisi.testeveonline.com/inventory/types/",
+            "relative": "/types/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "market",
+        "uid": "application/vnd.ccp.eve.Market(TBD)",
+        "url": "https://api-sisi.testeveonline.com/market/",
+        "relative": "/market/",
+        "children": [
+          {
+            "name": "groups",
+            "uid": "application/vnd.ccp.eve.MarketGroupCollection",
+            "url": "https://api-sisi.testeveonline.com/market/groups/",
+            "relative": "/groups/",
+            "children": []
+          },
+          {
+            "name": "prices",
+            "uid": "application/vnd.ccp.eve.MarketTypePriceCollection",
+            "url": "https://api-sisi.testeveonline.com/market/prices/",
+            "relative": "/prices/",
+            "children": []
+          },
+          {
+            "name": "types",
+            "uid": "application/vnd.ccp.eve.MarketTypeCollection",
+            "url": "https://api-sisi.testeveonline.com/market/types/",
+            "relative": "/types/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "opportunity",
+        "uid": "application/vnd.ccp.eve.Opportunity(TBD)",
+        "url": "https://api-sisi.testeveonline.com/opportunities/",
+        "relative": "/opportunities/",
+        "children": [
+          {
+            "name": "groups",
+            "uid": "application/vnd.ccp.eve.OpportunityGroupsCollection",
+            "url": "https://api-sisi.testeveonline.com/opportunities/groups/",
+            "relative": "/groups/",
+            "children": []
+          },
+          {
+            "name": "tasks",
+            "uid": "application/vnd.ccp.eve.OpportunityTasksCollection",
+            "url": "https://api-sisi.testeveonline.com/opportunities/tasks/",
+            "relative": "/tasks/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "sovereignty",
+        "uid": "application/vnd.ccp.eve.Sovereignty(TBD)",
+        "url": "https://api-sisi.testeveonline.com/sovereignty/",
+        "relative": "/sovereignty/",
+        "children": [
+          {
+            "name": "campaigns",
+            "uid": "application/vnd.ccp.eve.SovCampaignsCollection",
+            "url": "https://api-sisi.testeveonline.com/sovereignty/campaigns/",
+            "relative": "/campaigns/",
+            "children": []
+          },
+          {
+            "name": "structures",
+            "uid": "application/vnd.ccp.eve.SovStructureCollection",
+            "url": "https://api-sisi.testeveonline.com/sovereignty/structure/",
+            "relative": "/structure/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "races",
+        "uid": "application/vnd.ccp.eve.RaceCollection",
+        "url": "https://api-sisi.testeveonline.com/races/",
+        "relative": "/races/",
+        "children": []
+      },
+      {
+        "name": "regions",
+        "uid": "application/vnd.ccp.eve.RegionCollection",
+        "url": "https://api-sisi.testeveonline.com/regions/",
+        "relative": "/regions/",
+        "children": []
+      },
+      {
+        "name": "schema",
+        "uid": "application/vnd.ccp.eve.Schema(TBD)",
+        "url": "https://api-sisi.testeveonline.com/schema/",
+        "relative": "/schema/",
+        "children": [
+          {
+            "name": "endpoints",
+            "uid": "application/vnd.ccp.eve.SchemaEndpointCollection(TBD)",
+            "url": "https://api-sisi.testeveonline.com/schema/endpoints/",
+            "relative": "/endpoints/",
+            "children": []
+          },
+          {
+            "name": "options",
+            "uid": "application/vnd.ccp.eve.SchemaOptionCollection",
+            "url": "https://api-sisi.testeveonline.com/schema/options/",
+            "relative": "/options/",
+            "children": []
+          }
+        ]
+      },
+      {
+        "name": "tournaments",
+        "uid": "application/vnd.ccp.eve.Tournaments(TBD)",
+        "url": "https://api-sisi.testeveonline.com(TBD)",
+        "relative": "",
+        "children": [
+          {
+            "name": "tournaments",
+            "uid": "application/vnd.ccp.eve.TournamentCollection",
+            "url": "https://api-sisi.testeveonline.com/tournaments/",
+            "relative": "/tournaments/",
+            "children": [
+              {
+                "name": "tournament",
+                "uid": "application/vnd.ccp.eve.Tournament",
+                "url": "https://api-sisi.testeveonline.com/tournaments/0/",
+                "relative": "/0/",
+                "children": [
+                  {
+                    "name": "series",
+                    "uid": "application/vnd.ccp.eve.TournamentSeries",
+                    "url": "https://api-sisi.testeveonline.com/tournaments/0/series/",
+                    "relative": "/series/",
+                    "children": [
+                      {
+                        "name": "bans",
+                        "uid": "application/vnd.ccp.eve.TournamentSeries",
+                        "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/bans/",
+                        "relative": "/bans/",
+                        "children": []
+                      },
+                      {
+                        "name": "matches",
+                        "uid": "application/vnd.ccp.eve.TournamentMatchCollection(TBD)",
+                        "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/",
+                        "relative": "/matches/",
+                        "children": [
+                          {
+                            "name": "match",
+                            "uid": "application/vnd.ccp.eve.TournamentMatch(TBD)",
+                            "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/",
+                            "relative": "/0/",
+                            "children": [
+                              {
+                                "name": "static",
+                                "uid": "application/vnd.ccp.eve.TournamentMatchStatic(TBD)",
+                                "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/static/",
+                                "relative": "/static/",
+                                "children": []
+                              },
+                              {
+                                "name": "pilotStats",
+                                "uid": "application/vnd.ccp.eve.TournamentMatchPilotStats(TBD)",
+                                "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/pilotstats/",
+                                "relative": "/pilotstats/",
+                                "children": []
+                              },
+                              {
+                                "name": "realtime",
+                                "uid": "application/vnd.ccp.eve.TournamentMatchRealtime(TBD)",
+                                "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/realtime/",
+                                "relative": "/realtime/",
+                                "children": [
+                                  {
+                                    "name": "pilotStats",
+                                    "uid": "application/vnd.ccp.eve.TournamentMatchRealtime(TBD)",
+                                    "url": "https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/realtime/0/",
+                                    "relative": "/0/",
+                                    "children": []
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "name": "teams",
+                    "uid": "application/vnd.ccp.eve.TournamentTeams(TBD)",
+                    "url": "https://api-sisi.testeveonline.com/tournaments/0/teams/",
+                    "relative": "/teams/",
+                    "children": [
+                      {
+                        "name": "team",
+                        "uid": "application/vnd.ccp.eve.TournamentTeam(TBD)",
+                        "url": "https://api-sisi.testeveonline.com/tournaments/0/teams/0/",
+                        "relative": "/0/",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "name": "teams",
+                "uid": "application/vnd.ccp.eve.TournamentTeams2(TBD)",
+                "url": "https://api-sisi.testeveonline.com/tournaments/teams/",
+                "relative": "/teams/",
+                "children": [
+                  {
+                    "name": "team",
+                    "uid": "application/vnd.ccp.eve.TournamentTeam2(TBD)",
+                    "url": "https://api-sisi.testeveonline.com/tournaments/teams/0/",
+                    "relative": "/0/",
+                    "children": [
+                      {
+                        "name": "members",
+                        "uid": "application/vnd.ccp.eve.TournamentTeam2Members(TBD)",
+                        "url": "https://api-sisi.testeveonline.com/tournaments/teams/0/memebers/",
+                        "relative": "/memebers/",
+                        "children": []
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "solarsystems",
+        "uid": "application/vnd.ccp.eve.SystemCollection",
+        "url": "https://api-sisi.testeveonline.com/solarsystems/",
+        "relative": "/solarsystems/",
+        "children": []
+      },
+      {
+        "name": "time",
+        "uid": "application/vnd.ccp.eve.Time",
+        "url": "https://api-sisi.testeveonline.com/time/",
+        "relative": "/time/",
+        "children": []
+      },
+      {
+        "name": "decode",
+        "uid": "application/vnd.ccp.eve.BloodlineCollection",
+        "url": "https://api-sisi.testeveonline.com/decode/",
+        "relative": "/decode/",
+        "children": []
+      },
+      {
+        "name": "virtualGoodStore",
+        "uid": "application/vnd.ccp.eve.BloodlineCollection",
+        "url": "https://api-sisi.testeveonline.com/virtualGoodStore/",
+        "relative": "/virtualGoodStore/",
+        "children": []
+      },
+      {
+        "name": "wars",
+        "uid": "application/vnd.ccp.eve.BloodlineCollection",
+        "url": "https://api-sisi.testeveonline.com/wars/",
+        "relative": "/wars/",
+        "children": []
+      }
+    ]
+  }
+}
