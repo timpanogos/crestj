@@ -16,6 +16,8 @@
 */
 package com.ccc.crest.core;
 
+import java.io.File;
+
 // aws windows server Administrator/p6j.;uCGS9e
 
 //You can compute the Euclidean distance:
@@ -34,10 +36,9 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
+import com.ccc.crest.core.cache.crest.schema.RootEndpoint;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointCollection;
-import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
-import com.ccc.crest.core.cache.crest.tournament.TournamentGetSeries;
+import com.ccc.crest.core.cache.crest.tournament.Matches;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -359,12 +360,11 @@ public class CrestController extends CoreController implements AuthEventListener
     @Override
     public void crestUp(CrestClientInfo clientInfo)
     {
-        if(clientInfo == null)
+        if (clientInfo == null)
         {
             log.debug("public call, crestup");
             return;
-        }
-        else
+        } else
             log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " crestup");
         ElapsedTimer.resetAllElapsedTimers();
         ElapsedTimer.resetTimer(0);
@@ -372,13 +372,13 @@ public class CrestController extends CoreController implements AuthEventListener
         ElapsedTimer.startTimer(0);
         ElapsedTimer.startTimer(1);
         ElapsedTimer.startTimer(2);
-//        try
-//        {
-//            Time t = dataCache.getTime();
-//        } catch (SourceFailureException e)
-//        {
-//            e.printStackTrace();
-//        }
+        //        try
+        //        {
+        //            Time t = dataCache.getTime();
+        //        } catch (SourceFailureException e)
+        //        {
+        //            e.printStackTrace();
+        //        }
         System.err.println(ElapsedTimer.getElapsedTime("Time to obtain first ContactList from cache", 1));
         System.out.println("look here");
     }
@@ -418,7 +418,7 @@ public class CrestController extends CoreController implements AuthEventListener
     @Override
     public void xmlUp(CrestClientInfo clientInfo)
     {
-        if(clientInfo == null)
+        if (clientInfo == null)
             log.debug("public call, xmlApiUp");
         else
             log.debug(clientInfo.getVerifyData().CharacterID + " " + clientInfo.getVerifyData().CharacterName + " xmlApiUp");
@@ -483,7 +483,7 @@ public class CrestController extends CoreController implements AuthEventListener
             try
             {
                 da.addEntity(admin);
-            }catch(AlreadyExistsException e1)
+            } catch (AlreadyExistsException e1)
             {
                 //do nothing this is ok
             }
@@ -632,53 +632,30 @@ public class CrestController extends CoreController implements AuthEventListener
         {
             try
             {
-                
-//                "https://api-sisi.testeveonline.com/tournaments/teams/1/"
-//                "https://api-sisi.testeveonline.com/tournaments/1/teams/1/"
+                //                "https://api-sisi.testeveonline.com/tournaments/teams/1/"
+                //                "https://api-sisi.testeveonline.com/tournaments/1/teams/1/"
 
-//                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
-//                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
-//                copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/1/teams/1/");
-//                log.info("\nteam1 stats options:\n" + copts.getRepresentations().toString());
-                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/dogma/");
-                log.info("\n" + copts.getRepresentations().toString());
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/1/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/");
-//                dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/matches/");
+                //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
+                //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
-//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/0/");
-//            dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/");
-//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/static/");
-//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/1/static/");
-//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/2/static/");
-//              dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/9/series/0/realtime/");
-
-//                dataCache.getTournamentSeries(0)
-                EndpointCollection ec = dataCache.getEndpointCollection();
-                log.info("\n"+ec.toString());
-                TournamentGetSeries series =  dataCache.getTournamentSeries(1);
-                log.info("\n"+series.getSeries().toString());
-                dataCache.getTournamentSeries(2);
-                dataCache.getTournamentSeries(3);
-                dataCache.getTournamentSeries(4);
-                dataCache.getTournamentSeries(5);
-                dataCache.getTournamentSeries(6);
-                dataCache.getTournamentSeries(7);
-                dataCache.getTournamentSeries(8);
+                RootEndpoint root = new RootEndpoint();
+                root.dumpTree(new File("/tmp/crestj"));
+                dataCache.getTournamentCollection();
+                dataCache.getTournament(9);
                 dataCache.getTournamentSeries(9);
-                dataCache.getTournamentSeries(10);
-                dataCache.getTournamentSeries(11);
-                dataCache.getTournamentSeries(12);
-                dataCache.getTournamentSeries(13);
-                dataCache.getTournamentSeries(14);
-                dataCache.getTournamentSeries(15);
-
-//                dataCache.getTournamentCollection();
-//                dataCache.getTournament(9);
+                Matches matches = dataCache.getTournamentMatches(9).getMatches();
+                log.info(matches.toString());
+                //                Series series = dataCache.getTournamentSeries(9).getSeries();
+                //                log.info(series.toString());
+                //Series series = dataCache.getTournamentSeries(9).getSeries();
+                //log.info(series.toString());
+                //                EndpointCollection ec = dataCache.getEndpointCollection();
+                //                log.info("\n"+ec.toString());
+                //                series =  dataCache.getTournamentSeries(1);
+                //                log.info("\n"+series.getSeries().toString());
                 dataCache.getTournamentSeries(9);
-//                SchemaMap.schemaMap.checkSchema();
+
+                //                SchemaMap.schemaMap.checkSchema();
                 dataCache.getTime();
                 dataAccessor.isUp();
                 dataCache.getServerStatus();
@@ -688,5 +665,67 @@ public class CrestController extends CoreController implements AuthEventListener
             }
             return null;
         }
+    }
+
+    //TODO: clean this up
+    private void dumpSchema() throws SourceFailureException
+    {
+        String urlBase = CrestClient.getCrestBaseUri();
+        dataCache.getOptions(urlBase + "/planets/");
+        dataCache.getOptions(urlBase + "/planets/", true);
+
+        dataCache.getOptions(urlBase + "/planets/0/");
+        dataCache.getOptions(urlBase + "/planets/2016/", true);
+
+        dataCache.getOptions(urlBase + "/solarsystems/");
+        dataCache.getOptions(urlBase + "/solarsystems/", true);
+
+        dataCache.getOptions(urlBase + "/solarsystems/0/");
+        dataCache.getOptions(urlBase + "/solarsystems/30000001/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/");
+        dataCache.getOptions(urlBase + "/tournaments/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/");
+        dataCache.getOptions(urlBase + "/tournaments/9/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/matches/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/matches/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/matches/0/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/matches/0/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/matches/0/bans/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/matches/0/bans/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/matches/0/static/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/matches/0/static/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/matches/0/pilotstats/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/matches/0/pilotstats/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/series/0/matches/0/realtime/0/");
+        dataCache.getOptions(urlBase + "/tournaments/9/series/1/matches/0/realtime/0/", true);
+
+        //                    dataCache.getOptions(urlBase+"/tournaments/0/teams/");
+        //                    dataCache.getOptions(urlBase+"/tournaments/9/teams/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/0/teams/0/");
+        dataCache.getOptions(urlBase + "/tournaments/9/teams/208/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/teams/");
+        dataCache.getOptions(urlBase + "/tournaments/teams/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/teams/0/");
+        dataCache.getOptions(urlBase + "/tournaments/teams/1/", true);
+
+        dataCache.getOptions(urlBase + "/tournaments/teams/0/members/");
+        dataCache.getOptions(urlBase + "/tournaments/teams/1/members/", true);
     }
 }

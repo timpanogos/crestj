@@ -34,25 +34,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class TournamentCollection extends BaseEveData implements JsonDeserializer<TournamentCollection>
+public class TournamentSeriesCollection extends BaseEveData implements JsonDeserializer<TournamentSeriesCollection>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
-    public static final String VersionBase = "application/vnd.ccp.eve.TournamentCollection";
+    public static final String VersionBase = "application/vnd.ccp.eve.TournamentSeriesCollection";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    private volatile Tournaments tournaments;
+    private volatile Series series;
 
-    public TournamentCollection()
+    public TournamentSeriesCollection()
     {
     }
 
-    public Tournaments getTournaments()
+    public Series getSeries()
     {
-        return tournaments;
+        return series;
     }
 
     public static String getVersion()
@@ -62,18 +62,19 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
 
     public static String getUrl()
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
+        return TournamentCollection.getUrl();
     }
 
-    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(long tournamentId, CrestResponseCallback callback) throws Exception
     {
+        String url = getUrl();
+        url += tournamentId + "/series/";
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(TournamentCollection.class, new TournamentCollection());
-
+        gson.registerTypeAdapter(TournamentSeriesCollection.class, new TournamentSeriesCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getUrl(),
-                        gson.create(), null, TournamentCollection.class,
+                        null, url,
+                        gson.create(), null, TournamentSeriesCollection.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh, false);
         //@formatter:on
@@ -81,12 +82,12 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
     }
 
     @Override
-    public TournamentCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public TournamentSeriesCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        tournaments = new Tournaments();
-        tournaments = tournaments.deserialize(json, typeOfT, context);
+        series = new Series();
+        series = series.deserialize(json, typeOfT, context);
         if(log.isDebugEnabled())
-            log.debug(tournaments.toString());
+            log.debug(series.toString());
         return this;
     }
 }

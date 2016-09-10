@@ -27,6 +27,7 @@ import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
 import com.ccc.crest.core.client.CrestResponseCallback;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -34,25 +35,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class TournamentCollection extends BaseEveData implements JsonDeserializer<TournamentCollection>
+public class TournamentTournament extends BaseEveData implements JsonDeserializer<TournamentTournament>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
-    public static final String VersionBase = "application/vnd.ccp.eve.TournamentCollection";
+    public static final String VersionBase = "application/vnd.ccp.eve.Tournament";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    private volatile Tournaments tournaments;
+    private volatile Series series;
 
-    public TournamentCollection()
+    public TournamentTournament()
     {
     }
 
-    public Tournaments getTournaments()
+    public Series getSeries()
     {
-        return tournaments;
+        return series;
     }
 
     public static String getVersion()
@@ -62,18 +63,19 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
 
     public static String getUrl()
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
+        return TournamentCollection.getUrl();
     }
 
-    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(long tournamentId, CrestResponseCallback callback) throws Exception
     {
+        String url = getUrl();
+        url += tournamentId + "/";
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(TournamentCollection.class, new TournamentCollection());
-
+        gson.registerTypeAdapter(TournamentTournament.class, new TournamentTournament());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getUrl(),
-                        gson.create(), null, TournamentCollection.class,
+                        null, url,
+                        gson.create(), null, TournamentTournament.class,
                         callback,
                         ReadScope, getVersion(), continueRefresh, false);
         //@formatter:on
@@ -81,12 +83,13 @@ public class TournamentCollection extends BaseEveData implements JsonDeserialize
     }
 
     @Override
-    public TournamentCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public TournamentTournament deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        tournaments = new Tournaments();
-        tournaments = tournaments.deserialize(json, typeOfT, context);
+        Gson gson = new Gson();
+        series = new Series();
+        series = series.deserialize(json, typeOfT, context);
         if(log.isDebugEnabled())
-            log.debug(tournaments.toString());
+            log.debug(series.toString());
         return this;
     }
 }

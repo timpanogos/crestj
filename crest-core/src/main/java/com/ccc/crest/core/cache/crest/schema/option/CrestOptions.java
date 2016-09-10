@@ -46,10 +46,12 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
     private static final String WriteScope = null;
 
     public volatile Representations representations;
+    private final boolean doGet;
 
-    public CrestOptions()
+    public CrestOptions(boolean doGet)
     {
         representations = new Representations();
+        this.doGet = doGet;
     }
 
     public Representations getRepresentations()
@@ -67,12 +69,12 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
         return CrestClient.getCrestBaseUri();
     }
 
-    public static Future<EveData> getFuture(String url, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(String url, boolean doGet, CrestResponseCallback callback) throws Exception
     {
         if(url == null)
             url = getCrestUrl();
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(CrestOptions.class, new CrestOptions());
+        gson.registerTypeAdapter(CrestOptions.class, new CrestOptions(doGet));
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, url,
@@ -80,12 +82,16 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
                         callback,
                         ReadScope, getVersion(), continueRefresh, true);
         //@formatter:on
+        if(doGet)
+            return CrestController.getCrestController().crestClient.getCrest(rdata);
         return CrestController.getCrestController().crestClient.getOptions(rdata);
     }
 
     @Override
     public CrestOptions deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
+        if(doGet)
+            return this;
         representations = new Representations();
         representations.deserialize(json, typeOfT, context);
         return this;

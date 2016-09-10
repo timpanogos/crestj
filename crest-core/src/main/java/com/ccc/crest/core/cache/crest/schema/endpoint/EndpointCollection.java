@@ -70,7 +70,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
     {
         return new ArrayList<>(callGroups);
     }
-    
+
     public static String getCrestUrl()
     {
         return CrestClient.getCrestBaseUri();
@@ -85,7 +85,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
                     null, getCrestUrl(),
                     gson.create(), null, EndpointCollection.class,
                     callback,
-                    ReadScope, Version, continueRefresh, true);
+                    ReadScope, Version, continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
@@ -181,15 +181,15 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
         } while (true);
         return this;
     }
-    
-    
+
+
     @Override
     public String toString()
     {
         TabToLevel format = new TabToLevel();
         return toString(format).toString();
     }
-    
+
     public TabToLevel toString(TabToLevel format)
     {
         format.ttl(getClass().getSimpleName(),":");

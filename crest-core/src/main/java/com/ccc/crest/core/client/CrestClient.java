@@ -53,6 +53,10 @@ import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.tools.RequestThrottle;
 import com.ccc.tools.StrH;
 import com.github.scribejava.core.model.OAuth2AccessToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 @SuppressWarnings("javadoc")
 public class CrestClient
@@ -267,6 +271,8 @@ public class CrestClient
                                 throw new ClientProtocolException("Did not find " + CacheControlMaxAge + " in " + CacheControlHeader + " header");
                             }
                             cacheTime.set(Integer.parseInt(cacheTimeStr));
+                            if(rdata.logJson)
+                                log.info("\ncacheTime: " + cacheTime);
 
                             String deprecatedStr = getHeaderElement(response, AccessControlExposeHeader, CrestDeprecatedHeader);
                             if(deprecatedStr != null)
@@ -316,7 +322,7 @@ public class CrestClient
                 };
                 String body = client.client.execute(get, responseHandler);
                 if(rdata.logJson)
-                    log.info("\n" + rdata.url + " returned:\n" + body + "\n");
+                    log.info("\n" + rdata.url + " returned:\n" + prettyPrintJson(body) + "\n");
                 EveData data = null;
                 if (rdata.gson != null)
                     data = (EveData)rdata.gson.fromJson(body, rdata.clazz);
@@ -358,6 +364,15 @@ public class CrestClient
             }
         }
     }
+
+    public static String prettyPrintJson(String ugly)
+    {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(ugly);
+        return gson.toJson(je);
+    }
+
 
     private class QueueTask implements Runnable
     {

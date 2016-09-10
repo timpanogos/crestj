@@ -51,8 +51,9 @@ import com.ccc.crest.core.cache.crest.sovereignty.SovStructureCollection;
 import com.ccc.crest.core.cache.crest.system.SystemCollection;
 import com.ccc.crest.core.cache.crest.time.Time;
 import com.ccc.crest.core.cache.crest.tournament.TournamentCollection;
-import com.ccc.crest.core.cache.crest.tournament.TournamentGetSeries;
-import com.ccc.crest.core.cache.crest.tournament.TournamentGetTournament;
+import com.ccc.crest.core.cache.crest.tournament.TournamentMatchCollection;
+import com.ccc.crest.core.cache.crest.tournament.TournamentSeriesCollection;
+import com.ccc.crest.core.cache.crest.tournament.TournamentTournament;
 import com.ccc.crest.core.cache.crest.virtualGoodStore.VirtualGoodStore;
 import com.ccc.crest.core.cache.crest.war.WarsCollection;
 import com.ccc.crest.core.cache.xmlapi.account.AccountCallList;
@@ -206,7 +207,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return list;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactList.getCrestUrl(clientInfo), e);
         }
     }
 
@@ -423,7 +424,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             //            if(!data.data.isFromCrest())
             //            type = CommsEventListener.Type.XmlDown;
             //            controller.fireCommunicationEvent(clientInfo, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + ApiCallList.getXmlUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ApiCallList.getXmlUrl(), e);
         }
     }
 
@@ -463,14 +464,14 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         {
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + ServerStatus.getXmlUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ServerStatus.getXmlUrl(), e);
         }
     }
 
 /* ****************************************************************************
- * Crest endpoints from here on down.    
+ * Crest endpoints from here on down.
 ******************************************************************************/
-    
+
     @Override
     public EndpointCollection getEndpointCollection() throws SourceFailureException
     {
@@ -483,23 +484,28 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         {
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + EndpointCollection.getCrestUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + EndpointCollection.getCrestUrl(), e);
         }
     }
 
     @Override
     public CrestOptions getOptions(String url) throws SourceFailureException
     {
+        return getOptions(url, false);
+    }
+
+    public CrestOptions getOptions(String url, boolean doGet) throws SourceFailureException
+    {
         try
         {
-            CrestOptions options = (CrestOptions) CrestOptions.getFuture(url, null).get();
+            CrestOptions options = (CrestOptions) CrestOptions.getFuture(url, doGet, null).get();
             options.accessed();
             return options;
         } catch (Exception e)
         {
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + CrestOptions.getCrestUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + CrestOptions.getCrestUrl(), e);
         }
     }
 
@@ -521,7 +527,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         {
             CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain requested url: " + Time.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + Time.getUrl(), e);
         }
     }
 
@@ -541,7 +547,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return list;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ContactList.getCrestUrl(clientInfo));
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactList.getCrestUrl(clientInfo), e);
         }
     }
 
@@ -561,7 +567,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ConstellationCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ConstellationCollection.getUrl(), e);
         }
     }
 
@@ -581,7 +587,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ItemGroupCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemGroupCollection.getUrl(), e);
         }
     }
 
@@ -601,7 +607,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + CorporationCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + CorporationCollection.getUrl(), e);
         }
     }
 
@@ -621,7 +627,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return epdata;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + AllianceCollection.getCrestUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + AllianceCollection.getCrestUrl(), e);
         }
     }
 
@@ -641,7 +647,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ItemTypeCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemTypeCollection.getUrl(), e);
         }
     }
 
@@ -661,7 +667,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + TokenDecode.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TokenDecode.getUrl(), e);
         }
     }
 
@@ -681,7 +687,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + MarketTypePriceCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + MarketTypePriceCollection.getUrl(), e);
         }
     }
 
@@ -701,7 +707,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + OpportunityTasksCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + OpportunityTasksCollection.getUrl(), e);
         }
     }
 
@@ -721,7 +727,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + OpportunityGroupsCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + OpportunityGroupsCollection.getUrl(), e);
         }
     }
 
@@ -741,7 +747,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + ItemCategoryCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemCategoryCollection.getUrl(), e);
         }
     }
 
@@ -761,7 +767,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + RegionCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + RegionCollection.getUrl(), e);
         }
     }
 
@@ -781,7 +787,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + BloodlineCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + BloodlineCollection.getUrl(), e);
         }
     }
 
@@ -801,7 +807,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + MarketGroupCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + MarketGroupCollection.getUrl(), e);
         }
     }
 
@@ -821,7 +827,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + SystemCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + SystemCollection.getUrl(), e);
         }
     }
 
@@ -841,7 +847,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + SovCampaignsCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + SovCampaignsCollection.getUrl(), e);
         }
     }
 
@@ -861,7 +867,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + SovStructureCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + SovStructureCollection.getUrl(), e);
         }
     }
 
@@ -881,49 +887,70 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + TournamentCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentCollection.getUrl(), e);
         }
     }
 
-    public TournamentGetTournament getTournament(long tournamentId) throws SourceFailureException
+    public TournamentTournament getTournament(long tournamentId) throws SourceFailureException
     {
-        String url = TournamentGetTournament.getUrl();
+        String url = TournamentTournament.getUrl();
         url += tournamentId + "/";
         CacheData data = cache.get(url);
         if (data != null)
         {
             data.data.accessed();
-            return (TournamentGetTournament) data.data;
+            return (TournamentTournament) data.data;
         }
         try
         {
-            TournamentGetTournament value = (TournamentGetTournament) TournamentGetTournament.getFuture(tournamentId, callback).get();
+            TournamentTournament value = (TournamentTournament) TournamentTournament.getFuture(tournamentId, callback).get();
             value.accessed();
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + TournamentGetTournament.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentTournament.getUrl(), e);
         }
     }
 
-    public TournamentGetSeries getTournamentSeries(long tournamentId) throws SourceFailureException
+    public TournamentSeriesCollection getTournamentSeries(long tournamentId) throws SourceFailureException
     {
-        String url = TournamentGetSeries.getUrl();
+        String url = TournamentSeriesCollection.getUrl();
         url += tournamentId + "/";
         CacheData data = cache.get(url);
         if (data != null)
         {
             data.data.accessed();
-            return (TournamentGetSeries) data.data;
+            return (TournamentSeriesCollection) data.data;
         }
         try
         {
-            TournamentGetSeries value = (TournamentGetSeries) TournamentGetSeries.getFuture(tournamentId, callback).get();
+            TournamentSeriesCollection value = (TournamentSeriesCollection) TournamentSeriesCollection.getFuture(tournamentId, callback).get();
             value.accessed();
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + TournamentGetSeries.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentSeriesCollection.getUrl(), e);
+        }
+    }
+
+    public TournamentMatchCollection getTournamentMatches(long tournamentId) throws SourceFailureException
+    {
+        String url = TournamentMatchCollection.getUrl();
+        url += tournamentId + "/";
+        CacheData data = cache.get(url);
+        if (data != null)
+        {
+            data.data.accessed();
+            return (TournamentMatchCollection) data.data;
+        }
+        try
+        {
+            TournamentMatchCollection value = (TournamentMatchCollection) TournamentMatchCollection.getFuture(tournamentId, callback).get();
+            value.accessed();
+            return value;
+        }catch(Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentMatchCollection.getUrl(), e);
         }
     }
 
@@ -943,7 +970,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + VirtualGoodStore.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + VirtualGoodStore.getUrl(), e);
         }
     }
 
@@ -963,7 +990,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + WarsCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + WarsCollection.getUrl(), e);
         }
     }
 
@@ -983,7 +1010,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + IncursionCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + IncursionCollection.getUrl(), e);
         }
     }
 
@@ -1003,7 +1030,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + DogmaAttributeCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + DogmaAttributeCollection.getUrl(), e);
         }
     }
 
@@ -1023,7 +1050,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + DogmaEffectCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + DogmaEffectCollection.getUrl(), e);
         }
     }
 
@@ -1043,7 +1070,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + RaceCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + RaceCollection.getUrl(), e);
         }
     }
 
@@ -1063,7 +1090,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + InsurancePricesCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + InsurancePricesCollection.getUrl(), e);
         }
     }
 
@@ -1083,7 +1110,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + IndustryFacilityCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + IndustryFacilityCollection.getUrl(), e);
         }
     }
 
@@ -1103,7 +1130,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + IndustrySystemCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + IndustrySystemCollection.getUrl(), e);
         }
     }
 
@@ -1123,7 +1150,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + NPCCorporationsCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + NPCCorporationsCollection.getUrl(), e);
         }
     }
 
@@ -1143,7 +1170,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain requested url: " + MarketTypeCollection.getUrl());
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + MarketTypeCollection.getUrl(), e);
         }
     }
 
