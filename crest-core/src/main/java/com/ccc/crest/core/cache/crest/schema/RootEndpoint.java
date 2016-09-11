@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.DataCache;
-import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 import com.ccc.crest.core.client.CrestClient;
 import com.google.gson.GsonBuilder;
@@ -102,7 +101,7 @@ public class RootEndpoint
         return new String(encoded, "UTF-8");
     }
 
-    private void pingOption(Endpoint endpoint) throws SourceFailureException
+    private void pingOption(Endpoint endpoint)
     {
         if(!PingOptions)
             return;
@@ -110,17 +109,19 @@ public class RootEndpoint
         {
             log.info("\n"+endpoint.toString());
             DataCache dataCache = CrestController.getCrestController().dataCache;
-            CrestOptions copts = dataCache.getOptions(endpoint.url);
+            dataCache.getOptions(endpoint.url);
         }catch(Exception e)
         {
             log.error("failed: ", e);
         }
     }
     
-    private void pingGet(Endpoint endpoint) throws SourceFailureException
+    private void pingGet(Endpoint endpoint)
     {
         if(!PingGets)
             return;
+if(endpoint.name.contains("star"))        
+    log.info("\n"+endpoint.toString());
         try
         {
             log.info("\n"+endpoint.toString());
@@ -157,7 +158,6 @@ public class RootEndpoint
             leafContent = new StringBuilder(leafPage);
 
 //        String uid = endpoint.ruid.substring(12);
-        int count = 0;
         String leafPage = null;
         String groupPage = null;
         String leafPath = null;
@@ -410,7 +410,7 @@ public class RootEndpoint
                                                                         UidBase + "Fitting-v1+json",
                                                                         null,
                                                                         UidBase + "FittingDelete-v1+json",                  rootUrl + "/characters/1364371482/fittings/0/",                  "/0/", Type.Leaf);
-//        addChild(               child, "characterOpportunitiesRead",    UidBase + "CharacterOpportunities"+Fixme,           rootUrl + "/characters/1364371482/characterOpportunitiesRead/",  "/characterOpportunitiesRead/");
+        addChild(                            child, "opportunities",    UidBase + "opportunities",                          rootUrl + "/characters/1364371482/opportunities/",               "/opportunities/");
         
         addChild(                            child, "waypoints",        UidBase + "PostWaypoint-v1+json",
                                                                         null,
@@ -468,7 +468,7 @@ public class RootEndpoint
         addChild(                             root, "campaigns",        UidBase + "SovCampaignsCollection-v1+json",         rootUrl + "/sovereignty/campaigns/",                       "/campaigns/");
         addChild(                             root, "structures",       UidBase + "SovStructureCollection-v1+json",         rootUrl + "/sovereignty/structures/",                      "/structures/");
 //        child = addChild(                     root, "stargateGroup",    UidBase + "Stargates"+Fixme,                        rootUrl + "/stargate/",                                    "/stargate/", Type.Mixed);
-        addChild(                             root, "stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/0/",                                 "/stargates/0/");
+        addChild(                             root, "stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                              "/stargates/0/");
         addChild(                             root, "races",            UidBase + "RaceCollection-v3+json",                 rootUrl + "/races/",                                       "/races/");
         addChild(                             root, "regions",          UidBase + "RegionCollection-v1+json",               rootUrl + "/regions/",                                     "/regions/");
 //        child = addChild(                     root, "schema",           UidBase + "Schema" + Fixme,                         rootUrl + "/schema/",                                      "/schema/", Type.Group);
@@ -506,7 +506,7 @@ public class RootEndpoint
 
     private Endpoint addChild(Endpoint ep, String name, String ruid, String url, String relative, Type type)
     {
-        return addChild(ep, name, null, ruid, null, null, url, relative, Type.Leaf);
+        return addChild(ep, name, null, ruid, null, null, url, relative, type);
     }
 
     private Endpoint addChild(Endpoint ep, String name, String cuid,  String ruid, String uuid, String duid,String url, String relative, Type type)
@@ -519,5 +519,34 @@ public class RootEndpoint
     private enum Type
     {
         Group, Leaf, Mixed
-    };
+    }
+    
+// don't have cachetime for    
+//    https://api-sisi.testeveonline.com/characters/
+//    https://api-sisi.testeveonline.com/characters/1364371482/contacts/
+//    https://api-sisi.testeveonline.com/characters/1364371482/contacts/0/ 
+//    https://api-sisi.testeveonline.com/characters/1364371482/fittings/
+//    https://api-sisi.testeveonline.com/characters/1364371482/fittings/0/ 
+//    https://api-sisi.testeveonline.com/characters/1364371482/ui/autopilot/waypoints/ 
+//    https://api-sisi.testeveonline.com/characters/1364371482/location/ 
+//    https://api-sisi.testeveonline.com/characters/1364371482/ui/openwindow/marketdetails/ 
+//    https://api-sisi.testeveonline.com/fleets/0/ 
+//    https://api-sisi.testeveonline.com/fleets/0/wings/ 
+//    https://api-sisi.testeveonline.com/fleets/0/wings/0/squads/ 
+//    https://api-sisi.testeveonline.com/fleets/0/members/ 
+//    https://api-sisi.testeveonline.com/planets/0/ 
+//    https://api-sisi.testeveonline.com/sovereignty/structures/
+//    https://api-sisi.testeveonline.com/stargates/0/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/series/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/static/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/pilotstats/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/realtime/0/ 
+//    https://api-sisi.testeveonline.com/tournaments/0/teams/0/ 
+//    https://api-sisi.testeveonline.com/tournaments/teams/0/ 
+//    https://api-sisi.testeveonline.com/tournaments/teams/0/members/ 
+//    https://api-sisi.testeveonline.com/decode/ 
+//    https://api-sisi.testeveonline.com/wars/0/ 
 }
