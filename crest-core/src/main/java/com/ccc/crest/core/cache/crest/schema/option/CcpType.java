@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.tools.TabToLevel;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -37,11 +38,11 @@ public class CcpType implements JsonDeserializer<CcpType>
     public volatile String name;
     public volatile String description;
     public volatile boolean optional;
-    public volatile String extraData;
+    public final List<String> extraData;
     public volatile String typePrettyName;
     public volatile String type;
     public final List<CcpType> children;
-    
+
     private static final String DescriptionKey = "description";
     private static final String OptionalKey = "isOptional";
     private static final String ExtraKey = "extraData";
@@ -49,76 +50,82 @@ public class CcpType implements JsonDeserializer<CcpType>
     private static final String PrettyTypeKey = "typePrettyName";
     private static final String TypeKey = "type";
     private static final String NullValue = "null";
-    
+
     public CcpType(String name)
     {
         this.name = name;
         children = new ArrayList<>();
+        extraData = new ArrayList<>();
     }
-    
+
     @Override
     public CcpType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> fieldIter = ((JsonObject)json).entrySet().iterator();
-        Entry<String, JsonElement> entry = fieldIter.next(); 
-        if (!entry.getKey().equals(DescriptionKey))
-            throw new JsonParseException("Expected: " + DescriptionKey + " rec: " + entry.getKey());
-        description = checkNull(entry.getValue());
-        
-        entry = fieldIter.next(); 
-        if (!entry.getKey().equals(OptionalKey))
-            throw new JsonParseException("Expected: " + OptionalKey + " rec: " + entry.getKey());
-        optional = entry.getValue().getAsBoolean();
-        
-        entry = fieldIter.next(); 
-        if (!entry.getKey().equals(ExtraKey))
-            throw new JsonParseException("Expected: " + ExtraKey + " rec: " + entry.getKey());
-        extraData = checkNull(entry.getValue());
-        
-        entry = fieldIter.next(); 
-        if (!entry.getKey().equals(SubContentKey))
-            throw new JsonParseException("Expected: " + SubContentKey + " rec: " + entry.getKey());
-        JsonElement subContentElement = entry.getValue();
-        if(!subContentElement.isJsonNull())
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
         {
-            Iterator<Entry<String, JsonElement>> varsIter = ((JsonObject)entry.getValue()).entrySet().iterator();
-            do
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if (DescriptionKey.equals(key))
+                description = checkNull(value);
+            else if (OptionalKey.equals(key))
+                optional = value.getAsBoolean();
+            else if (ExtraKey.equals(key))
             {
-                if(!varsIter.hasNext())
-                    break;
-                Entry<String, JsonElement> varsEntry = varsIter.next(); 
-                CcpType subContent = new CcpType(varsEntry.getKey());
-                subContent = subContent.deserialize(varsEntry.getValue(), typeOfT, context);
-                children.add(subContent);
-            }while(true);
-        }
-        
-        entry = fieldIter.next(); 
-        if (!entry.getKey().equals(PrettyTypeKey))
-            throw new JsonParseException("Expected: " + PrettyTypeKey + " rec: " + entry.getKey());
-        typePrettyName = checkNull(entry.getValue());
-     
-        entry = fieldIter.next(); 
-        if (!entry.getKey().equals(TypeKey))
-            throw new JsonParseException("Expected: " + TypeKey + " rec: " + entry.getKey());
-        type = checkNull(entry.getValue());
-        while(fieldIter.hasNext())
-        {
-            entry = fieldIter.next();
-            LoggerFactory.getLogger(getClass()).warn("CcpType has a field not currently being handled: \n" + entry.toString());
+                JsonElement objectElement = objectEntry.getValue();
+                if (objectElement.isJsonArray())
+                {
+                    int size = ((JsonArray) objectElement).size();
+                    for (int i = 0; i < size; i++)
+                    {
+                        JsonElement childElement = ((JsonArray) objectElement).get(i);
+                        extraData.add(childElement.getAsString());
+                    }
+                }else
+                    extraData.add(checkNull(value));
+                    
+            } else if (SubContentKey.equals(key))
+            {
+                if (!value.isJsonNull())
+                {
+                    Iterator<Entry<String, JsonElement>> varsIter = ((JsonObject) value).entrySet().iterator();
+                    do
+                    {
+                        if (!varsIter.hasNext())
+                            break;
+                        Entry<String, JsonElement> varsEntry = varsIter.next();
+                        CcpType subContent = new CcpType(varsEntry.getKey());
+                        subContent = subContent.deserialize(varsEntry.getValue(), typeOfT, context);
+                        children.add(subContent);
+                    } while (true);
+                }
+            } else if (PrettyTypeKey.equals(key))
+                typePrettyName = checkNull(value);
+            else if (TypeKey.equals(key))
+                type = checkNull(value);
+            else
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
         return this;
     }
-    
+
     private String checkNull(JsonElement value)
     {
-        if(value.isJsonNull())
+        try
+        {
+            if (value.isJsonNull())
+                return null;
+            if (NullValue.equals(value.getAsString()))
+                return null;
+            return value.getAsString();
+        } catch (Exception e)
+        {
+            System.out.println("look here");
             return null;
-        if(NullValue.equals(value.getAsString()))
-            return null;
-        return value.getAsString();
+        }
     }
-    
+
     @Override
     public String toString()
     {
@@ -127,7 +134,7 @@ public class CcpType implements JsonDeserializer<CcpType>
         format.inc();
         return toString(format).toString();
     }
-    
+
     public TabToLevel toString(TabToLevel format)
     {
         format.ttl("name: ", name);
@@ -138,9 +145,9 @@ public class CcpType implements JsonDeserializer<CcpType>
         format.ttl("type: ", type);
         format.ttl("children: ");
         format.inc();
-        if(children.size() == 0)
+        if (children.size() == 0)
             format.ttl("none");
-        for(int i=0; i < children.size(); i++)
+        for (int i = 0; i < children.size(); i++)
             children.get(i).toString(format);
         format.dec();
         return format;

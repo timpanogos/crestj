@@ -333,6 +333,9 @@ public class CrestController extends CoreController implements AuthEventListener
                     if (da.isMember(name, group.group))
                         ccinfo.addGroup(group);
                 }
+//FIXME: clean me up
+authenticatedTest((CrestClientInfo)clientInfo);
+                                
             } catch (Exception e)
             {
                 log.warn("Database failure getting groups:", e);
@@ -638,6 +641,10 @@ public class CrestController extends CoreController implements AuthEventListener
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
+//                dataCache.getContactList(clientInfo);
+                
+                
+//                dumpSchema();
                 RootEndpoint root = new RootEndpoint();
                 root.dumpTree(new File("/tmp/crestj"));
                 dataCache.getTournamentCollection();
@@ -666,11 +673,30 @@ public class CrestController extends CoreController implements AuthEventListener
             return null;
         }
     }
-
+    private void authenticatedTest(CrestClientInfo clientInfo) throws SourceFailureException
+    {
+        dataCache.getContactList(clientInfo);
+    }
+    
     //TODO: clean this up
     private void dumpSchema() throws SourceFailureException
     {
         String urlBase = CrestClient.getCrestBaseUri();
+        https://crest-tq.eveonline.com/characters/1364371482/contacts/
+//        try{dataCache.getOptions(urlBase + "/characters/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
+//        try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/0/contacts/");}catch(Exception e){log.error("failed:", e);}
+//        application/vnd.ccp.eve.ContactCollection-v2+json
+        
+        try{dataCache.getOptions(urlBase + "/characters/0/contacts/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions(urlBase + "/characters/0/fittings/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions(urlBase + "/characters/0/fittings/0/");}catch(Exception e){log.error("failed:", e);}
+        
+        try{dataCache.getOptions(urlBase + "/characters/0/characterOpportunitiesRead/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions(urlBase + "/characters/0/ui/autopilot/waypoints/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions(urlBase + "/characters/0/location/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions(urlBase + "/characters/0/ui/openwindow/marketdetails/");}catch(Exception e){log.error("failed:", e);}
+        
         dataCache.getOptions(urlBase + "/planets/");
         dataCache.getOptions(urlBase + "/planets/", true);
 

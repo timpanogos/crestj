@@ -37,67 +37,57 @@ public class Representation implements JsonDeserializer<Representation>
     public volatile String verb;
     public volatile long version;
     public volatile boolean thirdParty;
-    
+
     private static final String AcceptVersionStrKey = "version_str";
     private static final String AcceptTypeKey = "acceptType";
     private static final String VerbKey = "verb";
     private static final String VersionKey = "version";
     private static final String ThirdPartyKey = "thirdParty";
-    
+
     @Override
     public Representation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> repIter = ((JsonObject)json).entrySet().iterator();
-        Entry<String, JsonElement> entry = repIter.next();
-        if (!entry.getKey().equals(AcceptVersionStrKey))
-            throw new JsonParseException("Expected: " + AcceptVersionStrKey + " rec: " + entry.getKey());
-        versionStr = entry.getValue().getAsString();
-        
-        entry = repIter.next();
-        if (!entry.getKey().equals(AcceptTypeKey))
-            throw new JsonParseException("Expected: " + AcceptTypeKey + " rec: " + entry.getKey());
-        acceptType = new AcceptType();
-        acceptType.deserialize(entry.getValue(), typeOfT, context);
-        
-        entry = repIter.next();
-        if (!entry.getKey().equals(VerbKey))
-            throw new JsonParseException("Expected: " + VerbKey + " rec: " + entry.getKey());
-        verb = entry.getValue().getAsString();
-        
-        entry = repIter.next();
-        if (!entry.getKey().equals(VersionKey))
-            throw new JsonParseException("Expected: " + VersionKey + " rec: " + entry.getKey());
-        version = entry.getValue().getAsLong();
-        
-        entry = repIter.next();
-        if (!entry.getKey().equals(ThirdPartyKey))
-            throw new JsonParseException("Expected: " + ThirdPartyKey + " rec: " + entry.getKey());
-        thirdParty = entry.getValue().getAsBoolean();
-        
-        while(repIter.hasNext())
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
         {
-            entry = repIter.next();
-            LoggerFactory.getLogger(getClass()).warn("Representation has a field not currently being handled: \n" + entry.toString());
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if (AcceptVersionStrKey.equals(key))
+                versionStr = value.getAsString();
+            else if (AcceptTypeKey.equals(key))
+            {
+                acceptType = new AcceptType();
+                acceptType.deserialize(value, typeOfT, context);
+
+            } else if (VerbKey.equals(key))
+                verb = value.getAsString();
+            else if (VersionKey.equals(key))
+                version = value.getAsLong();
+            else if (ThirdPartyKey.equals(key))
+                thirdParty = value.getAsBoolean();
+            else
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
         return this;
     }
-    
+
     @Override
     public String toString()
     {
         TabToLevel format = new TabToLevel();
-        format.ttl(getClass().getSimpleName());
-        format.inc();
         return toString(format).toString();
     }
-    
+
     public TabToLevel toString(TabToLevel format)
     {
+        format.ttl(getClass().getSimpleName());
+        format.inc();
         format.ttl("versionStr: ", versionStr);
         format.ttl("verb: ", verb);
         format.ttl("version: ", version);
         format.ttl("thirdParty: ", thirdParty);
-        if(acceptType == null)
+        if (acceptType == null)
             format.ttl("acceptType: null");
         else
         {
@@ -106,6 +96,7 @@ public class Representation implements JsonDeserializer<Representation>
             acceptType.toString(format);
             format.dec();
         }
+        format.dec();
         return format;
     }
 }

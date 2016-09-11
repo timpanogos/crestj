@@ -42,24 +42,23 @@ public class AcceptType implements JsonDeserializer<AcceptType>
     @Override
     public AcceptType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> acceptIter = ((JsonObject)json).entrySet().iterator();
-        Entry<String, JsonElement> entry = acceptIter.next();
-        if (!entry.getKey().equals(AcceptNameKey))
-            throw new JsonParseException("Expected: " + AcceptNameKey + " rec: " + entry.getKey());
-        name = entry.getValue().getAsString();
-        
-        entry = acceptIter.next();
-        if (!entry.getKey().equals(AcceptDumpKey))
-            throw new JsonParseException("Expected: " + AcceptDumpKey + " rec: " + entry.getKey());
-        
-        CcpType schemaTypeElement = new CcpType(entry.getKey());
-        GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(CcpType.class, schemaTypeElement);
-        ccpType = gson.create().fromJson(entry.getValue().getAsString(), CcpType.class);
-        while(acceptIter.hasNext())
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
         {
-            entry = acceptIter.next();
-            LoggerFactory.getLogger(getClass()).warn("AcceptType has a field not currently being handled: \n" + entry.toString());
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if (AcceptDumpKey.equals(key))
+            {
+                CcpType schemaTypeElement = new CcpType(key);
+                GsonBuilder gson = new GsonBuilder();
+                gson.registerTypeAdapter(CcpType.class, schemaTypeElement);
+                ccpType = gson.create().fromJson(value.getAsString(), CcpType.class);
+            }
+            else if (AcceptNameKey.equals(key))
+                name = value.getAsString();
+            else
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
         return this;
     }
@@ -68,13 +67,13 @@ public class AcceptType implements JsonDeserializer<AcceptType>
     public String toString()
     {
         TabToLevel format = new TabToLevel();
-        format.ttl(getClass().getSimpleName());
-        format.inc();
         return toString(format).toString();
     }
     
     public TabToLevel toString(TabToLevel format)
     {
+        format.ttl(getClass().getSimpleName());
+        format.inc();
         format.ttl("name: ", name);
         if(ccpType == null)
             format.ttl("ccpType: null");
@@ -85,6 +84,7 @@ public class AcceptType implements JsonDeserializer<AcceptType>
             ccpType.toString(format);
             format.dec();
         }
+        format.dec();
         return format;
     }
 }

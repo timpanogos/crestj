@@ -49,44 +49,48 @@ public class Representations extends BaseEveData implements JsonDeserializer<Rep
     @Override
     public Representations deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> repIter = ((JsonObject)json).entrySet().iterator();
-        Entry<String, JsonElement> representationsEntry = repIter.next(); 
-        if (!representationsEntry.getKey().equals(RepresentationsKey))
-            throw new JsonParseException("Expected topObj key: " + RepresentationsKey + " : " + representationsEntry.getKey());
-        JsonElement representationsElement = representationsEntry.getValue();
-        if (!representationsElement.isJsonArray())
-            throw new JsonParseException("Expected representations array received json element " + representationsElement.toString());
-        int size = ((JsonArray)representationsElement).size();
-        for(int i=0; i < size; i++)
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
         {
-            JsonElement repElement = ((JsonArray)representationsElement).get(i);
-            Representation representation = new Representation();
-            representations.add(representation);
-            representation.deserialize(repElement, typeOfT, context);
-        }
-        while(repIter.hasNext())
-        {
-            Entry<String, JsonElement> entry = repIter.next();
-            LoggerFactory.getLogger(getClass()).warn("Representations has a field not currently being handled: \n" + entry.toString());
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if (RepresentationsKey.equals(key))
+            {
+                JsonElement objectElement = objectEntry.getValue();
+                if (!objectElement.isJsonArray())
+                    throw new JsonParseException("Expected " + RepresentationsKey + " array received json element " + objectElement.toString());
+                int size = ((JsonArray) objectElement).size();
+                for (int i = 0; i < size; i++)
+                {
+                    JsonElement childElement = ((JsonArray) objectElement).get(i);
+                    Representation representation = new Representation();
+                    representations.add(representation);
+                    representation.deserialize(childElement, typeOfT, context);
+                }
+            }
+            else
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
         return this;
     }
-    
+
     @Override
     public String toString()
     {
         TabToLevel format = new TabToLevel();
-        format.ttl(getClass().getSimpleName());
-        format.inc();
         return toString(format).toString();
     }
     
     public TabToLevel toString(TabToLevel format)
     {
+        format.ttl(getClass().getSimpleName());
+        format.inc();
         format.ttl("representations:");
         format.inc();
         for(Representation rep : representations)
             rep.toString(format);
+        format.dec();
         format.dec();
         return format;
     }
