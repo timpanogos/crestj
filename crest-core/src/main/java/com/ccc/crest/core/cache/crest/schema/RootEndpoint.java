@@ -40,6 +40,8 @@ import ch.qos.logback.core.util.StatusPrinter;
 @SuppressWarnings("javadoc")
 public class RootEndpoint
 {
+    public static final boolean PingOptions = false;
+    public static final boolean PingGets = true;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
     public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
@@ -100,13 +102,31 @@ public class RootEndpoint
         return new String(encoded, "UTF-8");
     }
 
-    private void pingUrl(Endpoint endpoint) throws SourceFailureException
+    private void pingOption(Endpoint endpoint) throws SourceFailureException
     {
+        if(!PingOptions)
+            return;
         try
         {
             log.info("\n"+endpoint.toString());
             DataCache dataCache = CrestController.getCrestController().dataCache;
             CrestOptions copts = dataCache.getOptions(endpoint.url);
+        }catch(Exception e)
+        {
+            log.error("failed: ", e);
+        }
+    }
+    
+    private void pingGet(Endpoint endpoint) throws SourceFailureException
+    {
+        if(!PingGets)
+            return;
+        try
+        {
+            log.info("\n"+endpoint.toString());
+            DataCache dataCache = CrestController.getCrestController().dataCache;
+            CrestOptions copts = dataCache.getOptions(endpoint.url, true);
+            endpoint.cacheTimeout.set(copts.getCacheTimeInSeconds());
         }catch(Exception e)
         {
             log.error("failed: ", e);
@@ -258,7 +278,8 @@ public class RootEndpoint
         if (endpoint.relative != null)
         {
             writeFile(nfbase, endpoint, level);
-            pingUrl(endpoint);
+            pingOption(endpoint);
+            pingGet(endpoint);
         }
         for (Endpoint child : endpoint.children)
             traverse(child, nfbase, level);
@@ -322,6 +343,7 @@ public class RootEndpoint
         public final String url;
         public final String relative;
         public final Type type;
+        public final AtomicInteger cacheTimeout;
         public final List<Endpoint> children;
 
         //@formatter:off
@@ -339,6 +361,7 @@ public class RootEndpoint
             this.url = url;
             this.relative = relative;
             this.type = type;
+            cacheTimeout = new AtomicInteger(-1);
             children = new ArrayList<>();
         }
 

@@ -80,7 +80,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
                         null, url,
                         gson.create(), null, CrestOptions.class,
                         callback,
-                        ReadScope, getVersion(), continueRefresh, true);
+                        ReadScope, getVersion(), continueRefresh, false);
         //@formatter:on
         if(doGet)
             return CrestController.getCrestController().crestClient.getCrest(rdata);
