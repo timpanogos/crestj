@@ -682,7 +682,9 @@ authenticatedTest((CrestClientInfo)clientInfo);
     private void dumpSchema() throws SourceFailureException
     {
         String urlBase = CrestClient.getCrestBaseUri();
-        https://crest-tq.eveonline.com/characters/1364371482/contacts/
+        
+        try{dataCache.getOptions(null);}catch(Exception e){log.error("failed:", e);}
+//        https://crest-tq.eveonline.com/characters/1364371482/contacts/
 //        try{dataCache.getOptions(urlBase + "/characters/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
 //        try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/0/contacts/");}catch(Exception e){log.error("failed:", e);}
