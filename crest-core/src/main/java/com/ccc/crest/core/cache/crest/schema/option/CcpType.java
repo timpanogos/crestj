@@ -112,18 +112,11 @@ public class CcpType implements JsonDeserializer<CcpType>
 
     private String checkNull(JsonElement value)
     {
-        try
-        {
-            if (value.isJsonNull())
-                return null;
-            if (NullValue.equals(value.getAsString()))
-                return null;
-            return value.getAsString();
-        } catch (Exception e)
-        {
-            System.out.println("look here");
+        if (value.isJsonNull())
             return null;
-        }
+        if (NullValue.equals(value.getAsString()))
+            return null;
+        return value.getAsString();
     }
 
     @Override

@@ -17,6 +17,7 @@
 package com.ccc.crest.core.cache.crest.schema;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -31,6 +32,8 @@ import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 import com.ccc.crest.core.client.CrestClient;
+import com.ccc.tools.StrH;
+import com.ccc.tools.TabToLevel;
 import com.google.gson.GsonBuilder;
 
 import ch.qos.logback.classic.LoggerContext;
@@ -40,7 +43,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class RootEndpoint
 {
     public static final boolean PingOptions = false;
-    public static final boolean PingGets = true;
+    public static final boolean PingGets = false;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
     public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
@@ -51,11 +54,12 @@ public class RootEndpoint
     public static final String DefaultLogPath = "/var/opt/ccc/crestj/log/rootJsonGen.log";
     public static final String LogFilePathKey = "ccc.tools.log-file-path";
     public static final String LogFileBaseKey = "ccc.tools.log-file-base";
-    public static final String UidBase = "application/vnd.ccp.eve.";
+    //    public static final String UidBase = "application/vnd.ccp.eve.";
+    public static final String UidBase = "vnd.ccp.eve.";
     public static final String Fixme = "(TBD)";
 
     public Endpoints endpoints;
-    public String json;
+    public String jsonStr;
 
     private final Logger log;
     private final String rootUrl;
@@ -65,7 +69,7 @@ public class RootEndpoint
     private final AtomicInteger totalLeafs;
     private final AtomicInteger totalGroups;
     private final AtomicInteger totalUids;
-    
+
     public RootEndpoint() throws Exception
     {
         String logPath = DefaultLogPath;
@@ -83,9 +87,6 @@ public class RootEndpoint
         }
         rootUrl = CrestClient.getCrestBaseUri();
         init();
-        GsonBuilder gson = new GsonBuilder();
-        gson.setPrettyPrinting();
-        json = gson.create().toJson(endpoints);
 
         groupPage = readFile(GroupDocTemplate);
         leafPage = readFile(LeafDocTemplate);
@@ -103,146 +104,216 @@ public class RootEndpoint
 
     private void pingOption(Endpoint endpoint)
     {
-        if(!PingOptions)
+        if (!PingOptions)
+            return;
+        if (endpoint.type == Type.PlaceHolder)
             return;
         try
         {
-            log.info("\n"+endpoint.toString());
+            log.info("\n" + endpoint.toString());
             DataCache dataCache = CrestController.getCrestController().dataCache;
             dataCache.getOptions(endpoint.url);
-        }catch(Exception e)
+        } catch (Throwable e)
         {
             log.error("failed: ", e);
         }
     }
-    
+
     private void pingGet(Endpoint endpoint)
     {
-        if(!PingGets)
+        if (!PingGets)
             return;
-if(endpoint.name.contains("star"))        
-    log.info("\n"+endpoint.toString());
+        if (endpoint.type == Type.PlaceHolder)
+            return;
         try
         {
-            log.info("\n"+endpoint.toString());
+            log.info("\n*****\n" + endpoint.toString() + "\n");
             DataCache dataCache = CrestController.getCrestController().dataCache;
             CrestOptions copts = dataCache.getOptions(endpoint.url, true);
             endpoint.cacheTimeout.set(copts.getCacheTimeInSeconds());
-        }catch(Exception e)
+        } catch (Throwable e)
         {
-            log.error("failed: ", e);
+            // just get the low lying fruit for now.
+            //            log.error("failed: ", e);
         }
     }
-    
+
     private void writeFile(File parent, Endpoint endpoint, AtomicInteger level) throws Exception
     {
-        StringBuilder groupContent = null;
-        StringBuilder leafContent = null;
-        if (endpoint.type == Type.Group || endpoint.type == Type.Mixed)
-        {
-            groupContent = new StringBuilder(groupPage);
-            if (endpoint.type == Type.Mixed)
-            {
-                leafContent = new StringBuilder(leafPage);
-                groupContent.append("* ");
-                getRef(groupContent, parent.getPath(), endpoint.name, endpoint.ruid);
-            }
-
-            for (int i = 0; i < endpoint.children.size(); i++)
-            {
-                Endpoint ep = endpoint.children.get(i);
-                groupContent.append("* ");
-                getRef(groupContent, parent.getPath(), ep.name, ep.ruid);
-            }
-        } else
-            leafContent = new StringBuilder(leafPage);
-
-//        String uid = endpoint.ruid.substring(12);
-        String leafPage = null;
-        String groupPage = null;
-        String leafPath = null;
-        String groupPath = null;
-        switch(endpoint.type)
+        switch (endpoint.type)
         {
             case Group:
-                groupPage = groupContent.toString();
-                doReplacements(groupPage, endpoint);
-                groupPath = parent.getPath() + "/" + endpoint.name + "Group.md";
-                totalGroups.incrementAndGet();
+                writeGroup(parent.getPath(), endpoint);
                 break;
             case Leaf:
-                leafPage = leafContent.toString();
-                doReplacements(leafPage, endpoint);
-                leafPath = parent.getPath() + "/" + endpoint.name + ".md";
-                totalLeafs.incrementAndGet();
+                writeLeaf(parent.getPath(), endpoint);
                 break;
             case Mixed:
-                groupPage = groupContent.toString();
-                doReplacements(groupPage, endpoint);
-                groupPath = parent.getPath() + "/" + endpoint.name + "Group.md";
-                leafPage = leafContent.toString();
-                doReplacements(leafPage, endpoint);
-                leafPath = parent.getPath() + "/" + endpoint.name + ".md";
-                totalGroups.incrementAndGet();
-                totalLeafs.incrementAndGet();
-                break;
+                //                groupPage = groupContent.toString();
+                //                groupPage = doReplacements(groupPage, endpoint);
+                //                groupPath = parent.getPath() + "/" + endpoint.name + "Group.md";
+                //                //                leafPage = leafContent.toString();
+                //                //                leafPage = doReplacements(leafPage, endpoint);
+                //                //                leafPath = parent.getPath() + "/" + endpoint.name + ".md";
+                //                totalGroups.incrementAndGet();
+                //                totalLeafs.incrementAndGet();
+                return;
+            //                break;
+            case PlaceHolder:
+                return;
             default:
-                throw new Exception("endpoint.type is null");
+                break;
         }
-        if(leafPath != null)
-        {
-            PrintWriter out = new PrintWriter(leafPath);
-            out.println(leafPage);
-            out.close();
-        }
-        if(groupPath != null)
-        {
-            PrintWriter out = new PrintWriter(groupPath);
-            out.println(groupPage);
-            out.close();
-        }
-        
-        techPage.append("* ");
-        for (int i = 0; i < level.get(); i++)
-            techPage.append("......");
-        getRef(techPage, parent.getPath(), endpoint.name, endpoint.ruid);
+//        techPage.append("* ");
+//        for (int i = 0; i < level.get(); i++)
+//            techPage.append("......");
+        getRef(techPage, parent.getPath(), endpoint, true, level);
+    }
+
+    private void writeGroup(String parentPath, Endpoint group) throws Exception
+    {
+        StringBuilder groupSb = new StringBuilder(groupPage);
+        for (Endpoint child : group.children)
+            getRef(groupSb, parentPath, child, true, null);
+
+        String groupStr = groupSb.toString();
+        groupStr = doReplacements(groupStr, group);
+        String groupPath = parentPath + "/" + group.name + ".md";
+
+        PrintWriter out = new PrintWriter(groupPath);
+        out.println(groupStr);
+        out.close();
+
+        totalGroups.incrementAndGet();
+    }
+
+    private void writeLeaf(String parentPath, Endpoint leaf) throws FileNotFoundException
+    {
+        if (leaf.relative.length() == 0)
+            parentPath = parentPath + "/";
+        String[] paths = getLeafPaths(parentPath, leaf, false);
+        for (int i = 0; i < paths.length; i++)
+            if (paths[i] != null)
+            {
+                String leafStr = leafPage;
+                leafStr = doReplacements(leafStr, leaf);
+                PrintWriter out = new PrintWriter(paths[i]);
+                out.println(leafStr);
+                out.close();
+            }
+        totalLeafs.incrementAndGet();
+    }
+    
+    private void getRef(StringBuilder sb, String parentPath, Endpoint child, boolean addRelative, AtomicInteger level)
+    {
+        String[] paths = getLeafPaths(parentPath, child, addRelative);
+        for (int i = 0; i < paths.length; i += 2)
+            if (paths[i] != null)
+            {
+                String ref = paths[i];
+                ref = ref.replace('\\', '/');
+                int idx = ref.indexOf("/root/");
+                idx += 6;
+                ref = ref.substring(idx);
+                idx = ref.indexOf('/') + 1;
+                ref = ref.substring(idx);
+                
+                sb.append("* ");
+                if(level != null)
+                {
+                    for (int j = 0; j < level.get(); j++)
+                        sb.append("......");
+                }
+
+                //@formatter:off
+                sb
+                    .append("[").append(child.name).append("](")
+                    .append(ref).append(")")
+                    .append(" `").append(paths[i+1]).append("`\n");
+                //@formatter:on
+            }
     }
 
     private String doReplacements(String value, Endpoint endpoint)
     {
         value = value.replace("$title", endpoint.name);
-        value.replace("$url", endpoint.url == null ? "n/a" : endpoint.url);
-        value.replace("$cuid", endpoint.cuid == null ? "n/a" : endpoint.cuid);
-        value.replace("$ruid", endpoint.ruid == null ? "n/a" : endpoint.ruid);
-        value.replace("$uuid", endpoint.uuid == null ? "n/a" : endpoint.uuid);
-        value.replace("$duid", endpoint.duid == null ? "n/a" : endpoint.duid);
-        if(endpoint.cuid != null)
+        value = value.replace("$url", endpoint.url == null ? "n/a" : endpoint.url);
+        value = value.replace("$cuid", endpoint.cuid == null ? "n/a" : endpoint.cuid);
+        value = value.replace("$ruid", endpoint.ruid == null ? "n/a" : endpoint.ruid);
+        value = value.replace("$uuid", endpoint.uuid == null ? "n/a" : endpoint.uuid);
+        value = value.replace("$duid", endpoint.duid == null ? "n/a" : endpoint.duid);
+        value = value.replace("$cto", endpoint.cacheTimeout.get() == -1 ? "(TBD)" : endpoint.cacheTimeout.get() + " seconds");
+        if (endpoint.cuid != null)
             totalUids.incrementAndGet();
-        if(endpoint.ruid != null)
+        if (endpoint.ruid != null)
             totalUids.incrementAndGet();
-        if(endpoint.uuid != null)
+        if (endpoint.uuid != null)
             totalUids.incrementAndGet();
-        if(endpoint.duid != null)
+        if (endpoint.duid != null)
             totalUids.incrementAndGet();
         return value;
     }
-    
-    private String getRef(StringBuilder sb, String parentPath, String endpointName, String endpointUid)
+
+    private String[] getLeafPaths(String parentPath, Endpoint child, boolean addRelative)
     {
-        String ref = parentPath + "/" + endpointName + ".md";
-        ref = ref.replace('\\', '/');
-        int idx = ref.indexOf("/root/");
-        idx += 6;
-        ref = ref.substring(idx);
-        idx = ref.indexOf('/') + 1;
-        ref = ref.substring(idx);
-        //@formatter:off
-        sb
-            .append("[").append(endpointName).append("](")
-            .append(ref).append(")")
-            .append(" `").append(endpointUid).append("`\n");
-        //@formatter:on
-        return sb.toString();
+        parentPath = StrH.insureTailingSeparator(parentPath, '/');
+        String relative = "";
+        if (addRelative)
+        {
+            parentPath = StrH.stripTrailingSeparator(parentPath);
+            relative = checkCutUi(child.relative);
+        }
+        String[] list = new String[8];
+        for (int i = 0; i < 8; i += 2)
+        {
+            switch (i)
+            {
+                case 0:
+                    if (child.cuid != null)
+                    {
+                        list[0] = parentPath + relative + getNameFromUid(child.cuid) + ".md";
+                        list[1] = child.cuid;
+                    }
+                    break;
+                case 2:
+                    if (child.ruid != null)
+                    {
+                        list[2] = parentPath + relative + getNameFromUid(child.ruid) + ".md";
+                        list[3] = child.ruid;
+                    }
+                    break;
+                case 4:
+                    if (child.uuid != null)
+                    {
+                        list[4] = parentPath + relative + getNameFromUid(child.uuid) + ".md";
+                        list[5] = child.uuid;
+                    }
+                    break;
+                case 6:
+                    if (child.duid != null)
+                    {
+                        list[6] = parentPath + relative + getNameFromUid(child.duid) + ".md";
+                        list[7] = child.duid;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return list;
+    }
+
+    public static String getNameFromUid(String uid)
+    {
+        int idx = uid.lastIndexOf('.');
+        if (idx == -1)
+            return uid;
+        String rvalue = uid.substring(++idx);
+        idx = rvalue.indexOf("-v");
+        if (idx == -1)
+            return uid;
+        return rvalue.substring(0, idx);
+
     }
 
     public void dumpTree(File fbase) throws Exception
@@ -254,6 +325,10 @@ if(endpoint.name.contains("star"))
         PrintWriter out = new PrintWriter(path);
         out.println(techPage);
         out.close();
+        GsonBuilder gson = new GsonBuilder();
+        gson.setPrettyPrinting();
+        jsonStr = gson.create().toJson(endpoints);
+        log.info("\n" + jsonStr + "\n");
         log.info("\ntotalGroups: " + totalGroups.get() + "\ntotalLeafs: " + totalLeafs.get() + "\ntotalUids: " + totalUids.get());
     }
 
@@ -277,9 +352,9 @@ if(endpoint.name.contains("star"))
         }
         if (endpoint.relative != null)
         {
-            writeFile(nfbase, endpoint, level);
             pingOption(endpoint);
             pingGet(endpoint);
+            writeFile(nfbase, endpoint, level);
         }
         for (Endpoint child : endpoint.children)
             traverse(child, nfbase, level);
@@ -326,20 +401,20 @@ if(endpoint.name.contains("star"))
         }
     }
 
-//    Create = PUT with a new URI
-//             POST to a base URI returning a newly created URI
-//           Read   = GET
-//           Update = PUT with an existing URI
-//           Delete = DELETE
-//    CRUD for PUT, think relative uri  POST think full url.    
-           
+    //    Create = PUT with a new URI
+    //             POST to a base URI returning a newly created URI
+    //           Read   = GET
+    //           Update = PUT with an existing URI
+    //           Delete = DELETE
+    //    CRUD for PUT, think relative uri  POST think full url.    
+
     public class Endpoint
     {
         public final String name;
-        public final String cuid;   // POST's assigned here
-        public final String ruid;   // GET's assigned here
-        public final String uuid;   // PUT's assigned here
-        public final String duid;   // DELETE's assigned here
+        public final String cuid; // POST's assigned here
+        public final String ruid; // GET's assigned here
+        public final String uuid; // PUT's assigned here
+        public final String duid; // DELETE's assigned here
         public final String url;
         public final String relative;
         public final Type type;
@@ -368,7 +443,32 @@ if(endpoint.name.contains("star"))
         @Override
         public String toString()
         {
-            return "name: " + name + " type: " + type.name() + " uid: " + ruid + " relative: " + relative + " url: " + url;
+            TabToLevel format = new TabToLevel();
+            return toString(format).toString();
+        }
+
+        public TabToLevel toString(TabToLevel format)
+        {
+            format.ttl(getClass().getSimpleName(), ":");
+            format.inc();
+            format.ttl("name: ", name);
+            format.ttl("type: ", type.name());
+            format.ttl("url: ", url);
+            format.ttl("cuid: ", cuid);
+            format.ttl("ruid: ", ruid);
+            format.ttl("uuid: ", uuid);
+            format.ttl("duid: ", duid);
+            format.ttl("relative: ", relative);
+            format.ttl("cache: ", cacheTimeout.get());
+            format.ttl("children: ");
+            format.inc();
+            for (Endpoint child : children)
+                child.toString(format);
+            if (children.size() == 0)
+                format.ttl("none");
+            format.dec();
+            format.dec();
+            return format;
         }
     }
 
@@ -378,7 +478,7 @@ if(endpoint.name.contains("star"))
         try
         {
             rjg = new RootEndpoint();
-            LoggerFactory.getLogger(RootEndpoint.class).info("\n" + rjg.json);
+            LoggerFactory.getLogger(RootEndpoint.class).info("\n" + rjg.jsonStr);
         } catch (Exception e)
         {
             // TODO Auto-generated catch block
@@ -391,111 +491,107 @@ if(endpoint.name.contains("star"))
         endpoints = new Endpoints();
         Endpoint root = endpoints.root;
         //@formatter:off
-        addChild(                             root, "alliances",        UidBase + "AllianceCollection-v2+json",             rootUrl + "/alliances/",                                   "/alliances/");
-        addChild(                             root, "bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                  "/bloodlines/");
-        Endpoint child = addChild(            root, "characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                  "/characters/", Type.Group);
-        Endpoint gchild = addChild(          child, "contacts",         UidBase + "ContactCreate-v1+json",
+        addChild(                             root, "Endpoints",        UidBase + "Api-v5+json",                            rootUrl + "",                                                    "");
+        addChild(                             root, "Options",          UidBase + "Options-v1+json",                        rootUrl + "",                                                    "");
+        addChild(                             root, "Alliances",        UidBase + "AllianceCollection-v2+json",             rootUrl + "/alliances/",                                         "/alliances/");
+        addChild(                             root, "Bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                        "/bloodlines/");
+        Endpoint child = addChild(            root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", Type.Group);
+        Endpoint gchild = addChild(          child, "Contacts",         UidBase + "ContactCreate-v1+json",
                                                                         UidBase + "ContactCollection-v2+json",
                                                                         null,
-                                                                        null,                                               rootUrl + "/characters/1364371482/contacts/",                    "/contacts/", Type.Mixed);
-        addChild(                           gchild, "contact",          null,
+                                                                        null,                                               rootUrl + "/characters/1364371482/contacts/",                    "/contacts/", Type.Leaf);
+        addChild(                           gchild, "Contact",          null,
                                                                         null, 
                                                                         UidBase + "ContactCreate-v1+json",
                                                                         UidBase + "ContactDelete-v1+json",                  rootUrl + "/characters/1364371482/contacts/0/",                  "/0/", Type.Leaf);
-        gchild = addChild(                   child, "fittings",         UidBase + "FittingCreate-v1+json",
+        gchild = addChild(                   child, "Fittings",         UidBase + "FittingCreate-v1+json",
                                                                         UidBase + "FittingCollection-v1+json",
                                                                         null, 
-                                                                        null,                                               rootUrl + "/characters/1364371482/fittings/",                    "/fittings/", Type.Mixed);
-        addChild(                           gchild, "fitting",          null,
+                                                                        null,                                               rootUrl + "/characters/1364371482/fittings/",                    "/fittings/", Type.Leaf);
+        addChild(                           gchild, "Fitting",          null,
                                                                         UidBase + "Fitting-v1+json",
                                                                         null,
                                                                         UidBase + "FittingDelete-v1+json",                  rootUrl + "/characters/1364371482/fittings/0/",                  "/0/", Type.Leaf);
-        addChild(                            child, "opportunities",    UidBase + "opportunities",                          rootUrl + "/characters/1364371482/opportunities/",               "/opportunities/");
+        addChild(                            child, "Opportunities",    UidBase + "CharacterOpportunitiesCollection-v1+json",rootUrl + "/characters/1364371482/opportunities/",               "/opportunities/");
         
-        addChild(                            child, "waypoints",        UidBase + "PostWaypoint-v1+json",
+        addChild(                            child, "Waypoints",        UidBase + "PostWaypoint-v1+json",
                                                                         null,
                                                                         null, 
                                                                         null,                                               rootUrl + "/characters/1364371482/ui/autopilot/waypoints/",      "/ui/autopilot/waypoints/", Type.Leaf);
-        addChild(                            child, "location",         UidBase + "CharacterLocation-v1+json",              rootUrl + "/characters/1364371482/location/",                    "/location/");
+        addChild(                            child, "Location",         UidBase + "CharacterLocation-v1+json",              rootUrl + "/characters/1364371482/location/",                    "/location/");
         
-        addChild(                            child, "marketdetails",    UidBase + "ShowMarketDetails-v1+json",
+        addChild(                            child, "MarketDetails",    UidBase + "ShowMarketDetails-v1+json",
                                                                         null,
                                                                         null,
                                                                         null,                                               rootUrl + "/characters/1364371482/ui/openwindow/marketdetails/", "/ui/openwindow/marketdetails/", Type.Leaf);
-        addChild(                             root, "constellations",   UidBase + "ConstellationCollection-v1+json",        rootUrl + "/constellations/",                              "/constellations/");
-        child = addChild(                     root, "corporation",      UidBase + "Corporation"+Fixme,                      rootUrl + "/corporations/",                                "/corporations/", Type.Mixed);
-        gchild = addChild(                   child, "corporation",      UidBase + "CorporationCollection",                  rootUrl + "/corporations/",                                "");
-        addChild(                           gchild, "npcCorporation",   UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                       "/npccorps/");
-//        child = addChild(                     root, "dogma",            UidBase + "Dogma"+Fixme,                            rootUrl + "/dogma/",                                       "/dogma/", Type.Group);
-        addChild(                            child, "attributes",       UidBase + "DogmaAttributeCollection-v1+json",       rootUrl + "/dogma/attributes/",                            "/attributes/");
-        addChild(                            child, "effects",          UidBase + "DogmaEffectCollection-v1+json",          rootUrl + "/dogma/effects/",                               "/effects/");
-//        child = addChild(                     root, "fleet",            UidBase + "Fleet"+Fixme,                            rootUrl + "/fleets/",                                      "/fleets/", Type.Group);
-        child = addChild(                     root, "fleets",           null,
+        addChild(                             root, "Constellations",   UidBase + "ConstellationCollection-v1+json",        rootUrl + "/constellations/",                                    "/constellations/");
+        child = addChild(                     root, "Corporations",      null,                                               rootUrl + "/corporations/",                                      "/corporations/", Type.PlaceHolder);
+        addChild(                            child, "NPCCorporations",   UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/");
+        child = addChild(                     root, "Dogma",            null,                                               rootUrl + "/dogma/",                                             "/dogma/", Type.PlaceHolder);
+        addChild(                            child, "Attributes",       UidBase + "DogmaAttributeCollection-v1+json",       rootUrl + "/dogma/attributes/",                                  "/attributes/");
+        addChild(                            child, "Effects",          UidBase + "DogmaEffectCollection-v1+json",          rootUrl + "/dogma/effects/",                                     "/effects/");
+        child = addChild(                     root, "Fleet",            null,                                               rootUrl + "/fleets/",                                            "/fleets/", Type.PlaceHolder);
+        child = addChild(                     root, "Fleets",           null,
                                                                         UidBase + "Fleet-v1+json",
                                                                         UidBase + "FleetUpdate-v1+json",
-                                                                        null,                                               rootUrl + "/fleets/0/",                                    "/0/", Type.Leaf);
-        gchild = addChild(                   child, "fleetWings",       UidBase + "FleetWingCreate-v1+json",
+                                                                        null,                                               rootUrl + "/fleets/0/",                                          "/0/", Type.Leaf);
+        gchild = addChild(                   child, "Wings",       UidBase + "FleetWingCreate-v1+json",
                                                                         UidBase + "FleetWings-v1+json",
                                                                         null, 
-                                                                        null,                                               rootUrl + "/fleets/0/wings/",                              "/wings/", Type.Mixed);
-        addChild(                           gchild, "fleetSquads",      UidBase + "FleetSquadCreate-v1+json",
+                                                                        null,                                               rootUrl + "/fleets/0/wings/",                                    "/wings/", Type.Leaf);
+        addChild(                           gchild, "Squads",      UidBase + "FleetSquadCreate-v1+json",
                                                                         null,
                                                                         null,
-                                                                        null,                                               rootUrl + "/fleets/0/wings/0/squads/",                     "/squads/", Type.Leaf);
-        addChild(                           gchild, "fleetMembers",     UidBase + "FleetMemberInvite-v1+json",
+                                                                        null,                                               rootUrl + "/fleets/0/wings/0/squads/",                           "/squads/", Type.Leaf);
+        addChild(                           gchild, "Members",     UidBase + "FleetMemberInvite-v1+json",
                                                                         UidBase + "FleetMembers-v1+json",
                                                                         null, 
-                                                                        null,                                               rootUrl + "/fleets/0/members/",                            "/members/", Type.Leaf);
-        addChild(                             root, "incursions",       UidBase + "IncursionCollection-v1+json",            rootUrl + "/incursions/",                                  "/incursions/");
-//        child = addChild(                     root, "industry",         UidBase + "Industry"+Fixme,                         rootUrl + "/industry/",                                    "/industry/", Type.Group);
-        addChild(                             root, "facility",         UidBase + "IndustryFacilityCollection-v1+json",     rootUrl + "/industry/facilities/",                           "/facilities/");
-        addChild(                             root, "system",           UidBase + "IndustrySystemCollection-v1+json",       rootUrl + "/industry/systems/",                             "/systems/");
-//        child = addChild(                     root, "inventory",        UidBase + "Inventory" + Fixme,                      rootUrl + "/inventory/",                                   "/inventory/", Type.Group);
-        addChild(                             root, "categories",       UidBase + "ItemCategoryCollection-v1+json",         rootUrl + "/inventory/categories/",                        "/categories/");
-        addChild(                             root, "groups",           UidBase + "ItemGroupCollection-v1+json",            rootUrl + "/inventory/groups/",                            "/groups/");
-        addChild(                             root, "types",            UidBase + "ItemTypeCollection-v1+json",             rootUrl + "/inventory/types/",                             "/types/");
-//        child = addChild(                     root, "market",           UidBase + "Market" + Fixme,                         rootUrl + "/market/",                                      "/market/", Type.Group);
-        addChild(                             root, "groups",           UidBase + "MarketGroupCollection-v1+json",          rootUrl + "/market/groups/",                               "/groups/");
-        addChild(                             root, "prices",           UidBase + "MarketTypePriceCollection-v1+json",      rootUrl + "/market/prices/",                               "/prices/");
-        addChild(                             root, "types",            UidBase + "MarketTypeCollection-v1+json",           rootUrl + "/market/types/",                                "/types/");
-//        child = addChild(                     root, "opportunity",      UidBase + "Opportunity" + Fixme,                    rootUrl + "/opportunities/",                               "/opportunities/", Type.Group);
-        addChild(                             root, "groups",           UidBase + "OpportunityGroupsCollection-v1+json",    rootUrl + "/opportunities/groups/",                        "/groups/");
-        addChild(                             root, "tasks",            UidBase + "OpportunityTasksCollection-v1+json",     rootUrl + "/opportunities/tasks/",                         "/tasks/");
-//        child = addChild(                     root, "planetsGroup",     UidBase + "PlanetsGroup"+Fixme,                     rootUrl + "/planets/",                                     "/planets/", Type.Mixed);
-//        addChild(                            root, "planets",          UidBase + "Planets"+Fixme,                           rootUrl + "/planets/",                                     "");
-        addChild(                            root, "planet",           UidBase + "Planet-v2+json",                         rootUrl + "/planets/0/",                                   "/0/");
-//        child = addChild(                     root, "sovereignty",      UidBase + "Sovereignty" + Fixme,                    rootUrl + "/sovereignty/",                                 "/sovereignty/", Type.Group);
-        addChild(                             root, "campaigns",        UidBase + "SovCampaignsCollection-v1+json",         rootUrl + "/sovereignty/campaigns/",                       "/campaigns/");
-        addChild(                             root, "structures",       UidBase + "SovStructureCollection-v1+json",         rootUrl + "/sovereignty/structures/",                      "/structures/");
-//        child = addChild(                     root, "stargateGroup",    UidBase + "Stargates"+Fixme,                        rootUrl + "/stargate/",                                    "/stargate/", Type.Mixed);
-        addChild(                             root, "stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                              "/stargates/0/");
-        addChild(                             root, "races",            UidBase + "RaceCollection-v3+json",                 rootUrl + "/races/",                                       "/races/");
-        addChild(                             root, "regions",          UidBase + "RegionCollection-v1+json",               rootUrl + "/regions/",                                     "/regions/");
-//        child = addChild(                     root, "schema",           UidBase + "Schema" + Fixme,                         rootUrl + "/schema/",                                      "/schema/", Type.Group);
-//        addChild(                            child, "endpoints",        UidBase + "SchemaEndpointCollection" + Fixme,       rootUrl + "/schema/endpoints/",                            "/endpoints/");
-//        addChild(                            child, "options",          UidBase + "SchemaOptionCollection"+Fixme,           rootUrl + "/schema/options/",                              "/options/");
-        child = addChild(                     root, "tournaments",      UidBase + "TournamentCollection-v1+json" + Fixme,   rootUrl + "/tournaments/",                                  "/tournaments/");
-        gchild = addChild(                   child, "tournaments",      UidBase + "TournamentCollection-v1+json",           rootUrl + "/tournaments/",                                 "", Type.Mixed);
-        Endpoint ggchild = addChild(        gchild, "tournament",       UidBase + "Tournament-v1+json",                     rootUrl + "/tournaments/0/",                               "/0/");
-        Endpoint gggchild = addChild(      ggchild, "series",           UidBase + "TournamentSeriesCollection-v1+json",     rootUrl + "/tournaments/0/series/",                        "/series/", Type.Group);
-//        addChild(                         gggchild, "bans",             UidBase + "TournamentSeries"+Fixme,                 rootUrl + "/tournaments/0/series/0/bans/",                  "/bans/");
-        Endpoint ggggchild = addChild(    gggchild, "matches",          UidBase + "TournamentMatchCollection-v1+json",      rootUrl + "/tournaments/0/series/0/matches/",              "/matches/", Type.Group);
-        Endpoint gggggchild = addChild(  ggggchild, "match",            UidBase + "TournamentMatch-v1+json",                rootUrl + "/tournaments/0/series/0/matches/0/",            "/0/");
-        addChild(                       gggggchild, "static",           UidBase + "TournamentStaticSceneData-v2+json",      rootUrl + "/tournaments/0/series/0/matches/0/static/",     "/static/", Type.Group);
-        addChild(                       gggggchild, "pilotStats",       UidBase + "TournamentPilotStatsCollection-v1+json", rootUrl + "/tournaments/0/series/0/matches/0/pilotstats/", "/pilotstats/");
-//        Endpoint ggggggchild = addChild(gggggchild, "realtime",         UidBase + "TournamentMatchRealtime" + Fixme,        rootUrl + "/tournaments/0/series/0/matches/0/realtime/",   "/realtime/", Type.Mixed);
-        addChild(                      gggggchild, "pilotStats",       UidBase + "TournamentRealtimeMatchFrame-v2+json",   rootUrl + "/tournaments/0/series/0/matches/0/realtime/0/", "/0/");
-//        gggchild = addChild(               ggchild, "teams",            UidBase + "TournamentTeams" + Fixme,                rootUrl + "/tournaments/0/teams/",                         "/teams/", Type.Mixed);
-        addChild(                         gggchild, "team",             UidBase + "TournamentTeam-v1+json",                 rootUrl + "/tournaments/0/teams/0/",                       "/0/");
-        ggchild = addChild(                 gchild, "teams",            UidBase + "TournamentTeamCollection-v1+json",       rootUrl + "/tournaments/teams/",                           "/teams/", Type.Group);
-        gggchild = addChild(               ggchild, "team",             UidBase + "TournamentTeam-v1+json",                 rootUrl + "/tournaments/teams/0/",                         "/0/");
-        addChild(                         gggchild, "members",          UidBase + "TournamentTeamMemberCollection-v1+json", rootUrl + "/tournaments/teams/0/members/",                 "/members/");
-        addChild(                             root, "solarsystems",     UidBase + "SystemCollection-v1+json",               rootUrl + "/solarsystems/",                                "/solarsystems/");
-        addChild(                             root, "time",             UidBase + "Time-v1+json",                           rootUrl + "/time/",                                        "/time/");
-        addChild(                             root, "decode",           UidBase + "TokenDecode-v1+json",                    rootUrl + "/decode/",                                      "/decode/");
-//        addChild(                             root, "virtualGoodStore", UidBase + "VirtualGoodStore"+Fixme,                 rootUrl + "/virtualGoodStore/",                            "/virtualGoodStore/");
-        child = addChild(                     root, "wars",             UidBase + "WarsCollection-v1+json",                 rootUrl + "/wars/",                                        "/wars/", Type.Mixed);
-        addChild(                            child, "war",              UidBase + "War-v1+json",                            rootUrl + "/wars/0/",                                      "/wars/0/");
+                                                                        null,                                               rootUrl + "/fleets/0/members/",                                  "/members/", Type.Leaf);
+        addChild(                             root, "Incursions",       UidBase + "IncursionCollection-v1+json",            rootUrl + "/incursions/",                                        "/incursions/");
+        child = addChild(                     root, "Industry",         null,                                               rootUrl + "/industry/",                                          "/industry/", Type.PlaceHolder);
+        addChild(                             root, "Facility",         UidBase + "IndustryFacilityCollection-v1+json",     rootUrl + "/industry/facilities/",                               "/facilities/");
+        addChild(                             root, "Systems",           UidBase + "IndustrySystemCollection-v1+json",       rootUrl + "/industry/systems/",                                  "/systems/");
+        child = addChild(                     root, "inventory",        null,                                               rootUrl + "/inventory/",                                         "/inventory/", Type.PlaceHolder);
+        addChild(                             root, "Categories",       UidBase + "ItemCategoryCollection-v1+json",         rootUrl + "/inventory/categories/",                              "/categories/");
+        addChild(                             root, "Groups",           UidBase + "ItemGroupCollection-v1+json",            rootUrl + "/inventory/groups/",                                  "/groups/");
+        addChild(                             root, "Types",            UidBase + "ItemTypeCollection-v1+json",             rootUrl + "/inventory/types/",                                   "/types/");
+        child = addChild(                     root, "Market",           null,                                               rootUrl + "/market/",                                            "/market/", Type.PlaceHolder);
+        addChild(                             root, "Groups",           UidBase + "MarketGroupCollection-v1+json",          rootUrl + "/market/groups/",                                     "/groups/");
+        addChild(                             root, "Prices",           UidBase + "MarketTypePriceCollection-v1+json",      rootUrl + "/market/prices/",                                     "/prices/");
+        addChild(                             root, "Types",            UidBase + "MarketTypeCollection-v1+json",           rootUrl + "/market/types/",                                      "/types/");
+        child = addChild(                     root, "Opportunity",      null,                                               rootUrl + "/opportunities/",                                     "/opportunities/", Type.PlaceHolder);
+        addChild(                             root, "Groups",           UidBase + "OpportunityGroupsCollection-v1+json",    rootUrl + "/opportunities/groups/",                              "/groups/");
+        addChild(                             root, "Tasks",            UidBase + "OpportunityTasksCollection-v1+json",     rootUrl + "/opportunities/tasks/",                               "/tasks/");
+        child = addChild(                     root, "Planets",     null,                                               rootUrl + "/planets/",                                           "/planets/", Type.PlaceHolder);
+        addChild(                             root, "Planet",           UidBase + "Planet-v2+json",                         rootUrl + "/planets/0/",                                         "/0/");
+        child = addChild(                     root, "Sovereignty",      null,                                               rootUrl + "/sovereignty/",                                       "/sovereignty/", Type.PlaceHolder);
+        addChild(                             root, "Campaigns",        UidBase + "SovCampaignsCollection-v1+json",         rootUrl + "/sovereignty/campaigns/",                             "/campaigns/");
+        addChild(                             root, "Structures",       UidBase + "SovStructureCollection-v1+json",         rootUrl + "/sovereignty/structures/",                            "/structures/");
+        child = addChild(                     root, "Stargates",    null,                                               rootUrl + "/stargates/",                                         "/stargates/", Type.PlaceHolder);
+        addChild(                             root, "Stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                                    "/stargates/0/");
+        addChild(                             root, "Races",            UidBase + "RaceCollection-v3+json",                 rootUrl + "/races/",                                             "/races/");
+        addChild(                             root, "Regions",          UidBase + "RegionCollection-v1+json",               rootUrl + "/regions/",                                           "/regions/");
+        child = addChild(                     root, "Tournaments",      UidBase + "TournamentCollection-v1+json",           rootUrl + "/tournaments/",                                       "/tournaments/", Type.Group);
+        gchild = addChild(                   child, "Tournament",       UidBase + "Tournament-v1+json",                     rootUrl + "/tournaments/7/",                                     "/7/");
+        Endpoint ggchild = addChild(        gchild, "Series",           UidBase + "TournamentSeriesCollection-v1+json",     rootUrl + "/tournaments/7/series/",                              "/series/", Type.Group);
+        Endpoint gggchild = addChild(      ggchild, "Matches",          UidBase + "TournamentMatchCollection-v1+json",      rootUrl + "/tournaments/7/series/0/matches/",                    "/matches/", Type.Group);
+        Endpoint ggggchild = addChild(    gggchild, "Match",            UidBase + "TournamentMatch-v1+json",                rootUrl + "/tournaments/7/series/0/matches/0/",                  "/0/");
+        addChild(                        ggggchild, "Bans",             UidBase + "TournamentBans"+Fixme,                   rootUrl + "/tournaments/7/series/0/matches/0/bans/",             "/bans/");
+        addChild(                        ggggchild, "Static",           UidBase + "TournamentStaticSceneData-v2+json",      rootUrl + "/tournaments/7/series/0/matches/0/static/",           "/static/", Type.Group);
+        addChild(                        ggggchild, "PilotStats",       UidBase + "TournamentPilotStatsCollection-v1+json", rootUrl + "/tournaments/7/series/0/matches/0/pilotstats/",       "/pilotstats/");
+        Endpoint gggggchild = addChild(  ggggchild, "Realtime",         null,                                               rootUrl + "/tournaments/7/series/0/matches/0/realtime/",         "/realtime/", Type.PlaceHolder);
+        addChild(                       gggggchild, "Frame",            UidBase + "TournamentRealtimeMatchFrame-v2+json",   rootUrl + "/tournaments/7/series/0/matches/0/realtime/0/",       "/0/");
+        ggchild = addChild(                 gchild, "Teams",            null,                                               rootUrl + "/tournaments/7/teams/",                               "/teams/", Type.PlaceHolder);
+        addChild(                          ggchild, "Team",             UidBase + "TournamentTeam-v1+json",                 rootUrl + "/tournaments/7/teams/0/",                             "/0/");
+        ggchild = addChild(                 gchild, "Teams",            UidBase + "TournamentTeamCollection-v1+json",       rootUrl + "/tournaments/teams/",                                 "/teams/", Type.Group);
+        gggchild = addChild(               ggchild, "Team",             UidBase + "TournamentTeam-v1+json",                 rootUrl + "/tournaments/teams/0/",                               "/0/");
+        addChild(                         gggchild, "Members",          UidBase + "TournamentTeamMemberCollection-v1+json", rootUrl + "/tournaments/teams/0/members/",                       "/members/");
+        addChild(                             root, "SolarSystems",     UidBase + "SystemCollection-v1+json",               rootUrl + "/solarsystems/",                                      "/solarsystems/");
+        addChild(                             root, "Time",             UidBase + "Time-v1+json",                           rootUrl + "/time/",                                              "/time/");
+        addChild(                             root, "Decode",           UidBase + "TokenDecode-v1+json",                    rootUrl + "/decode/",                                            "/decode/");
+//      addChild(                             root, "virtualGoodStore", UidBase + "VirtualGoodStore"+Fixme,                 rootUrl + "/virtualGoodStore/",                                  "/virtualGoodStore/");
+        child = addChild(                     root, "Wars",             UidBase + "WarsCollection-v1+json",                 rootUrl + "/wars/",                                              "/wars/", Type.Group);
+        addChild(                            child, "war",              UidBase + "War-v1+json",                            rootUrl + "/wars/0/",                                            "/wars/0/");
         //@formatter:on
     }
 
@@ -506,11 +602,15 @@ if(endpoint.name.contains("star"))
 
     private Endpoint addChild(Endpoint ep, String name, String ruid, String url, String relative, Type type)
     {
+        if (type == null)
+            log.info("look here");
         return addChild(ep, name, null, ruid, null, null, url, relative, type);
     }
 
-    private Endpoint addChild(Endpoint ep, String name, String cuid,  String ruid, String uuid, String duid,String url, String relative, Type type)
+    private Endpoint addChild(Endpoint ep, String name, String cuid, String ruid, String uuid, String duid, String url, String relative, Type type)
     {
+        if (type == null)
+            log.info("look here");
         Endpoint child = new Endpoint(name, cuid, ruid, uuid, duid, url, relative, type);
         ep.children.add(child);
         return child;
@@ -518,35 +618,35 @@ if(endpoint.name.contains("star"))
 
     private enum Type
     {
-        Group, Leaf, Mixed
+        Group, Leaf, Mixed, PlaceHolder
     }
-    
-// don't have cachetime for    
-//    https://api-sisi.testeveonline.com/characters/
-//    https://api-sisi.testeveonline.com/characters/1364371482/contacts/
-//    https://api-sisi.testeveonline.com/characters/1364371482/contacts/0/ 
-//    https://api-sisi.testeveonline.com/characters/1364371482/fittings/
-//    https://api-sisi.testeveonline.com/characters/1364371482/fittings/0/ 
-//    https://api-sisi.testeveonline.com/characters/1364371482/ui/autopilot/waypoints/ 
-//    https://api-sisi.testeveonline.com/characters/1364371482/location/ 
-//    https://api-sisi.testeveonline.com/characters/1364371482/ui/openwindow/marketdetails/ 
-//    https://api-sisi.testeveonline.com/fleets/0/ 
-//    https://api-sisi.testeveonline.com/fleets/0/wings/ 
-//    https://api-sisi.testeveonline.com/fleets/0/wings/0/squads/ 
-//    https://api-sisi.testeveonline.com/fleets/0/members/ 
-//    https://api-sisi.testeveonline.com/planets/0/ 
-//    https://api-sisi.testeveonline.com/sovereignty/structures/
-//    https://api-sisi.testeveonline.com/stargates/0/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/series/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/static/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/pilotstats/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/realtime/0/ 
-//    https://api-sisi.testeveonline.com/tournaments/0/teams/0/ 
-//    https://api-sisi.testeveonline.com/tournaments/teams/0/ 
-//    https://api-sisi.testeveonline.com/tournaments/teams/0/members/ 
-//    https://api-sisi.testeveonline.com/decode/ 
-//    https://api-sisi.testeveonline.com/wars/0/ 
+
+    // don't have cachetime for    
+    //    https://api-sisi.testeveonline.com/characters/
+    //    https://api-sisi.testeveonline.com/characters/1364371482/contacts/
+    //    https://api-sisi.testeveonline.com/characters/1364371482/contacts/0/ 
+    //    https://api-sisi.testeveonline.com/characters/1364371482/fittings/
+    //    https://api-sisi.testeveonline.com/characters/1364371482/fittings/0/ 
+    //    https://api-sisi.testeveonline.com/characters/1364371482/ui/autopilot/waypoints/ 
+    //    https://api-sisi.testeveonline.com/characters/1364371482/location/ 
+    //    https://api-sisi.testeveonline.com/characters/1364371482/ui/openwindow/marketdetails/ 
+    //    https://api-sisi.testeveonline.com/fleets/0/ 
+    //    https://api-sisi.testeveonline.com/fleets/0/wings/ 
+    //    https://api-sisi.testeveonline.com/fleets/0/wings/0/squads/ 
+    //    https://api-sisi.testeveonline.com/fleets/0/members/ 
+    //    https://api-sisi.testeveonline.com/planets/0/ 
+    //    https://api-sisi.testeveonline.com/sovereignty/structures/
+    //    https://api-sisi.testeveonline.com/stargates/0/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/series/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/static/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/pilotstats/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/series/0/matches/0/realtime/0/ 
+    //    https://api-sisi.testeveonline.com/tournaments/0/teams/0/ 
+    //    https://api-sisi.testeveonline.com/tournaments/teams/0/ 
+    //    https://api-sisi.testeveonline.com/tournaments/teams/0/members/ 
+    //    https://api-sisi.testeveonline.com/decode/ 
+    //    https://api-sisi.testeveonline.com/wars/0/ 
 }

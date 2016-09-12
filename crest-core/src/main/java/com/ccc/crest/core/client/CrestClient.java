@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.Header;
@@ -78,7 +79,7 @@ public class CrestClient
     private volatile ScheduledFuture<?> queueCheckFuture;
     private final List<ClientElement> crestClients;
     private final List<ClientElement> xmlClients;
-    private final AtomicInteger crestClientIndex;
+//    private final AtomicInteger crestClientIndex;
     private final AtomicInteger xmlClientIndex;
     private final Logger log;
 
@@ -95,7 +96,7 @@ public class CrestClient
         this.executor = executor;
         crestClients = new ArrayList<>();
         xmlClients = new ArrayList<>();
-        crestClientIndex = new AtomicInteger(-1);
+//        crestClientIndex = new AtomicInteger(-1);
         xmlClientIndex = new AtomicInteger(-1);
         for (int i = 0; i < CrestMaxClients; i++)
         {
@@ -147,44 +148,54 @@ public class CrestClient
         return xmlUrl;
     }
 
-    public Future<EveData> getOptions(CrestRequestData requestData)
+    public ClientElement getFreeClient(List<ClientElement> from)
     {
         ClientElement client = null;
-        synchronized (crestClients)
+        synchronized (from)
         {
-            int idx = crestClientIndex.incrementAndGet();
-            client = crestClients.get(idx);
-            if (idx == CrestMaxClients - 1)
-                crestClientIndex.set(-1);
+            boolean found = false;
+            do
+            {
+                for(ClientElement cliente : from)
+                {
+                    if(!cliente.inuse.get())
+                    {
+                        cliente.inuse.set(true);
+                        client = cliente;
+                        found = true;
+                        break;
+                    }
+                }
+                if(found)
+                    break;
+                try
+                {
+                    from.wait();
+                } catch (InterruptedException e)
+                {
+                    log.warn("unexpected wakeup", e);
+                }
+            }while(true);
+            
         }
+        return client;
+    }
+    
+    public Future<EveData> getOptions(CrestRequestData requestData)
+    {
+        ClientElement client = getFreeClient(crestClients);
         return getOptions(requestData, client);
     }
 
     public Future<EveData> getCrest(CrestRequestData requestData)
     {
-        ClientElement client = null;
-        //TODO: this should check for all taken and block
-        synchronized (crestClients)
-        {
-            int idx = crestClientIndex.incrementAndGet();
-            client = crestClients.get(idx);
-            if (idx == CrestMaxClients - 1)
-                crestClientIndex.set(-1);
-        }
+        ClientElement client = getFreeClient(crestClients);
         return get(requestData, client);
     }
 
     public Future<EveData> getXml(CrestRequestData requestData)
     {
-        ClientElement client = null;
-        //TODO: this should check for all taken and block
-        synchronized (xmlClients)
-        {
-            int idx = xmlClientIndex.incrementAndGet();
-            client = xmlClients.get(idx);
-            if (idx == CrestMaxClients - 1)
-                xmlClientIndex.set(-1);
-        }
+        ClientElement client = getFreeClient(xmlClients);
         return get(requestData, client);
     }
 
@@ -320,7 +331,28 @@ public class CrestClient
                         return null;
                     }
                 };
-                String body = client.client.execute(get, responseHandler);
+                String body = null;
+                try
+                {
+                    body = client.client.execute(get, responseHandler);
+                }finally 
+                {
+                    if(rdata.gson != null)
+                    {
+                        synchronized (crestClients)
+                        {
+                            client.inuse.set(false);
+                            crestClients.notifyAll();
+                        }
+                    }else
+                    {
+                        synchronized (xmlClients)
+                        {
+                            client.inuse.set(false);
+                            xmlClients.notifyAll();
+                        }
+                    }
+                }
                 if(rdata.logJson)
                     log.info("\n" + rdata.url + " returned:\n" + prettyPrintJson(body) + "\n");
                 EveData data = null;
@@ -348,6 +380,7 @@ public class CrestClient
                 if (rdata.callback != null)
                     rdata.callback.received(rdata, data);
                 controller.fireCommunicationEvent(rdata.clientInfo, rdata.gson == null ? CommsEventListener.Type.XmlUp : CommsEventListener.Type.CrestUp);
+                client.inuse.set(false);
                 return data;
             } catch (Exception e)
             {
@@ -411,12 +444,14 @@ public class CrestClient
         protected final CloseableHttpClient client;
         protected final RequestThrottle crestThrottle;
         protected final RequestThrottle xmlThrottle;
+        protected final AtomicBoolean inuse;
 
         private ClientElement(CloseableHttpClient client, RequestThrottle crestThrottle, RequestThrottle xmlThrottle)
         {
             this.client = client;
             this.crestThrottle = crestThrottle;
             this.xmlThrottle = xmlThrottle;
+            inuse = new AtomicBoolean(false);
         }
     }
 }

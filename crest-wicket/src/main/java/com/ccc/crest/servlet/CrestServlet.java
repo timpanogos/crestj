@@ -54,7 +54,6 @@ public abstract class CrestServlet extends WicketBaseServlet implements ApiKeyEv
     @Override
     public void needsApiKey(CrestClientInfo clientInfo)
     {
-        log.info("look here");
         throw new RestartResponseAtInterceptPageException(SignOutPage.class);
         
     }

@@ -43,6 +43,7 @@ public class Representation implements JsonDeserializer<Representation>
     private static final String VerbKey = "verb";
     private static final String VersionKey = "version";
     private static final String ThirdPartyKey = "thirdParty";
+    private static final String ContentTypeKey = "contentType";
 
     @Override
     public Representation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
