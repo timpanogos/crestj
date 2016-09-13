@@ -42,11 +42,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 @SuppressWarnings("javadoc")
 public class RootEndpoint
 {
-    public static final boolean PingOptions = true;
+    public static final boolean PingOptions = false;
     public static final boolean PingGets = true;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
-    public static final String TemplateBase = WorkBase + "eveonline-third-party-documentation/docs/crest/root/";
+    public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
     public static final String TechDocTemplate = TemplateBase + "technicalPage.md";
     public static final String GroupDocTemplate = TemplateBase + "groupPage.md";
     public static final String LeafDocTemplate = TemplateBase + "leafPage.md";
