@@ -42,7 +42,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 @SuppressWarnings("javadoc")
 public class RootEndpoint
 {
-    public static final boolean PingOptions = false;
+    public static final boolean PingOptions = true;
     public static final boolean PingGets = true;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
