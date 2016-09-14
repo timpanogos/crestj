@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.character;
+package com.ccc.crest.core.cache.crest.fleet;
 
 import java.util.List;
 import java.util.concurrent.Future;
@@ -38,11 +38,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("javadoc")
-public class ContactCollection extends BaseEveData
+public class Wings extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
-    public static final String PostBase = "application/vnd.ccp.eve.ContactCreate";
-    public static final String GetBase = "application/vnd.ccp.eve.ContactCollection";
+    public static final String PostBase = "application/vnd.ccp.eve.FleetWingCreate";
+    public static final String GetBase = "application/vnd.ccp.eve.FleetWings";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.UserGroupName;
@@ -104,7 +104,7 @@ public class ContactCollection extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        gson, null, ContactCollection.class,
+                        gson, null, Wings.class,
                         callback, ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -117,7 +117,7 @@ public class ContactCollection extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        gson, null, ContactCollection.class,
+                        gson, null, Wings.class,
                         callback, ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -128,7 +128,7 @@ public class ContactCollection extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        null, null, ContactCollection.class,
+                        null, null, Wings.class,
                         callback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh);
         return null;

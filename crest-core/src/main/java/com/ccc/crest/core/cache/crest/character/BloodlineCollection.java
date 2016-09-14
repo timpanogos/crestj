@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.tournament;
+package com.ccc.crest.core.cache.crest.character;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.Future;
@@ -34,12 +34,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class TournamentTournament extends BaseEveData implements JsonDeserializer<TournamentTournament>
+public class BloodlineCollection extends BaseEveData implements JsonDeserializer<BloodlineCollection>
 {
     private static final long serialVersionUID = -2711682230241156568L;
-    private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
+    private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
-    public static final String GetBase = "application/vnd.ccp.eve.Tournament";
+    public static final String GetBase = "application/vnd.ccp.eve.BloodlineCollection";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
@@ -47,15 +47,8 @@ public class TournamentTournament extends BaseEveData implements JsonDeserialize
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    private volatile Tournaments tournaments;
-
-    public TournamentTournament()
+    public BloodlineCollection()
     {
-    }
-
-    public Tournaments getTournaments()
-    {
-        return tournaments;
     }
 
     public static String getVersion(VersionType type)
@@ -80,28 +73,23 @@ public class TournamentTournament extends BaseEveData implements JsonDeserialize
         return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
     }
 
-    public static Future<EveData> getFuture(long id, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(TournamentTournament.class, new TournamentTournament());
-
+        gson.registerTypeAdapter(BloodlineCollection.class, new BloodlineCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getUrl(),
-                        gson.create(), null, TournamentTournament.class,
+                        gson.create(), null, BloodlineCollection.class,
                         callback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override
-    public TournamentTournament deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public BloodlineCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        tournaments = new Tournaments();
-        tournaments = tournaments.deserialize(json, typeOfT, context);
-        if(log.isDebugEnabled())
-            log.debug(tournaments.toString());
-        return this;
+        return null;
     }
 }

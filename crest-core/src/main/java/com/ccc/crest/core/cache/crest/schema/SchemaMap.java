@@ -30,27 +30,28 @@ import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
-import com.ccc.crest.core.cache.crest.bloodline.BloodlineCollection;
-import com.ccc.crest.core.cache.crest.constellation.ConstellationCollection;
-import com.ccc.crest.core.cache.crest.corporation.CorporationCollection;
-import com.ccc.crest.core.cache.crest.decode.TokenDecode;
+import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
+import com.ccc.crest.core.cache.crest.character.RaceCollection;
+import com.ccc.crest.core.cache.crest.character.TokenDecode;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
 import com.ccc.crest.core.cache.crest.industry.IndustryFacilityCollection;
 import com.ccc.crest.core.cache.crest.industry.IndustrySystemCollection;
 import com.ccc.crest.core.cache.crest.insurancePrice.InsurancePricesCollection;
-import com.ccc.crest.core.cache.crest.itemCategory.ItemCategoryCollection;
-import com.ccc.crest.core.cache.crest.itemGroup.ItemGroupCollection;
-import com.ccc.crest.core.cache.crest.itemType.ItemTypeCollection;
-import com.ccc.crest.core.cache.crest.marketGroup.MarketGroupCollection;
-import com.ccc.crest.core.cache.crest.marketPrice.MarketTypeCollection;
-import com.ccc.crest.core.cache.crest.marketType.MarketTypePriceCollection;
-import com.ccc.crest.core.cache.crest.npcCorporation.NPCCorporationsCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemCategoryCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemGroupCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemTypeCollection;
+import com.ccc.crest.core.cache.crest.map.ConstellationCollection;
+import com.ccc.crest.core.cache.crest.map.RegionCollection;
+import com.ccc.crest.core.cache.crest.map.SystemCollection;
+import com.ccc.crest.core.cache.crest.market.MarketGroupCollection;
+import com.ccc.crest.core.cache.crest.market.MarketTypeCollection;
+import com.ccc.crest.core.cache.crest.market.MarketTypePriceCollection;
 import com.ccc.crest.core.cache.crest.opportunity.OpportunityGroupsCollection;
 import com.ccc.crest.core.cache.crest.opportunity.OpportunityTasksCollection;
-import com.ccc.crest.core.cache.crest.race.RaceCollection;
-import com.ccc.crest.core.cache.crest.region.RegionCollection;
 import com.ccc.crest.core.cache.crest.schema.endpoint.Endpoint;
 import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointGroup;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
@@ -58,8 +59,7 @@ import com.ccc.crest.core.cache.crest.schema.option.Representation;
 import com.ccc.crest.core.cache.crest.schema.option.Representations;
 import com.ccc.crest.core.cache.crest.sovereignty.SovCampaignsCollection;
 import com.ccc.crest.core.cache.crest.sovereignty.SovStructureCollection;
-import com.ccc.crest.core.cache.crest.system.SystemCollection;
-import com.ccc.crest.core.cache.crest.time.Time;
+import com.ccc.crest.core.cache.crest.time.CrestTime;
 import com.ccc.crest.core.cache.crest.tournament.TournamentCollection;
 import com.ccc.crest.core.cache.crest.virtualGoodStore.VirtualGoodStore;
 import com.ccc.crest.core.cache.crest.war.WarsCollection;
@@ -112,7 +112,7 @@ public class SchemaMap
 //      addElement(AuthenticationEndpoint.class,        "-v1+json", "/oauth/token/",            "authEndpoint.href");
         addElement(BloodlineCollection.class,           "-v2+json", "/bloodlines/",             "bloodlines.href");
         addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
-        addElement(CorporationCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
+        addElement(NpcCorporationsCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
         addElement(CrestOptions.class,                  "-v1+json", "",                         "");
         addElement(DogmaAttributeCollection.class,      "-v1+json", "/dogma/attributes/",       "dogma.attributes");
         addElement(DogmaEffectCollection.class,         "-v1+json", "/dogma/effects/",          "dogma.effects");
@@ -126,7 +126,7 @@ public class SchemaMap
         addElement(MarketGroupCollection.class,         "-v1+json", "/market/groups/",          "marketGroups.href");
         addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");
         addElement(MarketTypeCollection.class,          "-v1+json", "/market/types/",           "marketTypes.href");
-        addElement(NPCCorporationsCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
+        addElement(NpcCorporationsCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
         addElement(OpportunityGroupsCollection.class,   "-v1+json", "/opportunities/groups/",   "opportunities.groups");
         addElement(OpportunityTasksCollection.class,    "-v1+json", "/opportunities/tasks/",    "opportunities.tasks");
         addElement(RaceCollection.class,                "-v3+json", "/races/",                  "races.href");
@@ -134,7 +134,7 @@ public class SchemaMap
         addElement(SovCampaignsCollection.class,        "-v1+json", "/sovereignty/campaigns/",  "sovereignty.campaigns");
         addElement(SovStructureCollection.class,        "-v1+json", "/sovereignty/structures/", "sovereignty.structures");
         addElement(SystemCollection.class,              "-v1+json", "/solarsystems/",           "systems.href");
-        addElement(Time.class,                          "-v1+json", "/time/",                   "time.href");
+        addElement(CrestTime.class,                          "-v1+json", "/time/",                   "time.href");
         addElement(TokenDecode.class,                   "-v1+json", "/decode/",                 "decode.href"); // swapped in second representation
         addElement(TournamentCollection.class,          "-v1+json", "/tournaments/",            "tournaments.href");
         addElement(VirtualGoodStore.class,              "-v1+json", "/virtualGoodStore/",       "virtualGoodStore.href"); // group: virtualGoodStore href: https://vgs-tq.eveonline.com/ HTTP/1.1 405 Method Not Allowed
@@ -284,7 +284,7 @@ public class SchemaMap
                     // FIXME: remove when fixed
                     if (size > 1)
                         list.add("It appears CorporationCollection schema may have been added");
-                    versionBasesSeen.put(CorporationCollection.VersionBase, "-v1+json");
+                    versionBasesSeen.put(NpcCorporationsCollection.VersionBase, "-v1+json");
                     continue;
                 }
                 if (group.name.equals("decode"))
@@ -327,7 +327,7 @@ public class SchemaMap
 
     private void addElement(Class<? extends EveData> clazz, String version, String uri, String key) throws Exception
     {
-        Field field = clazz.getDeclaredField("VersionBase");
+        Field field = clazz.getDeclaredField("GetBase");
         String applicationName = (String) field.get(clazz);
         SchemaMapElement element = new SchemaMapElement(clazz.getName(), applicationName, version, uri, key);
         classToSchema.put(element.clazz, element);

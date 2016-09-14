@@ -27,7 +27,7 @@ import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
-import com.ccc.crest.core.cache.crest.time.Time;
+import com.ccc.crest.core.cache.crest.time.CrestTime;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 
@@ -72,7 +72,7 @@ public class ServerStatus extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getXmlUrl(),
-                        null, new ServerStatus(), Time.class,
+                        null, new ServerStatus(), CrestTime.class,
                         callback,
                         ReadScope, Version, continueRefresh);
         //@formatter:on

@@ -38,11 +38,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 @SuppressWarnings("javadoc")
-public class ContactCollection extends BaseEveData
+public class MarketDetails extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
-    public static final String PostBase = "application/vnd.ccp.eve.ContactCreate";
-    public static final String GetBase = "application/vnd.ccp.eve.ContactCollection";
+    public static final String PostBase = "application/vnd.ccp.eve.ShowMarketDetails";
+    public static final String GetBase = null;
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.UserGroupName;
@@ -104,7 +104,7 @@ public class ContactCollection extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        gson, null, ContactCollection.class,
+                        gson, null, MarketDetails.class,
                         callback, ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -117,7 +117,7 @@ public class ContactCollection extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        gson, null, ContactCollection.class,
+                        gson, null, MarketDetails.class,
                         callback, ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -128,7 +128,7 @@ public class ContactCollection extends BaseEveData
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         clientInfo, getCrestUrl(clientInfo),
-                        null, null, ContactCollection.class,
+                        null, null, MarketDetails.class,
                         callback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh);
         return null;

@@ -7,7 +7,6 @@
     "name": "root",
     "cuid": "vnd.ccp.eve.Api-v5+json",
     "url": "https://api-sisi.testeveonline.com/",
-    "type": "Leaf",
     "cacheTimeout": -1,
     "children": [
       {
@@ -15,7 +14,6 @@
         "ruid": "vnd.ccp.eve.Api-v5+json",
         "url": "https://api-sisi.testeveonline.com",
         "relative": "",
-        "type": "Leaf",
         "cacheTimeout": 20,
         "children": []
       },
@@ -24,7 +22,6 @@
         "ruid": "vnd.ccp.eve.Options-v1+json",
         "url": "https://api-sisi.testeveonline.com",
         "relative": "",
-        "type": "Leaf",
         "cacheTimeout": 20,
         "children": []
       },
@@ -33,7 +30,6 @@
         "ruid": "vnd.ccp.eve.AllianceCollection-v2+json",
         "url": "https://api-sisi.testeveonline.com/alliances/",
         "relative": "/alliances/",
-        "type": "Leaf",
         "cacheTimeout": 300,
         "children": []
       },
@@ -42,7 +38,6 @@
         "ruid": "vnd.ccp.eve.BloodlineCollection-v2+json",
         "url": "https://api-sisi.testeveonline.com/bloodlines/",
         "relative": "/bloodlines/",
-        "type": "Leaf",
         "cacheTimeout": 300,
         "children": []
       },
@@ -51,7 +46,6 @@
         "ruid": "vnd.ccp.eve.CharacterSearch-v1+json",
         "url": "https://api-sisi.testeveonline.com/characters/",
         "relative": "/characters/",
-        "type": "Group",
         "cacheTimeout": -1,
         "children": [
           {
@@ -60,7 +54,6 @@
             "ruid": "vnd.ccp.eve.ContactCollection-v2+json",
             "url": "https://api-sisi.testeveonline.com/characters/1364371482/contacts/",
             "relative": "/contacts/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": [
               {
@@ -69,7 +62,6 @@
                 "duid": "vnd.ccp.eve.ContactDelete-v1+json",
                 "url": "https://api-sisi.testeveonline.com/characters/1364371482/contacts/0/",
                 "relative": "/0/",
-                "type": "Leaf",
                 "cacheTimeout": -1,
                 "children": []
               }
@@ -81,7 +73,6 @@
             "ruid": "vnd.ccp.eve.FittingCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/characters/1364371482/fittings/",
             "relative": "/fittings/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": [
               {
@@ -90,7 +81,6 @@
                 "duid": "vnd.ccp.eve.FittingDelete-v1+json",
                 "url": "https://api-sisi.testeveonline.com/characters/1364371482/fittings/0/",
                 "relative": "/0/",
-                "type": "Leaf",
                 "cacheTimeout": -1,
                 "children": []
               }
@@ -101,16 +91,6 @@
             "ruid": "vnd.ccp.eve.CharacterOpportunitiesCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/characters/1364371482/opportunities/",
             "relative": "/opportunities/",
-            "type": "Leaf",
-            "cacheTimeout": -1,
-            "children": []
-          },
-          {
-            "name": "Waypoints",
-            "cuid": "vnd.ccp.eve.PostWaypoint-v1+json",
-            "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/autopilot/waypoints/",
-            "relative": "/ui/autopilot/waypoints/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
           },
@@ -119,16 +99,54 @@
             "ruid": "vnd.ccp.eve.CharacterLocation-v1+json",
             "url": "https://api-sisi.testeveonline.com/characters/1364371482/location/",
             "relative": "/location/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
+          },
+          {
+            "name": "ui",
+            "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/",
+            "relative": "/ui/",
+            "cacheTimeout": -1,
+            "children": [
+              {
+                "name": "autopilot",
+                "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/autopilot/",
+                "relative": "/autopilot/",
+                "cacheTimeout": -1,
+                "children": [
+                  {
+                    "name": "Waypoints",
+                    "cuid": "vnd.ccp.eve.PostWaypoint-v1+json",
+                    "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/autopilot/waypoints/",
+                    "relative": "/waypoints/",
+                    "cacheTimeout": -1,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "name": "openwindow",
+                "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/openwindow/",
+                "relative": "/openwindow/",
+                "cacheTimeout": -1,
+                "children": [
+                  {
+                    "name": "Mail",
+                    "cuid": "vnd.ccp.eve.NewMail-v1+json",
+                    "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/openwindow/newmail/",
+                    "relative": "/newmail/",
+                    "cacheTimeout": -1,
+                    "children": []
+                  }
+                ]
+              }
+            ]
           },
           {
             "name": "MarketDetails",
             "cuid": "vnd.ccp.eve.ShowMarketDetails-v1+json",
             "url": "https://api-sisi.testeveonline.com/characters/1364371482/ui/openwindow/marketdetails/",
             "relative": "/ui/openwindow/marketdetails/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
           }
@@ -139,7 +157,6 @@
         "ruid": "vnd.ccp.eve.ConstellationCollection-v1+json",
         "url": "https://api-sisi.testeveonline.com/constellations/",
         "relative": "/constellations/",
-        "type": "Leaf",
         "cacheTimeout": 3600,
         "children": []
       },
@@ -147,7 +164,6 @@
         "name": "Corporations",
         "url": "https://api-sisi.testeveonline.com/corporations/",
         "relative": "/corporations/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -155,7 +171,6 @@
             "ruid": "vnd.ccp.eve.NPCCorporationsCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/corporations/npccorps/",
             "relative": "/npccorps/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           }
@@ -165,7 +180,6 @@
         "name": "Dogma",
         "url": "https://api-sisi.testeveonline.com/dogma/",
         "relative": "/dogma/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -173,7 +187,6 @@
             "ruid": "vnd.ccp.eve.DogmaAttributeCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/dogma/attributes/",
             "relative": "/attributes/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           },
@@ -182,7 +195,6 @@
             "ruid": "vnd.ccp.eve.DogmaEffectCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/dogma/effects/",
             "relative": "/effects/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           }
@@ -192,7 +204,6 @@
         "name": "Fleets",
         "url": "https://api-sisi.testeveonline.com/fleets/",
         "relative": "/fleets/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -201,7 +212,6 @@
             "uuid": "vnd.ccp.eve.FleetUpdate-v1+json",
             "url": "https://api-sisi.testeveonline.com/fleets/0/",
             "relative": "/0/",
-            "type": "Mixed",
             "cacheTimeout": -1,
             "children": [
               {
@@ -210,14 +220,12 @@
                 "ruid": "vnd.ccp.eve.FleetWings-v1+json",
                 "url": "https://api-sisi.testeveonline.com/fleets/0/wings/",
                 "relative": "/wings/",
-                "type": "Mixed",
                 "cacheTimeout": -1,
                 "children": [
                   {
                     "name": "Wing",
                     "url": "https://api-sisi.testeveonline.com/fleets/0/winds/0/",
                     "relative": "/0/",
-                    "type": "PlaceHolder",
                     "cacheTimeout": -1,
                     "children": [
                       {
@@ -225,7 +233,6 @@
                         "cuid": "vnd.ccp.eve.FleetSquadCreate-v1+json",
                         "url": "https://api-sisi.testeveonline.com/fleets/0/wings/0/squads/",
                         "relative": "/squads/",
-                        "type": "Leaf",
                         "cacheTimeout": -1,
                         "children": [
                           {
@@ -234,7 +241,6 @@
                             "ruid": "vnd.ccp.eve.FleetMembers-v1+json",
                             "url": "https://api-sisi.testeveonline.com/fleets/0/members/",
                             "relative": "/members/",
-                            "type": "Leaf",
                             "cacheTimeout": -1,
                             "children": []
                           }
@@ -253,7 +259,6 @@
         "ruid": "vnd.ccp.eve.IncursionCollection-v1+json",
         "url": "https://api-sisi.testeveonline.com/incursions/",
         "relative": "/incursions/",
-        "type": "Leaf",
         "cacheTimeout": 300,
         "children": []
       },
@@ -261,7 +266,6 @@
         "name": "Industry",
         "url": "https://api-sisi.testeveonline.com/industry/",
         "relative": "/industry/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -269,7 +273,6 @@
             "ruid": "vnd.ccp.eve.IndustryFacilityCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/industry/facilities/",
             "relative": "/facilities/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           },
@@ -278,7 +281,6 @@
             "ruid": "vnd.ccp.eve.IndustrySystemCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/industry/systems/",
             "relative": "/systems/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           }
@@ -288,7 +290,6 @@
         "name": "inventory",
         "url": "https://api-sisi.testeveonline.com/inventory/",
         "relative": "/inventory/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -296,7 +297,6 @@
             "ruid": "vnd.ccp.eve.ItemCategoryCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/inventory/categories/",
             "relative": "/categories/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           },
@@ -305,7 +305,6 @@
             "ruid": "vnd.ccp.eve.ItemGroupCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/inventory/groups/",
             "relative": "/groups/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           },
@@ -314,7 +313,6 @@
             "ruid": "vnd.ccp.eve.ItemTypeCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/inventory/types/",
             "relative": "/types/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           }
@@ -324,7 +322,6 @@
         "name": "Market",
         "url": "https://api-sisi.testeveonline.com/market/",
         "relative": "/market/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -332,7 +329,6 @@
             "ruid": "vnd.ccp.eve.MarketGroupCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/market/groups/",
             "relative": "/groups/",
-            "type": "Leaf",
             "cacheTimeout": 300,
             "children": []
           },
@@ -341,7 +337,6 @@
             "ruid": "vnd.ccp.eve.MarketTypePriceCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/market/prices/",
             "relative": "/prices/",
-            "type": "Leaf",
             "cacheTimeout": 82800,
             "children": []
           },
@@ -350,7 +345,6 @@
             "ruid": "vnd.ccp.eve.MarketTypeCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/market/types/",
             "relative": "/types/",
-            "type": "Leaf",
             "cacheTimeout": 300,
             "children": []
           }
@@ -360,7 +354,6 @@
         "name": "Opportunity",
         "url": "https://api-sisi.testeveonline.com/opportunities/",
         "relative": "/opportunities/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -368,7 +361,6 @@
             "ruid": "vnd.ccp.eve.OpportunityGroupsCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/opportunities/groups/",
             "relative": "/groups/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           },
@@ -377,7 +369,6 @@
             "ruid": "vnd.ccp.eve.OpportunityTasksCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/opportunities/tasks/",
             "relative": "/tasks/",
-            "type": "Leaf",
             "cacheTimeout": 3600,
             "children": []
           }
@@ -387,7 +378,6 @@
         "name": "Planets",
         "url": "https://api-sisi.testeveonline.com/planets/",
         "relative": "/planets/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -395,7 +385,6 @@
             "ruid": "vnd.ccp.eve.Planet-v2+json",
             "url": "https://api-sisi.testeveonline.com/planets/0/",
             "relative": "/0/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
           }
@@ -405,7 +394,6 @@
         "name": "Sovereignty",
         "url": "https://api-sisi.testeveonline.com/sovereignty/",
         "relative": "/sovereignty/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -413,7 +401,6 @@
             "ruid": "vnd.ccp.eve.SovCampaignsCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/sovereignty/campaigns/",
             "relative": "/campaigns/",
-            "type": "Leaf",
             "cacheTimeout": 30,
             "children": []
           },
@@ -422,7 +409,6 @@
             "ruid": "vnd.ccp.eve.SovStructureCollection-v1+json",
             "url": "https://api-sisi.testeveonline.com/sovereignty/structures/",
             "relative": "/structures/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
           }
@@ -432,7 +418,6 @@
         "name": "Stargates",
         "url": "https://api-sisi.testeveonline.com/stargates/",
         "relative": "/stargates/",
-        "type": "PlaceHolder",
         "cacheTimeout": -1,
         "children": [
           {
@@ -440,7 +425,6 @@
             "ruid": "vnd.ccp.eve.Stargate-v1+json",
             "url": "https://api-sisi.testeveonline.com/stargates/3875/",
             "relative": "/stargates/0/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
           }
@@ -451,7 +435,6 @@
         "ruid": "vnd.ccp.eve.RaceCollection-v3+json",
         "url": "https://api-sisi.testeveonline.com/races/",
         "relative": "/races/",
-        "type": "Leaf",
         "cacheTimeout": 300,
         "children": []
       },
@@ -460,7 +443,6 @@
         "ruid": "vnd.ccp.eve.RegionCollection-v1+json",
         "url": "https://api-sisi.testeveonline.com/regions/",
         "relative": "/regions/",
-        "type": "Leaf",
         "cacheTimeout": 3600,
         "children": []
       },
@@ -469,7 +451,6 @@
         "ruid": "vnd.ccp.eve.TournamentCollection-v1+json",
         "url": "https://api-sisi.testeveonline.com/tournaments/",
         "relative": "/tournaments/",
-        "type": "Group",
         "cacheTimeout": 300,
         "children": [
           {
@@ -477,7 +458,6 @@
             "ruid": "vnd.ccp.eve.Tournament-v1+json",
             "url": "https://api-sisi.testeveonline.com/tournaments/7/",
             "relative": "/7/",
-            "type": "Leaf",
             "cacheTimeout": 300,
             "children": [
               {
@@ -485,7 +465,6 @@
                 "ruid": "vnd.ccp.eve.TournamentSeriesCollection-v1+json",
                 "url": "https://api-sisi.testeveonline.com/tournaments/7/series/",
                 "relative": "/series/",
-                "type": "Group",
                 "cacheTimeout": 5,
                 "children": [
                   {
@@ -493,7 +472,6 @@
                     "ruid": "vnd.ccp.eve.TournamentMatchCollection-v1+json",
                     "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/",
                     "relative": "/matches/",
-                    "type": "Group",
                     "cacheTimeout": 5,
                     "children": [
                       {
@@ -501,15 +479,13 @@
                         "ruid": "vnd.ccp.eve.TournamentMatch-v1+json",
                         "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/0/",
                         "relative": "/0/",
-                        "type": "Leaf",
                         "cacheTimeout": 5,
                         "children": [
                           {
                             "name": "Bans",
-                            "ruid": "vnd.ccp.eve.TournamentBans(TBD)",
+                            "ruid": "vnd.ccp.eve.TournamentTypeBanCollection-v1+json",
                             "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/0/bans/",
                             "relative": "/bans/",
-                            "type": "Leaf",
                             "cacheTimeout": 5,
                             "children": []
                           },
@@ -518,7 +494,6 @@
                             "ruid": "vnd.ccp.eve.TournamentStaticSceneData-v2+json",
                             "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/0/static/",
                             "relative": "/static/",
-                            "type": "Group",
                             "cacheTimeout": -1,
                             "children": []
                           },
@@ -527,7 +502,6 @@
                             "ruid": "vnd.ccp.eve.TournamentPilotStatsCollection-v1+json",
                             "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/0/pilotstats/",
                             "relative": "/pilotstats/",
-                            "type": "Leaf",
                             "cacheTimeout": 5,
                             "children": []
                           },
@@ -535,7 +509,6 @@
                             "name": "Realtime",
                             "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/0/realtime/",
                             "relative": "/realtime/",
-                            "type": "PlaceHolder",
                             "cacheTimeout": -1,
                             "children": [
                               {
@@ -543,7 +516,6 @@
                                 "ruid": "vnd.ccp.eve.TournamentRealtimeMatchFrame-v2+json",
                                 "url": "https://api-sisi.testeveonline.com/tournaments/7/series/0/matches/0/realtime/0/",
                                 "relative": "/0/",
-                                "type": "Leaf",
                                 "cacheTimeout": -1,
                                 "children": []
                               }
@@ -559,7 +531,6 @@
                 "name": "Teams",
                 "url": "https://api-sisi.testeveonline.com/tournaments/7/teams/",
                 "relative": "/teams/",
-                "type": "PlaceHolder",
                 "cacheTimeout": -1,
                 "children": [
                   {
@@ -567,7 +538,6 @@
                     "ruid": "vnd.ccp.eve.TournamentTeam-v1+json",
                     "url": "https://api-sisi.testeveonline.com/tournaments/7/teams/0/",
                     "relative": "/0/",
-                    "type": "Leaf",
                     "cacheTimeout": -1,
                     "children": []
                   }
@@ -578,15 +548,13 @@
                 "ruid": "vnd.ccp.eve.TournamentTeamCollection-v1+json",
                 "url": "https://api-sisi.testeveonline.com/tournaments/teams/",
                 "relative": "/teams/",
-                "type": "Group",
                 "cacheTimeout": 300,
                 "children": [
                   {
                     "name": "Team",
-                    "ruid": "vnd.ccp.eve.TournamentTeam-v1+json",
+                    "ruid": "vnd.ccp.eve.TournamentTeam2-v1+json",
                     "url": "https://api-sisi.testeveonline.com/tournaments/teams/0/",
                     "relative": "/0/",
-                    "type": "Leaf",
                     "cacheTimeout": -1,
                     "children": [
                       {
@@ -594,7 +562,6 @@
                         "ruid": "vnd.ccp.eve.TournamentTeamMemberCollection-v1+json",
                         "url": "https://api-sisi.testeveonline.com/tournaments/teams/0/members/",
                         "relative": "/members/",
-                        "type": "Leaf",
                         "cacheTimeout": -1,
                         "children": []
                       }
@@ -611,7 +578,6 @@
         "ruid": "vnd.ccp.eve.SystemCollection-v1+json",
         "url": "https://api-sisi.testeveonline.com/solarsystems/",
         "relative": "/solarsystems/",
-        "type": "Leaf",
         "cacheTimeout": 3600,
         "children": []
       },
@@ -620,7 +586,6 @@
         "ruid": "vnd.ccp.eve.Time-v1+json",
         "url": "https://api-sisi.testeveonline.com/time/",
         "relative": "/time/",
-        "type": "Leaf",
         "cacheTimeout": 10,
         "children": []
       },
@@ -629,7 +594,6 @@
         "ruid": "vnd.ccp.eve.TokenDecode-v1+json",
         "url": "https://api-sisi.testeveonline.com/decode/",
         "relative": "/decode/",
-        "type": "Leaf",
         "cacheTimeout": -1,
         "children": []
       },
@@ -638,7 +602,6 @@
         "ruid": "vnd.ccp.eve.WarsCollection-v1+json",
         "url": "https://api-sisi.testeveonline.com/wars/",
         "relative": "/wars/",
-        "type": "Group",
         "cacheTimeout": 86400,
         "children": [
           {
@@ -646,7 +609,6 @@
             "ruid": "vnd.ccp.eve.War-v1+json",
             "url": "https://api-sisi.testeveonline.com/wars/0/",
             "relative": "/wars/0/",
-            "type": "Leaf",
             "cacheTimeout": -1,
             "children": []
           }

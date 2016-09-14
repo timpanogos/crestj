@@ -34,12 +34,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class TournamentTournament extends BaseEveData implements JsonDeserializer<TournamentTournament>
+public class TournamentMatchFrame extends BaseEveData implements JsonDeserializer<TournamentMatchFrame>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
     public static final String PostBase = null;
-    public static final String GetBase = "application/vnd.ccp.eve.Tournament";
+    public static final String GetBase = "application/vnd.ccp.eve.TournamentRealtimeMatchFrame";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
@@ -49,7 +49,7 @@ public class TournamentTournament extends BaseEveData implements JsonDeserialize
 
     private volatile Tournaments tournaments;
 
-    public TournamentTournament()
+    public TournamentMatchFrame()
     {
     }
 
@@ -80,15 +80,15 @@ public class TournamentTournament extends BaseEveData implements JsonDeserialize
         return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
     }
 
-    public static Future<EveData> getFuture(long id, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(TournamentTournament.class, new TournamentTournament());
+        gson.registerTypeAdapter(TournamentMatchFrame.class, new TournamentMatchFrame());
 
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getUrl(),
-                        gson.create(), null, TournamentTournament.class,
+                        gson.create(), null, TournamentMatchFrame.class,
                         callback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
@@ -96,7 +96,7 @@ public class TournamentTournament extends BaseEveData implements JsonDeserialize
     }
 
     @Override
-    public TournamentTournament deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public TournamentMatchFrame deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         tournaments = new Tournaments();
         tournaments = tournaments.deserialize(json, typeOfT, context);

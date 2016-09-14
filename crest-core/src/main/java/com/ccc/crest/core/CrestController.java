@@ -645,6 +645,7 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 
                 
 //                dumpSchema();
+                log.info("Host: " + CrestClient.getCrestBaseUri());
                 RootEndpoint root = new RootEndpoint();
                 root.dumpTree(new File("/tmp/crestj"));
                 dataCache.getTournamentCollection();
@@ -686,7 +687,9 @@ authenticatedTest((CrestClientInfo)clientInfo);
         try{dataCache.getOptions(null);}catch(Exception e){log.error("failed:", e);}
 //        https://crest-tq.eveonline.com/characters/1364371482/contacts/
 //        try{dataCache.getOptions(urlBase + "/characters/");}catch(Exception e){log.error("failed:", e);}
-        try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/0/");}catch(Exception e){log.error("failed:", e);}
+        
 //        try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/0/contacts/");}catch(Exception e){log.error("failed:", e);}
 //        application/vnd.ccp.eve.ContactCollection-v2+json
         

@@ -21,35 +21,35 @@ import java.util.HashMap;
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
-import com.ccc.crest.core.cache.crest.bloodline.BloodlineCollection;
+import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.ContactCollection;
-import com.ccc.crest.core.cache.crest.constellation.ConstellationCollection;
-import com.ccc.crest.core.cache.crest.corporation.CorporationCollection;
-import com.ccc.crest.core.cache.crest.decode.TokenDecode;
+import com.ccc.crest.core.cache.crest.character.RaceCollection;
+import com.ccc.crest.core.cache.crest.character.TokenDecode;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
 import com.ccc.crest.core.cache.crest.industry.IndustryFacilityCollection;
 import com.ccc.crest.core.cache.crest.industry.IndustrySystemCollection;
 import com.ccc.crest.core.cache.crest.insurancePrice.InsurancePricesCollection;
-import com.ccc.crest.core.cache.crest.itemCategory.ItemCategoryCollection;
-import com.ccc.crest.core.cache.crest.itemGroup.ItemGroupCollection;
-import com.ccc.crest.core.cache.crest.itemType.ItemTypeCollection;
-import com.ccc.crest.core.cache.crest.marketGroup.MarketGroupCollection;
-import com.ccc.crest.core.cache.crest.marketPrice.MarketTypeCollection;
-import com.ccc.crest.core.cache.crest.marketType.MarketTypePriceCollection;
-import com.ccc.crest.core.cache.crest.npcCorporation.NPCCorporationsCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemCategoryCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemGroupCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemTypeCollection;
+import com.ccc.crest.core.cache.crest.map.ConstellationCollection;
+import com.ccc.crest.core.cache.crest.map.RegionCollection;
+import com.ccc.crest.core.cache.crest.map.SystemCollection;
+import com.ccc.crest.core.cache.crest.market.MarketGroupCollection;
+import com.ccc.crest.core.cache.crest.market.MarketTypeCollection;
+import com.ccc.crest.core.cache.crest.market.MarketTypePriceCollection;
 import com.ccc.crest.core.cache.crest.opportunity.OpportunityGroupsCollection;
 import com.ccc.crest.core.cache.crest.opportunity.OpportunityTasksCollection;
-import com.ccc.crest.core.cache.crest.race.RaceCollection;
-import com.ccc.crest.core.cache.crest.region.RegionCollection;
 import com.ccc.crest.core.cache.crest.schema.SchemaInterfaces;
 import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointCollection;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 import com.ccc.crest.core.cache.crest.sovereignty.SovCampaignsCollection;
 import com.ccc.crest.core.cache.crest.sovereignty.SovStructureCollection;
-import com.ccc.crest.core.cache.crest.system.SystemCollection;
-import com.ccc.crest.core.cache.crest.time.Time;
+import com.ccc.crest.core.cache.crest.time.CrestTime;
 import com.ccc.crest.core.cache.crest.tournament.TournamentCollection;
 import com.ccc.crest.core.cache.crest.tournament.TournamentMatchCollection;
 import com.ccc.crest.core.cache.crest.tournament.TournamentSeriesCollection;
@@ -510,24 +510,24 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public Time getTime() throws SourceFailureException
+    public CrestTime getTime() throws SourceFailureException
     {
-        CacheData data = cache.get(Time.getUrl());
+        CacheData data = cache.get(CrestTime.getUrl());
         if (data != null)
         {
             data.data.accessed();
-            return (Time) data.data;
+            return (CrestTime) data.data;
         }
         try
         {
-            Time time = (Time) Time.getFuture(callback).get();
+            CrestTime time = (CrestTime) CrestTime.getFuture(callback).get();
             time.accessed();
             return time;
         } catch (Exception e)
         {
             CommsEventListener.Type type = CommsEventListener.Type.CrestDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + Time.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + CrestTime.getUrl(), e);
         }
     }
 
@@ -592,22 +592,22 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public CorporationCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public NpcCorporationsCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        CacheData data = cache.get(CorporationCollection.getUrl());
+        CacheData data = cache.get(NpcCorporationsCollection.getUrl());
         if (data != null)
         {
             data.data.accessed();
-            return (CorporationCollection) data.data;
+            return (NpcCorporationsCollection) data.data;
         }
         try
         {
-            CorporationCollection value = (CorporationCollection) CorporationCollection.getFuture(callback).get();
+            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(callback).get();
             value.accessed();
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + CorporationCollection.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationsCollection.getUrl(), e);
         }
     }
 
@@ -1135,22 +1135,22 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public NPCCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public NpcCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        CacheData data = cache.get(NPCCorporationsCollection.getUrl());
+        CacheData data = cache.get(NpcCorporationsCollection.getUrl());
         if (data != null)
         {
             data.data.accessed();
-            return (NPCCorporationsCollection) data.data;
+            return (NpcCorporationsCollection) data.data;
         }
         try
         {
-            NPCCorporationsCollection value = (NPCCorporationsCollection) NPCCorporationsCollection.getFuture(callback).get();
+            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(callback).get();
             value.accessed();
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + NPCCorporationsCollection.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationsCollection.getUrl(), e);
         }
     }
 
