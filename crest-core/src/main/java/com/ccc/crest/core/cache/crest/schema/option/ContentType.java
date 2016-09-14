@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.tools.TabToLevel;
+import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -30,23 +31,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Representation implements JsonDeserializer<Representation>
+public class ContentType implements JsonDeserializer<ContentType>
 {
-    public volatile String versionStr;
-    public volatile AcceptType acceptType;
-    public volatile String verb;
-    public volatile long version;
-    public volatile boolean thirdParty;
+    public volatile String name;
+    public volatile String jsonDumpOfStructure;
+    public volatile CcpType ccpType;
 
-    private static final String AcceptVersionStrKey = "version_str";
-    private static final String AcceptTypeKey = "acceptType";
-    private static final String VerbKey = "verb";
-    private static final String VersionKey = "version";
-    private static final String ThirdPartyKey = "thirdParty";
-    private static final String ContentTypeKey = "contentType";
+    private static final String NameKey = "name";
+    private static final String JsonDumpKey = "jsonDumpOfStructure";
 
     @Override
-    public Representation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public ContentType deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
         while (objectIter.hasNext())
@@ -54,23 +49,12 @@ public class Representation implements JsonDeserializer<Representation>
             Entry<String, JsonElement> objectEntry = objectIter.next();
             String key = objectEntry.getKey();
             JsonElement value = objectEntry.getValue();
-            if (AcceptVersionStrKey.equals(key))
-                versionStr = value.getAsString();
-            else if (AcceptTypeKey.equals(key))
+            if (NameKey.equals(key))
+                name = value.getAsString();
+            else if (JsonDumpKey.equals(key))
             {
-                acceptType = new AcceptType();
-                acceptType.deserialize(value, typeOfT, context);
-
-            } else if (VerbKey.equals(key))
-                verb = value.getAsString();
-            else if (VersionKey.equals(key))
-                version = value.getAsLong();
-            else if (ThirdPartyKey.equals(key))
-                thirdParty = value.getAsBoolean();
-            else if (ContentTypeKey.equals(key))
-            {
-                ContentType contentType = new ContentType();
-                contentType.deserialize(value, typeOfT, context);
+                Gson gson = new Gson();
+                gson.fromJson(value.getAsString(), CcpType.class);
             }
             else
                 LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
@@ -89,17 +73,13 @@ public class Representation implements JsonDeserializer<Representation>
     {
         format.ttl(getClass().getSimpleName());
         format.inc();
-        format.ttl("versionStr: ", versionStr);
-        format.ttl("verb: ", verb);
-        format.ttl("version: ", version);
-        format.ttl("thirdParty: ", thirdParty);
-        if (acceptType == null)
-            format.ttl("acceptType: null");
+        format.ttl("name: ", name);
+        if (ccpType == null)
+            format.ttl("ccpType: null");
         else
         {
-            format.ttl("acceptType: ");
             format.inc();
-            acceptType.toString(format);
+            ccpType.toString(format);
             format.dec();
         }
         format.dec();

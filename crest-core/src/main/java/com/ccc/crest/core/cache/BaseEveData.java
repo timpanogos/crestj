@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -49,7 +49,7 @@ public abstract class BaseEveData extends EveApiSaxHandler implements Serializab
     {
         log = LoggerFactory.getLogger(getClass());
     }
-    
+
     public static boolean checkRights(CrestClientInfo clientInfo, String group)
     {
         List<AccessGroup> list = clientInfo.getGroups();
@@ -144,4 +144,6 @@ public abstract class BaseEveData extends EveApiSaxHandler implements Serializab
     {
         nextRefresh.set(time);
     }
+
+    public enum VersionType {Post, Get, Put, Delete}
 }

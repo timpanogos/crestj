@@ -39,7 +39,10 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
-    public static final String VersionBase = "application/vnd.ccp.eve.Options";
+    public static final String PostBase = null;
+    public static final String GetBase = "application/vnd.ccp.eve.Options";
+    public static final String PutBase = null;
+    public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
@@ -59,9 +62,21 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
         return representations;
     }
 
-    public static String getVersion()
+    public static String getVersion(VersionType type)
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
+        switch(type)
+        {
+            case Delete:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(DeleteBase).getVersion();
+            case Get:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getVersion();
+            case Post:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PostBase).getVersion();
+            case Put:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PutBase).getVersion();
+            default:
+                return null;
+        }
     }
 
     public static String getCrestUrl()
@@ -80,7 +95,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
                         null, url,
                         gson.create(), null, CrestOptions.class,
                         callback,
-                        ReadScope, getVersion(), continueRefresh, true);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
         //@formatter:on
         if(doGet)
             return CrestController.getCrestController().crestClient.getCrest(rdata);

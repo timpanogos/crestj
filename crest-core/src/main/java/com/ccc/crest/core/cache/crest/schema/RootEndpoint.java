@@ -30,6 +30,13 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.DataCache;
+import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.EveJsonData;
+import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
+import com.ccc.crest.core.cache.crest.bloodline.BloodlineCollection;
+import com.ccc.crest.core.cache.crest.character.CharacterSearch;
+import com.ccc.crest.core.cache.crest.character.ContactCollection;
+import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointCollection;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.tools.StrH;
@@ -43,10 +50,10 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class RootEndpoint
 {
     public static final boolean PingOptions = true;
-    public static final boolean PingGets = true;
+    public static final boolean PingGets = false;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
-    public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
+    public static final String TemplateBase = WorkBase + "eveonline-third-party-documentation/docs/crest/root/";
     public static final String TechDocTemplate = TemplateBase + "technicalPage.md";
     public static final String GroupDocTemplate = TemplateBase + "groupPage.md";
     public static final String LeafDocTemplate = TemplateBase + "leafPage.md";
@@ -156,7 +163,6 @@ public class RootEndpoint
         PrintWriter out = new PrintWriter(groupPath);
         out.println(groupStr);
         out.close();
-
         totalGroups.incrementAndGet();
     }
 
@@ -171,8 +177,8 @@ public class RootEndpoint
                 PrintWriter out = new PrintWriter(paths[i]);
                 out.println(leafStr);
                 out.close();
+                totalLeafs.incrementAndGet();
             }
-        totalLeafs.incrementAndGet();
     }
 
     private void getRef(StringBuilder sb, String parentPath, Endpoint child, AtomicInteger level, boolean fromGroup)
@@ -401,7 +407,7 @@ public class RootEndpoint
             serverVersion = "EVE-2016-HERMINE 14.08.1071672.1071672";
             serverName = "SINGULARITY";
             serverStatus = "online";
-            root = new Endpoint("root", UidBase + "Api-v5+json", null, null, null, rootUrl + "/", null, Type.Leaf);
+            root = new Endpoint("root", UidBase + "Api-v5+json", null, null, null, rootUrl + "/", null, Type.Leaf, null);
         }
     }
 
@@ -421,15 +427,16 @@ public class RootEndpoint
         public final String duid; // DELETE's assigned here
         public final String url;
         public final String relative;
-        public final Type type;
         public final AtomicInteger cacheTimeout;
         public final List<Endpoint> children;
+        public final transient Type type;
+        public final transient Class<? extends EveJsonData> eveDataClass;
 
         //@formatter:off
         public Endpoint(
             String name,
             String cuid, String ruid, String uuid, String duid,
-            String url, String relative, Type type)
+            String url, String relative, Type type, Class<? extends EveJsonData> eveDataClass)
         //@formatter:on
         {
             this.name = name;
@@ -440,6 +447,7 @@ public class RootEndpoint
             this.url = url;
             this.relative = relative;
             this.type = type;
+            this.eveDataClass = eveDataClass;
             cacheTimeout = new AtomicInteger(-1);
             children = new ArrayList<>();
         }
@@ -495,15 +503,15 @@ public class RootEndpoint
         endpoints = new Endpoints();
         Endpoint root = endpoints.root;
         //@formatter:off
-        addChild(                             root, "Endpoints",        UidBase + "Api-v5+json",                            rootUrl + "",                                                    "");
-        addChild(                             root, "Options",          UidBase + "Options-v1+json",                        rootUrl + "",                                                    "");
-        addChild(                             root, "Alliances",        UidBase + "AllianceCollection-v2+json",             rootUrl + "/alliances/",                                         "/alliances/");
-        addChild(                             root, "Bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                        "/bloodlines/");
-        Endpoint child = addChild(            root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", Type.Group);
+        addChild(                             root, "Endpoints",        UidBase + "Api-v5+json",                            rootUrl + "",                                                    "", EndpointCollection.class);
+        addChild(                             root, "Options",          UidBase + "Options-v1+json",                        rootUrl + "",                                                    "", CrestOptions.class);
+        addChild(                             root, "Alliances",        UidBase + "AllianceCollection-v2+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
+        addChild(                             root, "Bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                        "/bloodlines/", BloodlineCollection.class);
+        Endpoint child = addChild(            root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", Type.Group, CharacterSearch.class);
         Endpoint gchild = addChild(          child, "Contacts",         UidBase + "ContactCreate-v1+json",
                                                                         UidBase + "ContactCollection-v2+json",
                                                                         null,
-                                                                        null,                                               rootUrl + "/characters/1364371482/contacts/",                    "/contacts/", Type.Leaf);
+                                                                        null,                                               rootUrl + "/characters/1364371482/contacts/",                    "/contacts/", Type.Leaf, ContactCollection.class);
         addChild(                           gchild, "Contact",          null,
                                                                         null,
                                                                         UidBase + "ContactCreate-v1+json",
@@ -600,23 +608,23 @@ public class RootEndpoint
         //@formatter:on
     }
 
-    private Endpoint addChild(Endpoint ep, String name, String ruid, String url, String relative)
+    private Endpoint addChild(Endpoint ep, String name, String ruid, String url, String relative, Class<? extends EveData> eveDataClass)
     {
-        return addChild(ep, name, ruid, url, relative, Type.Leaf);
+        return addChild(ep, name, ruid, url, relative, Type.Leaf, eveDataClass);
     }
 
-    private Endpoint addChild(Endpoint ep, String name, String ruid, String url, String relative, Type type)
+    private Endpoint addChild(Endpoint ep, String name, String ruid, String url, String relative, Type type, Class<? extends EveData> eveDataClass)
     {
         if (type == null)
             log.info("look here");
-        return addChild(ep, name, null, ruid, null, null, url, relative, type);
+        return addChild(ep, name, null, ruid, null, null, url, relative, type, eveDataClass);
     }
 
-    private Endpoint addChild(Endpoint ep, String name, String cuid, String ruid, String uuid, String duid, String url, String relative, Type type)
+    private Endpoint addChild(Endpoint ep, String name, String cuid, String ruid, String uuid, String duid, String url, String relative, Type type, Class<? extends EveData> eveDataClass)
     {
         if (type == null)
             log.info("look here");
-        Endpoint child = new Endpoint(name, cuid, ruid, uuid, duid, url, relative, type);
+        Endpoint child = new Endpoint(name, cuid, ruid, uuid, duid, url, relative, type, eveDataClass);
         ep.children.add(child);
         return child;
     }

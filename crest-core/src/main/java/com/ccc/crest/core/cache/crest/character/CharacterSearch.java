@@ -14,9 +14,10 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.sovereignty;
+package com.ccc.crest.core.cache.crest.character;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,22 +35,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class SovCampaignsCollection extends BaseEveData implements JsonDeserializer<SovCampaignsCollection>
+public class CharacterSearch extends BaseEveData implements JsonDeserializer<CharacterSearch>
 {
-    private static final long serialVersionUID = -2711682230241156568L;
+    private static final long serialVersionUID = 965041169279751564L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
-    public static final String GetBase = "application/vnd.ccp.eve.SovCampaignsCollection";
+    public static final String GetBase = "application/vnd.ccp.eve.CharacterSearch";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
-    public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
+    public static final String AccessGroup = CrestController.UserGroupName;
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.Character; //?
     private static final String ReadScope = null;
-    private static final String WriteScope = null;
 
-    public SovCampaignsCollection()
-    {
-    }
+    public volatile Date eveTime;
+    public volatile Date localTime;
 
     public static String getVersion(VersionType type)
     {
@@ -76,11 +75,12 @@ public class SovCampaignsCollection extends BaseEveData implements JsonDeseriali
     public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(SovCampaignsCollection.class, new SovCampaignsCollection());
+        gson.registerTypeAdapter(CharacterSearch.class, new CharacterSearch());
+
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getUrl(),
-                        gson.create(), null, SovCampaignsCollection.class,
+                        gson.create(), null, CharacterSearch.class,
                         callback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
@@ -88,8 +88,12 @@ public class SovCampaignsCollection extends BaseEveData implements JsonDeseriali
     }
 
     @Override
-    public SovCampaignsCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public CharacterSearch deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return null;
+//        tournaments = new Tournaments();
+//        tournaments = tournaments.deserialize(json, typeOfT, context);
+//        if(log.isDebugEnabled())
+//            log.debug(tournaments.toString());
+        return this;
     }
 }

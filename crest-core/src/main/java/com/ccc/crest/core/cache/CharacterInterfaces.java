@@ -18,7 +18,7 @@ package com.ccc.crest.core.cache;
 
 
 import com.ccc.crest.core.CrestClientInfo;
-import com.ccc.crest.core.cache.crest.character.ContactList;
+import com.ccc.crest.core.cache.crest.character.ContactCollection;
 import com.ccc.crest.core.cache.xmlapi.character.AccountBalance;
 import com.ccc.crest.core.cache.xmlapi.character.AssetList;
 import com.ccc.crest.core.cache.xmlapi.character.Blueprints;
@@ -68,7 +68,7 @@ public interface CharacterInterfaces
 	public CharacterSheet getCharacterSheet(CrestClientInfo clientInfo) throws SourceFailureException;
 	public ChatChannels getChatChannels(CrestClientInfo clientInfo) throws SourceFailureException;
 	public Clones getClones(CrestClientInfo clientInfo) throws SourceFailureException;
-	public ContactList getContactList(CrestClientInfo clientInfo) throws SourceFailureException;
+	public ContactCollection getContactList(CrestClientInfo clientInfo) throws SourceFailureException;
 	public ContactNotifications getContactNotifications(CrestClientInfo clientInfo) throws SourceFailureException;
 	public ContractBids getContractBids(CrestClientInfo clientInfo) throws SourceFailureException;
 	public ContractItems getContractItems(CrestClientInfo clientInfo) throws SourceFailureException;

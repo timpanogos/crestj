@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -38,7 +38,10 @@ public class Time extends BaseEveData
 {
     private static final long serialVersionUID = 965041169279751564L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
-    public static final String VersionBase = "application/vnd.ccp.eve.Time";
+    public static final String PostBase = null;
+    public static final String GetBase = "application/vnd.ccp.eve.Time";
+    public static final String PutBase = null;
+    public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
@@ -63,14 +66,26 @@ public class Time extends BaseEveData
         localTime = new Date();
     }
 
-    public static String getVersion()
+    public static String getVersion(VersionType type)
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
+        switch(type)
+        {
+            case Delete:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(DeleteBase).getVersion();
+            case Get:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getVersion();
+            case Post:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PostBase).getVersion();
+            case Put:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PutBase).getVersion();
+            default:
+                return null;
+        }
     }
 
     public static String getUrl()
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
+        return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
     }
 
     public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
@@ -81,7 +96,7 @@ public class Time extends BaseEveData
                         null, getUrl(),
                         gson, null, Time.class,
                         callback,
-                        ReadScope, getVersion(), continueRefresh);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }

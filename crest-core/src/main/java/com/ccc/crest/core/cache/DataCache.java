@@ -22,7 +22,7 @@ import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.core.cache.crest.bloodline.BloodlineCollection;
-import com.ccc.crest.core.cache.crest.character.ContactList;
+import com.ccc.crest.core.cache.crest.character.ContactCollection;
 import com.ccc.crest.core.cache.crest.constellation.ConstellationCollection;
 import com.ccc.crest.core.cache.crest.corporation.CorporationCollection;
 import com.ccc.crest.core.cache.crest.decode.TokenDecode;
@@ -192,22 +192,22 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         throw new SourceFailureException("not implemented yet");
     }
 
-    public ContactList getContactListXml(CrestClientInfo clientInfo) throws SourceFailureException
+    public ContactCollection getContactListXml(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        CacheData data = cache.get(ContactList.getApiUrl(clientInfo));
+        CacheData data = cache.get(ContactCollection.getApiUrl(clientInfo));
         if (data != null)
         {
             data.data.accessed();
-            return (ContactList) data.data;
+            return (ContactCollection) data.data;
         }
         try
         {
-            ContactList list = (ContactList) ContactList.getFuture(clientInfo, callback).get();
+            ContactCollection list = (ContactCollection) ContactCollection.getFuture(clientInfo, callback).get();
             list.accessed();
             return list;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactList.getCrestUrl(clientInfo), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactCollection.getCrestUrl(clientInfo), e);
         }
     }
 
@@ -532,22 +532,22 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public ContactList getContactList(CrestClientInfo clientInfo) throws SourceFailureException
+    public ContactCollection getContactList(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        CacheData data = cache.get(ContactList.getCrestUrl(clientInfo));
+        CacheData data = cache.get(ContactCollection.getCrestUrl(clientInfo));
         if (data != null)
         {
             data.data.accessed();
-            return (ContactList) data.data;
+            return (ContactCollection) data.data;
         }
         try
         {
-            ContactList list = (ContactList) ContactList.getFuture(clientInfo, callback).get();
+            ContactCollection list = (ContactCollection) ContactCollection.getFuture(clientInfo, callback).get();
             list.accessed();
             return list;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactList.getCrestUrl(clientInfo), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactCollection.getCrestUrl(clientInfo), e);
         }
     }
 
