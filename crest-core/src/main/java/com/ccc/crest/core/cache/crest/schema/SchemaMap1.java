@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,80 +28,147 @@ import org.slf4j.LoggerFactory;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.BaseEveData.VersionType;
 import com.ccc.crest.core.cache.DataCache;
-import com.ccc.crest.core.cache.EveJsonData;
+import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.SourceFailureException;
+import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
+import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
+import com.ccc.crest.core.cache.crest.character.RaceCollection;
+import com.ccc.crest.core.cache.crest.character.TokenDecode;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
-import com.ccc.crest.core.cache.crest.schema.RootEndpoint.Endpoint;
+import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
+import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
+import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
+import com.ccc.crest.core.cache.crest.industry.IndustryFacilityCollection;
+import com.ccc.crest.core.cache.crest.industry.IndustrySystemCollection;
+import com.ccc.crest.core.cache.crest.insurancePrice.InsurancePricesCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemCategoryCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemGroupCollection;
+import com.ccc.crest.core.cache.crest.inventory.ItemTypeCollection;
+import com.ccc.crest.core.cache.crest.map.ConstellationCollection;
+import com.ccc.crest.core.cache.crest.map.RegionCollection;
+import com.ccc.crest.core.cache.crest.map.SystemCollection;
+import com.ccc.crest.core.cache.crest.market.MarketGroupCollection;
+import com.ccc.crest.core.cache.crest.market.MarketTypeCollection;
+import com.ccc.crest.core.cache.crest.market.MarketTypePriceCollection;
+import com.ccc.crest.core.cache.crest.opportunity.OpportunityGroupsCollection;
+import com.ccc.crest.core.cache.crest.opportunity.OpportunityTasksCollection;
 import com.ccc.crest.core.cache.crest.schema.endpoint.CrestEndpoint;
 import com.ccc.crest.core.cache.crest.schema.endpoint.EndpointGroup;
 import com.ccc.crest.core.cache.crest.schema.option.CrestOptions;
 import com.ccc.crest.core.cache.crest.schema.option.Representation;
 import com.ccc.crest.core.cache.crest.schema.option.Representations;
+import com.ccc.crest.core.cache.crest.sovereignty.SovCampaignsCollection;
+import com.ccc.crest.core.cache.crest.sovereignty.SovStructureCollection;
+import com.ccc.crest.core.cache.crest.time.CrestTime;
+import com.ccc.crest.core.cache.crest.tournament.TournamentCollection;
 import com.ccc.crest.core.cache.crest.virtualGoodStore.VirtualGoodStore;
+import com.ccc.crest.core.cache.crest.war.WarsCollection;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.tools.TabToLevel;
 
 @SuppressWarnings("javadoc")
-public class SchemaMap
+public class SchemaMap1
 {
     public static final String CrestOverallVersion = "application/vnd.ccp.eve.Api-v5+json";
-    public static final SchemaMap schemaMap;
+    public static final SchemaMap1 schemaMap;
     static
     {
-        schemaMap = new SchemaMap();
+        schemaMap = new SchemaMap1();
     }
 
-    private final HashMap<String, SchemaMapElement> uidToSchema;
+    private final HashMap<String, SchemaMapElement> classToSchema;
+    private final HashMap<String, SchemaMapElement> nameToSchema;
+    private final HashMap<String, String> groupMap;
     private final Logger log;
-    private final RootEndpoint rootEndpoint;
+    private final HashMap<String, SchemaMapElement> uriToSchema;
 
-    public SchemaMap()
+    public SchemaMap1()
     {
-        uidToSchema = new HashMap<>();
-        rootEndpoint = new RootEndpoint();
+        classToSchema = new HashMap<>();
+        nameToSchema = new HashMap<>();
+        groupMap = new HashMap<>();
+        uriToSchema = new HashMap<>();
         log = LoggerFactory.getLogger(getClass());
         try
         {
+            initializeGroupsMap();
             initializeVersions();
+            initializeEndpoints();
         } catch (Exception e)
         {
             log.warn("Schema initialization failed", e);
         }
     }
     
-    public static void init() throws SourceFailureException
+    public static void init()
     {
         // just need to reference this class and cause it to load
         // nothing to do static initializer will cause everything to setup
-        DataCache cache = ((CrestController) CrestController.getController()).dataCache;
-        Representation rep = cache.getOptions(null).getRepresentations().representations.get(1);
-        if(!rep.acceptType.name.equals("application/"+schemaMap.rootEndpoint.endpoints.root.ruid))
-            schemaMap.log.warn("This framework is currently coded to " + schemaMap.rootEndpoint.endpoints.root.ruid + " CREST is reporting: " + rep.acceptType.name);
     }
     
     private void initializeVersions() throws Exception
     {
-        AtomicInteger level = new AtomicInteger(0);
-        traverse(rootEndpoint.endpoints.root, level);
+        addElement(AllianceCollection.class,            "-v2+json", "/alliances/",              "alliances.href");
+//      addElement(AuthenticationEndpoint.class,        "-v1+json", "/oauth/token/",            "authEndpoint.href");
+        addElement(BloodlineCollection.class,           "-v2+json", "/bloodlines/",             "bloodlines.href");
+        addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
+        addElement(NpcCorporationsCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
+        addElement(CrestOptions.class,                  "-v1+json", "",                         "");
+        addElement(DogmaAttributeCollection.class,      "-v1+json", "/dogma/attributes/",       "dogma.attributes");
+        addElement(DogmaEffectCollection.class,         "-v1+json", "/dogma/effects/",          "dogma.effects");
+        addElement(IncursionCollection.class,           "-v1+json", "/incursions/",             "incursions.href");
+        addElement(IndustryFacilityCollection.class,    "-v1+json", "/industry/facilities/",    "industry.facilities");
+        addElement(IndustrySystemCollection.class,      "-v1+json", "/industry/systems/",       "industry.systems");
+        addElement(InsurancePricesCollection.class,     "-v1+json", "/insuranceprices/",        "insurancePrices.href");
+        addElement(ItemCategoryCollection.class,        "-v1+json", "/inventory/categories/",   "itemCategories.href");
+        addElement(ItemGroupCollection.class,           "-v1+json", "/inventory/groups/",       "itemGroups.href");
+        addElement(ItemTypeCollection.class,            "-v1+json", "/inventory/types/",        "itemTypes.href");
+        addElement(MarketGroupCollection.class,         "-v1+json", "/market/groups/",          "marketGroups.href");
+        addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");
+        addElement(MarketTypeCollection.class,          "-v1+json", "/market/types/",           "marketTypes.href");
+        addElement(NpcCorporationsCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
+        addElement(OpportunityGroupsCollection.class,   "-v1+json", "/opportunities/groups/",   "opportunities.groups");
+        addElement(OpportunityTasksCollection.class,    "-v1+json", "/opportunities/tasks/",    "opportunities.tasks");
+        addElement(RaceCollection.class,                "-v3+json", "/races/",                  "races.href");
+        addElement(RegionCollection.class,              "-v1+json", "/regions/",                "regions.href");
+        addElement(SovCampaignsCollection.class,        "-v1+json", "/sovereignty/campaigns/",  "sovereignty.campaigns");
+        addElement(SovStructureCollection.class,        "-v1+json", "/sovereignty/structures/", "sovereignty.structures");
+        addElement(SystemCollection.class,              "-v1+json", "/solarsystems/",           "systems.href");
+        addElement(CrestTime.class,                          "-v1+json", "/time/",                   "time.href");
+        addElement(TokenDecode.class,                   "-v1+json", "/decode/",                 "decode.href"); // swapped in second representation
+        addElement(TournamentCollection.class,          "-v1+json", "/tournaments/",            "tournaments.href");
+        addElement(VirtualGoodStore.class,              "-v1+json", "/virtualGoodStore/",       "virtualGoodStore.href"); // group: virtualGoodStore href: https://vgs-tq.eveonline.com/ HTTP/1.1 405 Method Not Allowed
+        addElement(WarsCollection.class,                "-v1+json", "/wars/",                   "wars.href");
     }
     
-    private void traverse(RootEndpoint.Endpoint endpoint, AtomicInteger level) throws Exception
+    private void initializeGroupsMap()
     {
-        if(level.get() != 0)
-        {
-            if(endpoint.cuid != null)
-                addElement(endpoint.eveDataClass, endpoint.cuidVersion, endpoint.relative, VersionType.Post);
-            if(endpoint.ruid != null)
-                addElement(endpoint.eveDataClass, endpoint.ruidVersion, endpoint.relative, VersionType.Get);
-            if(endpoint.uuid != null)
-                addElement(endpoint.eveDataClass, endpoint.uuidVersion, endpoint.relative, VersionType.Put);
-            if(endpoint.duid != null)
-                addElement(endpoint.eveDataClass, endpoint.duidVersion, endpoint.relative, VersionType.Delete);
-        }
-        level.incrementAndGet();
-        for (RootEndpoint.Endpoint child : endpoint.children)
-            traverse(child, level);
-        level.decrementAndGet();
+        groupMap.put("alliances", "alliances");
+        groupMap.put("authEndpoint", "authEndpoint");
+        groupMap.put("bloodlines", "bloodlines");
+        groupMap.put("constellations", "constellations");
+        groupMap.put("corporations", "corporations");
+        groupMap.put("decode", "decode");
+        groupMap.put("dogma", "dogma");
+        groupMap.put("incursions", "incursions");
+        groupMap.put("industry", "industry");
+        groupMap.put("insurancePrices", "insurancePrices");
+        groupMap.put("itemCategories", "itemCategories");
+        groupMap.put("itemGroups", "itemGroups");
+        groupMap.put("itemTypes", "itemTypes");
+        groupMap.put("marketGroups", "marketGroups");
+        groupMap.put("marketPrices", "marketPrices");
+        groupMap.put("marketTypes", "marketTypes");
+        groupMap.put("npcCorporations", "npcCorporations");
+        groupMap.put("opportunities", "opportunities");
+        groupMap.put("races", "races");
+        groupMap.put("regions", "regions");
+        groupMap.put("sovereignty", "sovereignty");
+        groupMap.put("systems", "systems");
+        groupMap.put("time", "time");
+        groupMap.put("tournaments", "tournaments");
+        groupMap.put("virtualGoodStore", "virtualGoodStore");
+        groupMap.put("wars", "wars");
     }
 
     private void initializeEndpoints() throws SourceFailureException
@@ -121,7 +187,7 @@ public class SchemaMap
                 checkMap.put(endpoint.uri, endpoint.uri);
 //                constellations.href
                 String key = new StringBuilder().append(group.name).append(".").append(endpoint.name).toString();
-                SchemaMapElement e = uidToSchema.get(key);
+                SchemaMapElement e = uriToSchema.get(key);
                 if(e == null)
                 {
                     if(!"authEndpoint.href".equals(key))
@@ -145,9 +211,17 @@ public class SchemaMap
     
     public SchemaMapElement getSchemaFromVersionBase(String versionBase)
     {
-        synchronized (uidToSchema)
+        synchronized (nameToSchema)
         {
-            return uidToSchema.get(versionBase);
+            return nameToSchema.get(versionBase);
+        }
+    }
+
+    public SchemaMapElement getSchemaFromClass(EveData dataObject)
+    {
+        synchronized (classToSchema)
+        {
+            return classToSchema.get(dataObject.getClass().getName());
         }
     }
 
@@ -170,7 +244,7 @@ public class SchemaMap
         Representation endpointSchema = representations.representations.get(1);
         if (!CrestOptions.getVersion(VersionType.Get).equals(schemaSchema.acceptType.name))
             list.add(schemaSchema.acceptType.name);
-        if (!SchemaMap.CrestOverallVersion.equals(endpointSchema.acceptType.name))
+        if (!SchemaMap1.CrestOverallVersion.equals(endpointSchema.acceptType.name))
             list.add(endpointSchema.acceptType.name);
         
         for (EndpointGroup group : groups)
@@ -187,7 +261,7 @@ public class SchemaMap
             if ("authEndpoint".equals(group.name))
                 continue; // there is no schema on the auth endpoint, just skip it.
 
-            for (Endpoint endpoint : group.getEndpoints())
+            for (CrestEndpoint endpoint : group.getEndpoints())
             {
                 Representations reps = cache.getOptions(endpoint.uri).getRepresentations();
                 int size = reps.representations.size();
@@ -223,14 +297,14 @@ public class SchemaMap
                 base = rep0Version.substring(0, idx);
                 rev = rep0Version.substring(idx);
                 versionBasesSeen.put(base, rev);
-                SchemaMapElement element = uidToSchema.get(base);
+                SchemaMapElement element = nameToSchema.get(base);
                 if (element == null)
                     list.add("a new group: " + group.name + " rev: " + rep0Version + " seems to have been added.");
             }
         }
-        if (uidToSchema.size() != versionBasesSeen.size())
-            list.add("Existing number of version bases: " + uidToSchema.size() + " does not match ccp latest: " + versionBasesSeen.size());
-        for (Entry<String, SchemaMapElement> entry : uidToSchema.entrySet())
+        if (nameToSchema.size() != versionBasesSeen.size())
+            list.add("Existing number of version bases: " + nameToSchema.size() + " does not match ccp latest: " + versionBasesSeen.size());
+        for (Entry<String, SchemaMapElement> entry : nameToSchema.entrySet())
         {
             String version = versionBasesSeen.get(entry.getKey());
             if (version == null)
@@ -251,57 +325,47 @@ public class SchemaMap
         return list;
     }
 
-    private void addElement(Class<? extends EveJsonData> clazz, String version, String uri, VersionType uidType) throws Exception
+    private void addElement(Class<? extends EveData> clazz, String version, String uri, String key) throws Exception
     {
-try
-{
-        Field field = null;
-        switch(uidType)
-        {
-            case Delete:
-                field = clazz.getDeclaredField("DeleteBase");
-                break;
-            case Get:
-                field = clazz.getDeclaredField("GetBase");
-                break;
-            case Post:
-                field = clazz.getDeclaredField("PostBase");
-                break;
-            case Put:
-                field = clazz.getDeclaredField("PutBase");
-                break;
-            default:
-                break;
-        }
-        String uid = (String) field.get(clazz);
-        SchemaMapElement element = new SchemaMapElement(clazz.getName(), uid, version, uri, uidType);
-        uidToSchema.put(element.uid, element);
-}catch(Exception e)
-{
-    log.info("look here");
-}
+        Field field = clazz.getDeclaredField("GetBase");
+        String applicationName = (String) field.get(clazz);
+        SchemaMapElement element = new SchemaMapElement(clazz.getName(), applicationName, version, uri, key);
+        classToSchema.put(element.clazz, element);
+        nameToSchema.put(element.applicationName, element);
+        uriToSchema.put(element.key, element);
     }
 
     public class SchemaMapElement
     {
         public final String clazz;
-        public final String uid;
-        public final VersionType uidType;
+        public final String applicationName;
         public final String currentVersion;
         private String currentUri;
+        private String key;
 
-        public SchemaMapElement(String clazz, String applicationName, String version, String uri, VersionType uidType)
+        public SchemaMapElement(String clazz, String applicationName, String version, String uri, String key)
         {
             this.clazz = clazz;
-            this.uid = applicationName;
+            this.applicationName = applicationName;
             this.currentVersion = version;
             this.currentUri = uri;
-            this.uidType = uidType;
+            this.key = key;
         }
 
         public String getVersion()
         {
-            return uid + currentVersion;
+            return applicationName + currentVersion;
+        }
+        
+        public synchronized String getKey()
+        {
+            return key;
+            
+        }
+        
+        public synchronized void setKey(String key)
+        {
+            this.key = key;
         }
         
         public synchronized String getUri()
@@ -326,9 +390,10 @@ try
         public TabToLevel toString(TabToLevel format)
         {
             format.ttl("clazz: ", clazz);
-            format.ttl("applicationName: ", uid);
+            format.ttl("applicationName: ", applicationName);
             format.ttl("currentVersion: ", currentVersion);
             format.ttl("currentUri: ", currentUri);
+            format.ttl("key: ", key);
             return format;
         }
     }

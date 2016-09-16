@@ -19,12 +19,12 @@ package com.ccc.crest.core.cache.crest.schema.endpoint;
 import com.ccc.tools.TabToLevel;
 
 @SuppressWarnings("javadoc")
-public class Endpoint
+public class CrestEndpoint
 {
     public final String name;
     public final String uri;
 
-    public Endpoint(String name, String url)
+    public CrestEndpoint(String name, String url)
     {
         this.name = name;
         this.uri = url;

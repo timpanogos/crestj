@@ -38,7 +38,10 @@ public class TournamentSeries extends BaseEveData implements JsonDeserializer<To
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
-    public static final String VersionBase = "application/vnd.ccp.eve.TournamentSeries";
+    public static final String PostBase = null;
+    public static final String GetBase = "application/vnd.ccp.eve.TournamentSeries";
+    public static final String PutBase = null;
+    public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
@@ -55,19 +58,31 @@ public class TournamentSeries extends BaseEveData implements JsonDeserializer<To
         return series;
     }
 
-    public static String getVersion()
+    public static String getVersion(VersionType type)
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getVersion();
+        switch(type)
+        {
+            case Delete:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(DeleteBase).getVersion();
+            case Get:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getVersion();
+            case Post:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PostBase).getVersion();
+            case Put:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PutBase).getVersion();
+            default:
+                return null;
+        }
     }
-
-    public static String getUrl()
+    
+    public static String getCrestUrl()
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
+        return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
     }
 
     public static Future<EveData> getFuture(long tournamentId, CrestResponseCallback callback) throws Exception
     {
-        String url = getUrl();
+        String url = getCrestUrl();
         url += tournamentId + "/series/";
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(TournamentSeries.class, new TournamentSeries());
@@ -76,7 +91,7 @@ public class TournamentSeries extends BaseEveData implements JsonDeserializer<To
                         null, url,
                         gson.create(), null, TournamentSeries.class,
                         callback,
-                        ReadScope, getVersion(), continueRefresh, false);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }

@@ -914,7 +914,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
 
     public TournamentSeriesCollection getTournamentSeries(long tournamentId) throws SourceFailureException
     {
-        String url = TournamentSeriesCollection.getUrl();
+        String url = TournamentSeriesCollection.getCrestUrl();
         url += tournamentId + "/";
         CacheData data = cache.get(url);
         if (data != null)
@@ -929,13 +929,13 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentSeriesCollection.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentSeriesCollection.getCrestUrl(), e);
         }
     }
 
     public TournamentMatchCollection getTournamentMatches(long tournamentId) throws SourceFailureException
     {
-        String url = TournamentMatchCollection.getUrl();
+        String url = TournamentMatchCollection.getCrestUrl();
         url += tournamentId + "/";
         CacheData data = cache.get(url);
         if (data != null)
@@ -950,7 +950,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             return value;
         }catch(Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentMatchCollection.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentMatchCollection.getCrestUrl(), e);
         }
     }
 

@@ -25,7 +25,7 @@ import com.ccc.tools.TabToLevel;
 public class EndpointGroup
 {
     public final String name;
-    private final List<Endpoint> endpoints;
+    private final List<CrestEndpoint> endpoints;
 
     public EndpointGroup(String name)
     {
@@ -33,7 +33,7 @@ public class EndpointGroup
         endpoints = new ArrayList<>();
     }
     
-    public void addEndpoint(Endpoint endpoint)
+    public void addEndpoint(CrestEndpoint endpoint)
     {
         synchronized (endpoints)
         {
@@ -41,7 +41,7 @@ public class EndpointGroup
         }
     }
     
-    public List<Endpoint> getEndpoints()
+    public List<CrestEndpoint> getEndpoints()
     {
         synchronized (endpoints)
         {
@@ -60,7 +60,7 @@ public class EndpointGroup
     {
         format.ttl("name: ", name);
         format.inc();
-        for(Endpoint endpoint : endpoints)
+        for(CrestEndpoint endpoint : endpoints)
             endpoint.toString(format);
         format.dec();
         return format;

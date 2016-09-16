@@ -30,6 +30,7 @@ import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.crest.schema.SchemaMap;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.tools.TabToLevel;
@@ -45,7 +46,10 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
 {
     private static final long serialVersionUID = -7096257178892270648L;
 
-    private static final String Version = "application/vnd.ccp.eve.Api-v5+json";
+    public static final String PostBase = null;
+    public static final String GetBase = "application/vnd.ccp.eve.Api";
+    public static final String PutBase = null;
+    public static final String DeleteBase = null;
 
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
@@ -71,6 +75,23 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
         return new ArrayList<>(callGroups);
     }
 
+    public static String getVersion(VersionType type)
+    {
+        switch(type)
+        {
+            case Delete:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(DeleteBase).getVersion();
+            case Get:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getVersion();
+            case Post:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PostBase).getVersion();
+            case Put:
+                return SchemaMap.schemaMap.getSchemaFromVersionBase(PutBase).getVersion();
+            default:
+                return null;
+        }
+    }
+    
     public static String getCrestUrl()
     {
         return CrestClient.getCrestBaseUri();
@@ -85,7 +106,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
                     null, getCrestUrl(),
                     gson.create(), null, EndpointCollection.class,
                     callback,
-                    ReadScope, Version, continueRefresh, false);
+                    ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
@@ -166,7 +187,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
                     Entry<String, JsonElement> groupChildEntry = groupChildIter.next();
                     String groupChildKey = groupChildEntry.getKey();
                     JsonElement groupChildElement = groupChildEntry.getValue();
-                    endpointGroup.addEndpoint(new Endpoint(endpointName, groupChildElement.getAsString()));
+                    endpointGroup.addEndpoint(new CrestEndpoint(endpointName, groupChildElement.getAsString()));
                     continue;
                 }
                 // expect an object with href in it
@@ -175,7 +196,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
                     log.warn("expected a primitive after group: " + groupName + " = " + hrefElement.toString());
                     continue;
                 }
-                endpointGroup.addEndpoint(new Endpoint(endpointName, hrefElement.getAsString()));
+                endpointGroup.addEndpoint(new CrestEndpoint(endpointName, hrefElement.getAsString()));
                 break;
             } while (true);
         } while (true);
