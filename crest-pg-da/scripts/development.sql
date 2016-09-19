@@ -2,12 +2,15 @@
 select * from capsuleer;
 select * from entity;
 select * from sharedrights;
+select * from alliances
+select * from alliance
 
 select * from entity where isgroup=true;
 insert into entity (name, isgroup) values('aa', true);
 
 truncate entity;
 
+truncate alliance;
 truncate accessgroup;
 truncate capsuleer cascade;
 delete from entity where entitypk=202;

@@ -84,7 +84,7 @@ public class ContactCollection extends BaseEveData
         }
     }
 
-    public static String getCrestUrl(CrestClientInfo clientInfo)
+    public static String getUrl(CrestClientInfo clientInfo)
     {
         StringBuilder url = new StringBuilder();
         //@formatter:off
@@ -103,7 +103,7 @@ public class ContactCollection extends BaseEveData
         Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        clientInfo, getCrestUrl(clientInfo),
+                        clientInfo, getUrl(clientInfo),
                         gson, null, ContactCollection.class,
                         callback, ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
@@ -116,7 +116,7 @@ public class ContactCollection extends BaseEveData
         Gson gson = new GsonBuilder().registerTypeAdapter(Logo.class, new LogoDeserializer()).create();
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        clientInfo, getCrestUrl(clientInfo),
+                        clientInfo, getUrl(clientInfo),
                         gson, null, ContactCollection.class,
                         callback, ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
@@ -127,7 +127,7 @@ public class ContactCollection extends BaseEveData
     {
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        clientInfo, getCrestUrl(clientInfo),
+                        clientInfo, getUrl(clientInfo),
                         null, null, ContactCollection.class,
                         callback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh);

@@ -92,7 +92,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
         }
     }
     
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return CrestClient.getCrestBaseUri();
     }
@@ -103,7 +103,7 @@ public class EndpointCollection extends BaseEveData implements JsonDeserializer<
         gson.registerTypeAdapter(EndpointCollection.class, new EndpointCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                    null, getCrestUrl(),
+                    null, getUrl(),
                     gson.create(), null, EndpointCollection.class,
                     callback,
                     ReadScope, getVersion(VersionType.Get), continueRefresh, false);

@@ -362,16 +362,19 @@ public class CrestClient
                     data = new EveApiSaxHandler().getData(body, (BaseEveData)rdata.eveJsonData);
                 data.init();
                 if (rdata.continueRefresh.get())
-                    synchronized (refreshQueue)
+                {
+                    if(!rdata.url.contains("?page="))
                     {
-                        log.debug(rdata.url + " nextRefresh: " + cacheTime.get() + " seconds");
-                        long time = System.currentTimeMillis() + cacheTime.get() * 1000;
-                        //                        if(rdata.url.equals(Time.getCrestUrl()) || rdata.url.equals(ServerStatus.getXmlUrl()))
-                        //                            time = 2000; //TODO: make this health check refresh configurable
-                        rdata.setNextRefresh(time);
-                        data.setNextRefresh(time);
-                        refreshQueue.add(rdata);
+                        synchronized (refreshQueue)
+                        {
+                            log.debug(rdata.url + " nextRefresh: " + cacheTime.get() + " seconds");
+                            long time = System.currentTimeMillis() + cacheTime.get() * 1000;
+                            rdata.setNextRefresh(time);
+                            data.setNextRefresh(time);
+                            refreshQueue.add(rdata);
+                        }
                     }
+                }
                 else
                     data.setNextRefresh(0);
 

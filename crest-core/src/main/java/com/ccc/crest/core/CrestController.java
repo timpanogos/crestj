@@ -117,6 +117,11 @@ public class CrestController extends CoreController implements AuthEventListener
         commsLatch = new CommsLatch();
     }
 
+    public CrestDataAccessor getDataAccessor()
+    {
+        return (CrestDataAccessor) dataAccessor;
+    }
+    
     public boolean isCrestUp()
     {
         return commsLatch.isCrestUp();
@@ -645,10 +650,9 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 
                 
 //                dumpSchema();
-                log.info("Host: " + CrestClient.getCrestBaseUri());
-                RootEndpoint root = new RootEndpoint();
-                root.dumpTree(new File("/tmp/crestj"));
-                dataCache.getTournamentCollection();
+                dataCache.getAllianceCollection(0);
+                for(int i=1; i < 13; i++)
+                    dataCache.getAllianceCollection(i).getAlliances().toString();
                 dataCache.getTournament(9);
                 dataCache.getTournamentSeries(9);
                 Matches matches = dataCache.getTournamentMatches(9).getMatches();
@@ -680,9 +684,13 @@ authenticatedTest((CrestClientInfo)clientInfo);
     }
     
     //TODO: clean this up
-    private void dumpSchema() throws SourceFailureException
+    private void dumpSchema() throws Exception
     {
         String urlBase = CrestClient.getCrestBaseUri();
+        
+        log.info("Host: " + CrestClient.getCrestBaseUri());
+        RootEndpoint root = new RootEndpoint();
+        root.dumpTree(new File("/tmp/crestj"));
         
         try{dataCache.getOptions(null);}catch(Exception e){log.error("failed:", e);}
 //        https://crest-tq.eveonline.com/characters/1364371482/contacts/

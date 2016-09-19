@@ -22,7 +22,6 @@ import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
-import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
@@ -50,6 +49,7 @@ import com.ccc.crest.core.cache.crest.war.WarsCollection;
 @SuppressWarnings("javadoc")
 public interface CrestInterfaces
 {
+    public AllianceCollection getAllianceCollection(int page) throws SourceFailureException;
     public AllianceCollection getAllianceCollection() throws SourceFailureException;
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;

@@ -75,14 +75,14 @@ public class TournamentSeries extends BaseEveData implements JsonDeserializer<To
         }
     }
     
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
     }
 
     public static Future<EveData> getFuture(long tournamentId, CrestResponseCallback callback) throws Exception
     {
-        String url = getCrestUrl();
+        String url = getUrl();
         url += tournamentId + "/series/";
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(TournamentSeries.class, new TournamentSeries());

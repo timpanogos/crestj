@@ -76,7 +76,7 @@ public class TournamentMatchCollection extends BaseEveData implements JsonDeseri
         }
     }
 
-    public static String getCrestUrl()
+    public static String getUrl()
     {
 
         return SchemaMap.schemaMap.getSchemaFromVersionBase(VersionBase).getUri();
@@ -84,7 +84,7 @@ public class TournamentMatchCollection extends BaseEveData implements JsonDeseri
 
     public static Future<EveData> getFuture(long tournamentId, CrestResponseCallback callback) throws Exception
     {
-        String url = getCrestUrl();
+        String url = getUrl();
         url += tournamentId + "/matches/";
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(TournamentMatchCollection.class, new TournamentMatchCollection());

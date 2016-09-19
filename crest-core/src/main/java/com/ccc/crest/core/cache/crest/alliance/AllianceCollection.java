@@ -19,6 +19,8 @@ package com.ccc.crest.core.cache.crest.alliance;
 import java.lang.reflect.Type;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.ScopeToMask;
@@ -36,6 +38,8 @@ import com.google.gson.JsonParseException;
 @SuppressWarnings("javadoc")
 public class AllianceCollection extends BaseEveData implements JsonDeserializer<AllianceCollection>
 {
+    public static int longestShort = 0;
+    public static int longestName = 0;
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
@@ -47,12 +51,39 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
+    public static final AllianceCollection allianceCollection;
+    static
+    {
+        allianceCollection = new AllianceCollection();
+    }
+    
+    private volatile int currentPage;
+    private final AtomicLong totalAlliances;
+    private final AtomicInteger countPerPage;
     private volatile Alliances alliances;
 
-    public AllianceCollection()
+    private AllianceCollection()
     {
+//        alliances = new ArrayList<>();
+        totalAlliances = new AtomicLong();
+        countPerPage = new AtomicInteger();
     }
-
+    
+    public static void setAlliances(Alliances alliances)
+    {
+        allianceCollection.alliances = alliances;
+    }
+    
+    @Override
+    public void init()
+    {
+        synchronized (allianceCollection)
+        {
+            allianceCollection.alliances.alliances.size();
+        }
+//        totalAlliances.set(alliances.get(0).totalCount);
+    }
+    
     public Alliances getAlliances()
     {
         return alliances;
@@ -75,21 +106,26 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
         }
     }
 
-    public static String getCrestUrl()
+    public static String getUrl(int page)
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
+        StringBuilder sb = new StringBuilder(SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri());
+        if(page != 0)
+            sb.append("?page=").append(page);
+//        ?page=2
+        return sb.toString();
     }
 
-    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(int page, CrestResponseCallback callback) throws Exception
     {
+        allianceCollection.currentPage = page;
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(AllianceCollection.class, new AllianceCollection());
+        gson.registerTypeAdapter(AllianceCollection.class, allianceCollection);
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getCrestUrl(),
+                        null, getUrl(page),
                         gson.create(), null, AllianceCollection.class,
                         callback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }

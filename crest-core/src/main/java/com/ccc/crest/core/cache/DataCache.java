@@ -16,16 +16,22 @@
 */
 package com.ccc.crest.core.cache;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
+import com.ccc.crest.core.cache.crest.alliance.Alliance;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
+import com.ccc.crest.core.cache.crest.alliance.Alliances;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.ContactCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
-import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
@@ -103,18 +109,23 @@ import com.ccc.crest.core.cache.xmlapi.server.ServerStatus;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
+import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.AlliancesData;
+import com.ccc.crest.da.CrestDataAccessor;
 
 @SuppressWarnings("javadoc")
 public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces, ServerInterfaces, SchemaInterfaces
 {
     private final HashMap<String, CacheData> cache;
-    private final DataCacheCallback callback;
+    private final DataCacheCallback cacheCallback;
+    private final DbPagingCallback dbCallback;
     private final CrestController controller;
 
     public DataCache(CrestController controller)
     {
         cache = new HashMap<>();
-        callback = new DataCacheCallback();
+        cacheCallback = new DataCacheCallback();
+        dbCallback = new DbPagingCallback();
         this.controller = controller;
     }
 
@@ -202,12 +213,12 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ContactCollection list = (ContactCollection) ContactCollection.getFuture(clientInfo, callback).get();
+            ContactCollection list = (ContactCollection) ContactCollection.getFuture(clientInfo, cacheCallback).get();
             list.accessed();
             return list;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactCollection.getCrestUrl(clientInfo), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactCollection.getUrl(clientInfo), e);
         }
     }
 
@@ -414,7 +425,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ApiCallList apiCallList = (ApiCallList) ApiCallList.getCallList(callback).get();
+            ApiCallList apiCallList = (ApiCallList) ApiCallList.getCallList(cacheCallback).get();
             apiCallList.accessed();
             return apiCallList;
         } catch (Exception e)
@@ -435,7 +446,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public AllianceList getAllianceList(CrestClientInfo clientInfo) throws SourceFailureException
+    public AllianceList getAllianceCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
         throw new SourceFailureException("not implemented yet");
     }
@@ -457,7 +468,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ServerStatus status = (ServerStatus) ServerStatus.getServerStatus(callback).get();
+            ServerStatus status = (ServerStatus) ServerStatus.getServerStatus(cacheCallback).get();
             status.accessed();
             return status;
         } catch (Exception e)
@@ -468,9 +479,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
     }
 
-/* ****************************************************************************
- * Crest endpoints from here on down.
-******************************************************************************/
+    /*
+     * *************************************************************************
+     * *** Crest endpoints from here on down.
+     ******************************************************************************/
 
     @Override
     public EndpointCollection getEndpointCollection() throws SourceFailureException
@@ -484,7 +496,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         {
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + EndpointCollection.getCrestUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + EndpointCollection.getUrl(), e);
         }
     }
 
@@ -505,7 +517,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         {
             CommsEventListener.Type type = CommsEventListener.Type.XmlDown;
             controller.fireCommunicationEvent(null, type);
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + CrestOptions.getCrestUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + CrestOptions.getUrl(), e);
         }
     }
 
@@ -520,7 +532,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            CrestTime time = (CrestTime) CrestTime.getFuture(callback).get();
+            CrestTime time = (CrestTime) CrestTime.getFuture(cacheCallback).get();
             time.accessed();
             return time;
         } catch (Exception e)
@@ -534,7 +546,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     @Override
     public ContactCollection getContactList(CrestClientInfo clientInfo) throws SourceFailureException
     {
-        CacheData data = cache.get(ContactCollection.getCrestUrl(clientInfo));
+        CacheData data = cache.get(ContactCollection.getUrl(clientInfo));
         if (data != null)
         {
             data.data.accessed();
@@ -542,12 +554,12 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ContactCollection list = (ContactCollection) ContactCollection.getFuture(clientInfo, callback).get();
+            ContactCollection list = (ContactCollection) ContactCollection.getFuture(clientInfo, cacheCallback).get();
             list.accessed();
             return list;
-        }catch(Exception e)
+        } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactCollection.getCrestUrl(clientInfo), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + ContactCollection.getUrl(clientInfo), e);
         }
     }
 
@@ -562,10 +574,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ConstellationCollection value = (ConstellationCollection) ConstellationCollection.getFuture(callback).get();
+            ConstellationCollection value = (ConstellationCollection) ConstellationCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + ConstellationCollection.getUrl(), e);
         }
@@ -582,10 +594,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ItemGroupCollection value = (ItemGroupCollection) ItemGroupCollection.getFuture(callback).get();
+            ItemGroupCollection value = (ItemGroupCollection) ItemGroupCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemGroupCollection.getUrl(), e);
         }
@@ -602,10 +614,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(callback).get();
+            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationsCollection.getUrl(), e);
         }
@@ -614,20 +626,38 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     @Override
     public AllianceCollection getAllianceCollection() throws SourceFailureException
     {
-        CacheData data = cache.get(AllianceCollection.getCrestUrl());
-        if (data != null)
+        return getAllianceCollection(1);
+    }
+
+    @Override
+    public AllianceCollection getAllianceCollection(int page) throws SourceFailureException
+    {
+        if(page != 0)
         {
-            data.data.accessed();
-            return (AllianceCollection) data.data;
-        }
+            try
+            {
+                CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
+                List<AllianceData> list = da.getAlliances(page);
+                if(list.size() > 0)
+                {
+                    AlliancesData alliances = da.getAlliances();
+                    Alliances a = new Alliances(alliances, list);
+                    AllianceCollection.setAlliances(a);
+                    return AllianceCollection.allianceCollection;
+                }
+            }catch(Exception e)
+            {
+                throw new SourceFailureException("data access failure", e);
+            }
+        }        
         try
         {
-            AllianceCollection epdata = (AllianceCollection) AllianceCollection.getFuture(callback).get();
+            AllianceCollection epdata = (AllianceCollection) AllianceCollection.getFuture(page, dbCallback).get();
             epdata.accessed();
             return epdata;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + AllianceCollection.getCrestUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + AllianceCollection.getUrl(page), e);
         }
     }
 
@@ -642,10 +672,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ItemTypeCollection value = (ItemTypeCollection) ItemTypeCollection.getFuture(callback).get();
+            ItemTypeCollection value = (ItemTypeCollection) ItemTypeCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemTypeCollection.getUrl(), e);
         }
@@ -662,10 +692,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            TokenDecode value = (TokenDecode) TokenDecode.getFuture(callback).get();
+            TokenDecode value = (TokenDecode) TokenDecode.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + TokenDecode.getUrl(), e);
         }
@@ -682,10 +712,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            MarketTypePriceCollection value = (MarketTypePriceCollection) MarketTypePriceCollection.getFuture(callback).get();
+            MarketTypePriceCollection value = (MarketTypePriceCollection) MarketTypePriceCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + MarketTypePriceCollection.getUrl(), e);
         }
@@ -702,10 +732,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            OpportunityTasksCollection value = (OpportunityTasksCollection) OpportunityTasksCollection.getFuture(callback).get();
+            OpportunityTasksCollection value = (OpportunityTasksCollection) OpportunityTasksCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + OpportunityTasksCollection.getUrl(), e);
         }
@@ -722,10 +752,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            OpportunityGroupsCollection value = (OpportunityGroupsCollection) OpportunityGroupsCollection.getFuture(callback).get();
+            OpportunityGroupsCollection value = (OpportunityGroupsCollection) OpportunityGroupsCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + OpportunityGroupsCollection.getUrl(), e);
         }
@@ -742,10 +772,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            ItemCategoryCollection value = (ItemCategoryCollection) ItemCategoryCollection.getFuture(callback).get();
+            ItemCategoryCollection value = (ItemCategoryCollection) ItemCategoryCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemCategoryCollection.getUrl(), e);
         }
@@ -762,10 +792,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            RegionCollection value = (RegionCollection) RegionCollection.getFuture(callback).get();
+            RegionCollection value = (RegionCollection) RegionCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + RegionCollection.getUrl(), e);
         }
@@ -782,10 +812,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            BloodlineCollection value = (BloodlineCollection) BloodlineCollection.getFuture(callback).get();
+            BloodlineCollection value = (BloodlineCollection) BloodlineCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + BloodlineCollection.getUrl(), e);
         }
@@ -802,10 +832,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            MarketGroupCollection value = (MarketGroupCollection) MarketGroupCollection.getFuture(callback).get();
+            MarketGroupCollection value = (MarketGroupCollection) MarketGroupCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + MarketGroupCollection.getUrl(), e);
         }
@@ -822,10 +852,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            SystemCollection value = (SystemCollection) SystemCollection.getFuture(callback).get();
+            SystemCollection value = (SystemCollection) SystemCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + SystemCollection.getUrl(), e);
         }
@@ -842,10 +872,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            SovCampaignsCollection value = (SovCampaignsCollection) SovCampaignsCollection.getFuture(callback).get();
+            SovCampaignsCollection value = (SovCampaignsCollection) SovCampaignsCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + SovCampaignsCollection.getUrl(), e);
         }
@@ -862,10 +892,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            SovStructureCollection value = (SovStructureCollection) SovStructureCollection.getFuture(callback).get();
+            SovStructureCollection value = (SovStructureCollection) SovStructureCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + SovStructureCollection.getUrl(), e);
         }
@@ -882,10 +912,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            TournamentCollection value = (TournamentCollection) TournamentCollection.getFuture(callback).get();
+            TournamentCollection value = (TournamentCollection) TournamentCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentCollection.getUrl(), e);
         }
@@ -903,10 +933,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            TournamentTournament value = (TournamentTournament) TournamentTournament.getFuture(tournamentId, callback).get();
+            TournamentTournament value = (TournamentTournament) TournamentTournament.getFuture(tournamentId, cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentTournament.getUrl(), e);
         }
@@ -914,7 +944,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
 
     public TournamentSeriesCollection getTournamentSeries(long tournamentId) throws SourceFailureException
     {
-        String url = TournamentSeriesCollection.getCrestUrl();
+        String url = TournamentSeriesCollection.getUrl();
         url += tournamentId + "/";
         CacheData data = cache.get(url);
         if (data != null)
@@ -924,18 +954,18 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            TournamentSeriesCollection value = (TournamentSeriesCollection) TournamentSeriesCollection.getFuture(tournamentId, callback).get();
+            TournamentSeriesCollection value = (TournamentSeriesCollection) TournamentSeriesCollection.getFuture(tournamentId, cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentSeriesCollection.getCrestUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentSeriesCollection.getUrl(), e);
         }
     }
 
     public TournamentMatchCollection getTournamentMatches(long tournamentId) throws SourceFailureException
     {
-        String url = TournamentMatchCollection.getCrestUrl();
+        String url = TournamentMatchCollection.getUrl();
         url += tournamentId + "/";
         CacheData data = cache.get(url);
         if (data != null)
@@ -945,12 +975,12 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            TournamentMatchCollection value = (TournamentMatchCollection) TournamentMatchCollection.getFuture(tournamentId, callback).get();
+            TournamentMatchCollection value = (TournamentMatchCollection) TournamentMatchCollection.getFuture(tournamentId, cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentMatchCollection.getCrestUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + TournamentMatchCollection.getUrl(), e);
         }
     }
 
@@ -965,10 +995,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            VirtualGoodStore value = (VirtualGoodStore) VirtualGoodStore.getFuture(callback).get();
+            VirtualGoodStore value = (VirtualGoodStore) VirtualGoodStore.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + VirtualGoodStore.getUrl(), e);
         }
@@ -985,10 +1015,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            WarsCollection value = (WarsCollection) WarsCollection.getFuture(callback).get();
+            WarsCollection value = (WarsCollection) WarsCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + WarsCollection.getUrl(), e);
         }
@@ -1005,10 +1035,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            IncursionCollection value = (IncursionCollection) IncursionCollection.getFuture(callback).get();
+            IncursionCollection value = (IncursionCollection) IncursionCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + IncursionCollection.getUrl(), e);
         }
@@ -1025,10 +1055,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            DogmaAttributeCollection value = (DogmaAttributeCollection) DogmaAttributeCollection.getFuture(callback).get();
+            DogmaAttributeCollection value = (DogmaAttributeCollection) DogmaAttributeCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + DogmaAttributeCollection.getUrl(), e);
         }
@@ -1045,10 +1075,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            DogmaEffectCollection value = (DogmaEffectCollection) DogmaEffectCollection.getFuture(callback).get();
+            DogmaEffectCollection value = (DogmaEffectCollection) DogmaEffectCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + DogmaEffectCollection.getUrl(), e);
         }
@@ -1065,10 +1095,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            RaceCollection value = (RaceCollection) RaceCollection.getFuture(callback).get();
+            RaceCollection value = (RaceCollection) RaceCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + RaceCollection.getUrl(), e);
         }
@@ -1085,10 +1115,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            InsurancePricesCollection value = (InsurancePricesCollection) InsurancePricesCollection.getFuture(callback).get();
+            InsurancePricesCollection value = (InsurancePricesCollection) InsurancePricesCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + InsurancePricesCollection.getUrl(), e);
         }
@@ -1105,10 +1135,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            IndustryFacilityCollection value = (IndustryFacilityCollection) IndustryFacilityCollection.getFuture(callback).get();
+            IndustryFacilityCollection value = (IndustryFacilityCollection) IndustryFacilityCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + IndustryFacilityCollection.getUrl(), e);
         }
@@ -1125,10 +1155,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            IndustrySystemCollection value = (IndustrySystemCollection) IndustrySystemCollection.getFuture(callback).get();
+            IndustrySystemCollection value = (IndustrySystemCollection) IndustrySystemCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + IndustrySystemCollection.getUrl(), e);
         }
@@ -1145,10 +1175,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(callback).get();
+            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationsCollection.getUrl(), e);
         }
@@ -1165,10 +1195,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
         }
         try
         {
-            MarketTypeCollection value = (MarketTypeCollection) MarketTypeCollection.getFuture(callback).get();
+            MarketTypeCollection value = (MarketTypeCollection) MarketTypeCollection.getFuture(cacheCallback).get();
             value.accessed();
             return value;
-        }catch(Exception e)
+        } catch (Exception e)
         {
             throw new SourceFailureException("Failed to obtain Data from requested url: " + MarketTypeCollection.getUrl(), e);
         }
@@ -1183,6 +1213,69 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             {
                 CacheData previousData = cache.put(requestData.url, new CacheData(data));
                 if (previousData == null || previousData.data.equals(data))
+                    controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
+                controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
+            }
+        }
+    }
+
+    private static AtomicBoolean firstAllianceCollection = new AtomicBoolean(true);
+    private class DbPagingCallback implements CrestResponseCallback
+    {
+        @Override
+        public void received(CrestRequestData requestData, EveData data)
+        {
+            if(data instanceof AllianceCollection)
+            {
+                Alliances alliances = ((AllianceCollection)data).getAlliances();
+                AlliancesData ad = new AlliancesData(alliances.totalCount, alliances.pageCount, alliances.alliances.size());
+                boolean validated = false;
+                try
+                {
+                    validated = CrestController.getCrestController().getDataAccessor().validateAlliances(ad);
+                } catch (Exception e)
+                {
+                    LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to validate the alliances table", e);
+                    return;
+                }
+                try
+                {
+                    int page = 0;
+                    String segment = "?page=";
+                    String base = null;
+                    if(alliances.next != null)
+                    {
+                        int idx = alliances.next.url.indexOf(segment);
+                        base = alliances.next.url;
+                        String value = base.substring(idx + segment.length());
+                        page = Integer.parseInt(value);
+                        --page;
+                        base = base.substring(0,idx);
+                    }else if(alliances.previous != null)
+                    {
+                        int idx = alliances.previous.url.indexOf(segment);
+                        base = alliances.previous.url;
+                        String value = base.substring(idx + segment.length());
+                        page = Integer.parseInt(value);
+                        ++page;
+                        base = base.substring(0,idx);
+                    }else
+                        page = 1;
+                    List<AllianceData> list = new ArrayList<>();
+                    for(Alliance a : alliances.alliances)
+                        list.add(new AllianceData(a.id, a.shortName, a.name, a.allianceUrl, page));
+                    CrestController.getCrestController().getDataAccessor().addAlliances(list);
+                    if(firstAllianceCollection.get())
+                    {
+                        firstAllianceCollection.set(false);
+                        getAllianceCollection(0);
+                    }
+                } catch (Exception e)
+                {
+                    LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to add alliances to alliance table", e);
+                    return;
+                }
+                if (!validated)
                     controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
                 controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
             }

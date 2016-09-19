@@ -42,49 +42,48 @@ public class Alliance implements JsonDeserializer<Alliance>
     {
     }
 
-    private static final String IdStrKey = "id_str";
-    private static final String ShortNameKey = "shortName";
-    private static final String HrefKey = "href";
+    public Alliance(String idStr, String shortName, long id, String name)
+    {
+        this.idStr = idStr;
+        this.shortName = shortName;
+        this.id = id;
+        this.name = name;
+    }
+
     private static final String IdKey = "id";
+    private static final String ShortNameKey = "shortName";
     private static final String NameKey = "name";
+    private static final String HrefKey = "href";
+    private static final String IdStrKey = "id_str";
     
     @Override
     public Alliance deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> classIter = ((JsonObject)json).entrySet().iterator();
-        
-        Entry<String, JsonElement> classEntry = classIter.next();
-        if (!classEntry.getKey().equals(IdStrKey))
-            throw new JsonParseException("Expected: " + IdStrKey + " rec: " + classEntry.getKey());
-        idStr = classEntry.getValue().getAsString();
-        
-        classEntry = classIter.next();
-        if (!classEntry.getKey().equals(ShortNameKey))
-            throw new JsonParseException("Expected: " + ShortNameKey + " rec: " + classEntry.getKey());
-        shortName = classEntry.getValue().getAsString();
-        
-        classEntry = classIter.next();
-        if (!classEntry.getKey().equals(HrefKey))
-            throw new JsonParseException("Expected: " + HrefKey + " rec: " + classEntry.getKey());
-        allianceUrl = classEntry.getValue().getAsString();
-        
-        classEntry = classIter.next();
-        if (!classEntry.getKey().equals(IdKey))
-            throw new JsonParseException("Expected: " + IdKey + " rec: " + classEntry.getKey());
-        id = classEntry.getValue().getAsLong();
-        
-        classEntry = classIter.next();
-        if (!classEntry.getKey().equals(NameKey))
-            throw new JsonParseException("Expected: " + NameKey + " rec: " + classEntry.getKey());
-        name = classEntry.getValue().getAsString();
-        
-        while(classIter.hasNext())
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
         {
-            classEntry = classIter.next();
-            LoggerFactory.getLogger(getClass()).warn(getClass().getSimpleName() + " has a field not currently being handled: \n" + classEntry.toString());
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if (IdStrKey.equals(key))
+                idStr = value.getAsString();
+            else if (ShortNameKey.equals(key))
+                shortName = value.getAsString();
+            else if (HrefKey.equals(key))
+                allianceUrl = value.getAsString();
+            else if (IdKey.equals(key))
+                id = value.getAsLong();
+            else if (NameKey.equals(key))
+                name = value.getAsString();
+            else
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
-        if(!idStr.equals(Long.toString(id)))
-            LoggerFactory.getLogger(getClass()).warn("idStr is not equal to id " + idStr + ", " +id);
+        int sl = shortName.length();
+        int nl = name.length();
+        if(AllianceCollection.longestShort < sl)
+            AllianceCollection.longestShort = sl;
+        if(AllianceCollection.longestName < nl)
+            AllianceCollection.longestName = nl;
         return this;
     }
     
@@ -92,18 +91,19 @@ public class Alliance implements JsonDeserializer<Alliance>
     public String toString()
     {
         TabToLevel format = new TabToLevel();
-        format.ttl(getClass().getSimpleName());
-        format.inc();
         return toString(format).toString();
     }
     
     public TabToLevel toString(TabToLevel format)
     {
-        format.ttl("idStr: ", idStr);
-        format.ttl("shortName: ", shortName);
-        format.ttl("allianceUrl: ", allianceUrl);
+        format.ttl(getClass().getSimpleName());
+        format.inc();
         format.ttl("id: ", id);
+        format.ttl("shortName: ", shortName);
         format.ttl("name: ", name);
+        format.ttl("allianceUrl: ", allianceUrl);
+        format.ttl("idStr: ", idStr);
+        format.dec();
         return format;
     }
 }

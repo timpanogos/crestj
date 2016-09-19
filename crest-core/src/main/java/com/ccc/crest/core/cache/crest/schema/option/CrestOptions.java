@@ -79,7 +79,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
         }
     }
 
-    public static String getCrestUrl()
+    public static String getUrl()
     {
         return CrestClient.getCrestBaseUri();
     }
@@ -87,7 +87,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
     public static Future<EveData> getFuture(String url, boolean doGet, CrestResponseCallback callback) throws Exception
     {
         if(url == null)
-            url = getCrestUrl();
+            url = getUrl();
         GsonBuilder gson = new GsonBuilder();
         gson.registerTypeAdapter(CrestOptions.class, new CrestOptions(doGet));
         //@formatter:off
@@ -95,7 +95,7 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
                         null, url,
                         gson.create(), null, CrestOptions.class,
                         callback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         if(doGet)
             return CrestController.getCrestController().crestClient.getCrest(rdata);

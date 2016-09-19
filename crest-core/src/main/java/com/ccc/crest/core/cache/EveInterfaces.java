@@ -22,5 +22,5 @@ import com.ccc.crest.core.cache.xmlapi.eve.AllianceList;
 @SuppressWarnings("javadoc")
 public interface EveInterfaces
 {
-	public AllianceList getAllianceList(CrestClientInfo clientInfo) throws SourceFailureException;
+	public AllianceList getAllianceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
 }

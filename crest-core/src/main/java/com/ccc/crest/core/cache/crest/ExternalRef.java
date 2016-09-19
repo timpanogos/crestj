@@ -39,12 +39,11 @@ public class ExternalRef implements JsonDeserializer<ExternalRef>
     {
     }
 
-//    public static String getUrl(JsonElement json, Type typeOfT, JsonDeserializationContext context)
-//    {
-//        ExternalRef externalRef = new ExternalRef();
-//        externalRef.deserialize(json, typeOfT, context);
-//        return externalRef.url;
-//    }
+    public ExternalRef(String url, String linkType)
+    {
+        this.url = url;
+        this.linkType = linkType;
+    }
     
     private static final String HrefKey = "href";
     private static final String LinkTypeKey = "linkType";

@@ -24,6 +24,10 @@ import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
+import com.ccc.crest.core.cache.crest.ExternalRef;
+import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.AlliancesData;
+import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -34,17 +38,41 @@ import com.google.gson.JsonParseException;
 @SuppressWarnings("javadoc")
 public class Alliances implements JsonDeserializer<Alliances>
 {
-    public volatile String totalCountStr;
+    public volatile long totalCount;
     public volatile long pageCount;
     public final List<Alliance> alliances;
-    public volatile long totalCount;
-    public volatile String next;
-    public volatile String previous;
+    public volatile ExternalRef next;
+    public volatile ExternalRef previous;
     public volatile String pageCountStr;
+    public volatile String totalCountStr;
     
     public Alliances()
     {
         alliances = new ArrayList<>();
+    }
+
+    public Alliances(AlliancesData alliancesData, List<AllianceData> allianceList)
+    {
+        alliances = new ArrayList<>();
+        this.totalCount = alliancesData.totalAlliances;
+        this.pageCount = alliancesData.pageCount;
+        int page = allianceList.get(0).page;
+        if(page == 1)
+        {
+            previous = null;
+            next = new ExternalRef(AllianceCollection.getUrl(page + 1), null);
+        }
+        else
+        {
+            next = new ExternalRef(AllianceCollection.getUrl(page + 1), null);
+            previous = new ExternalRef(AllianceCollection.getUrl(page - 1), null);
+            if(page * alliancesData.countPerPage >= alliancesData.totalAlliances)
+                next = null;
+        }
+        this.pageCountStr = ""+pageCount;
+        this.totalCountStr = ""+totalCount;
+        for(AllianceData data : allianceList)
+            alliances.add(new Alliance(""+data.id, data.shortName, data.id, data.name));
     }
 
     private static final String TotalCountStringKey = "totalCount_str";
@@ -58,77 +86,84 @@ public class Alliances implements JsonDeserializer<Alliances>
     @Override
     public Alliances deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        String classname = getClass().getSimpleName();
-        String childname = Alliance.class.getSimpleName();
-        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject)json).entrySet().iterator();
-// schema does not show this here        
-        Entry<String, JsonElement> objectEntry = objectIter.next(); 
-        if (!objectEntry.getKey().equals(TotalCountStringKey))
-            throw new JsonParseException("Expected topObj key: " + TotalCountStringKey + " : " + objectEntry.getKey());
-        totalCountStr = objectEntry.getValue().getAsString();
-        
-        objectEntry = objectIter.next(); 
-        if (!objectEntry.getKey().equals(PageCountKey))
-            throw new JsonParseException("Expected topObj key: " + PageCountKey + " : " + objectEntry.getKey());
-        pageCount = objectEntry.getValue().getAsLong();
-        
-        objectEntry = objectIter.next(); 
-        if (!objectEntry.getKey().equals(ItemsKey))
-            throw new JsonParseException("Expected topObj key: " + ItemsKey + " : " + objectEntry.getKey());
-        
-        JsonElement objectElement = objectEntry.getValue();
-        if (!objectElement.isJsonArray())
-            throw new JsonParseException("Expected " + childname + " array received json element " + objectElement.toString());
-        
-        int size = ((JsonArray)objectElement).size();
-        for(int i=0; i < size; i++)
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
         {
-            JsonElement childElement = ((JsonArray)objectElement).get(i);
-            Alliance child = new Alliance();
-            alliances.add(child);
-            child.deserialize(childElement, typeOfT, context);
-        }
-
-// schema mess up        
-//        objectEntry = objectIter.next(); 
-//        if (!objectEntry.getKey().equals(TotalCountKey))
-//            throw new JsonParseException("Expected topObj key: " + TotalCountKey + " : " + objectEntry.getKey());
-//        totalCount = objectEntry.getValue().getAsLong();
-        
-        objectEntry = objectIter.next();
-//        if (objectEntry.getKey().equals(NextKey))
-//            next = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
-//        else if (objectEntry.getKey().equals(PreviousKey))
-//            previous = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
-//        else if (!objectEntry.getKey().equals(TotalCountKey))
-//            throw new JsonParseException("Expected " + TotalCountKey + " array received json element " + objectEntry.toString());
-//        else totalCount = objectEntry.getValue().getAsLong();
-        
-        if(objectIter.hasNext())
-        {
-            objectEntry = objectIter.next();
-//            if (objectEntry.getKey().equals(PreviousKey))
-//                previous = ExternalRef.getUrl(objectEntry.getValue(), typeOfT, context);
-//            else if (!objectEntry.getKey().equals(TotalCountKey))
-//                throw new JsonParseException("Expected " + TotalCountKey + " array received json element " + objectEntry.toString());
-//            else totalCount = objectEntry.getValue().getAsLong();
-        }
-        if(objectIter.hasNext())
-        {
-            objectEntry = objectIter.next();
-            if (objectEntry.getKey().equals(TotalCountKey))
-                totalCount = objectEntry.getValue().getAsLong();
-            else if (!objectEntry.getKey().equals(PageCountStringKey))
-                throw new JsonParseException("Expected " + PageCountStringKey + " array received json element " + objectEntry.toString());
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if (TotalCountStringKey.equals(key))
+                totalCountStr = value.getAsString();
+            else if (PageCountKey.equals(key))
+                pageCount = value.getAsLong();
+            else if (NextKey.equals(key))
+            {
+                next = new ExternalRef();
+                next.deserialize(value, typeOfT, context);
+            }
+            else if (PreviousKey.equals(key))
+            {
+                previous = new ExternalRef();
+                previous.deserialize(value, typeOfT, context);
+            }
+            else if (ItemsKey.equals(key))
+            {
+                JsonElement objectElement = objectEntry.getValue();
+                if (!objectElement.isJsonArray())
+                    throw new JsonParseException("Expected " + ItemsKey + " array received json element " + objectElement.toString());
+                int size = ((JsonArray) objectElement).size();
+                for (int i = 0; i < size; i++)
+                {
+                    JsonElement childElement = ((JsonArray) objectElement).get(i);
+                    Alliance child = new Alliance();
+                    alliances.add(child);
+                    child.deserialize(childElement, typeOfT, context);
+                }
+            }else if (TotalCountKey.equals(key))
+                totalCount = value.getAsLong();
+            else if (PageCountStringKey.equals(key))
+                pageCountStr = value.getAsString();
             else
-                pageCountStr = objectEntry.getValue().getAsString();
-        }        
-        
-        while(objectIter.hasNext())
-        {
-            Entry<String, JsonElement> entry = objectIter.next();
-            LoggerFactory.getLogger(getClass()).warn(classname + " has a field not currently being handled: \n" + entry.toString());
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
         return this;
+    }
+    @Override
+    public String toString()
+    {
+        TabToLevel format = new TabToLevel();
+        return toString(format).toString();
+    }
+    
+    public TabToLevel toString(TabToLevel format)
+    {
+        format.ttl(getClass().getSimpleName());
+        format.inc();
+        format.ttl("totalCount: ", totalCount);
+        format.ttl("pageCount: ", pageCount);
+        format.ttl("next: ");
+        format.inc();
+        if(next == null)
+            format.ttl("null");
+        else
+            next.toString(format);
+        format.dec();
+        format.ttl("previous: ");
+        format.inc();
+        if(previous == null)
+            format.ttl("null");
+        else
+            previous.toString(format);
+        format.dec();
+        format.ttl("alliances: ");
+        format.inc();
+        for(Alliance alliance : alliances)
+            alliance.toString(format);
+        format.dec();
+        format.ttl("pageCountStr: ", pageCountStr);
+        format.ttl("totalCountStr: ", totalCountStr);
+        format.dec();
+        return format;
+        
     }
 }

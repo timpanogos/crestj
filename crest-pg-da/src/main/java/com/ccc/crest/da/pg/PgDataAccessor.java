@@ -16,10 +16,13 @@
 */
 package com.ccc.crest.da.pg;
 
+import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
 
 import com.ccc.crest.da.AccessGroup;
+import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.AlliancesData;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
@@ -180,5 +183,52 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     public List<SharedRight> listSharedRights(String capsuleer) throws Exception
     {
         return SharedRightJdbc.listSharedRights(getConnection(), capsuleer);
+    }
+
+    @Override
+    public boolean validateAlliances(AlliancesData alliances) throws Exception
+    {
+        Connection connection = getConnection();
+        try
+        {
+            AlliancesRow row = AlliancesJdbc.getRow(connection, false);
+            if(row.totalAlliances != alliances.totalAlliances)
+            {    
+                AlliancesJdbc.updateRow(connection, row.totalAlliances, alliances, true);
+                AllianceJdbc.truncate(connection, true);
+                return false;
+            }
+            PgBaseDataAccessor.close(connection, null, null, true);
+            return true;
+        } catch (NotFoundException e)
+        {
+            AlliancesJdbc.insertRow(connection, alliances, true);
+            return true;
+        }
+    }
+
+    @Override
+    public AlliancesData getAlliances() throws Exception
+    {
+        return AlliancesJdbc.getRow(getConnection(), true);
+    }
+
+    @Override
+    public List<AllianceData> getAlliances(int page) throws Exception
+    {
+        return AllianceJdbc.getRows(getConnection(), page, true);
+    }
+
+    @Override
+    public void addAlliances(List<AllianceData> alliances) throws Exception
+    {
+        Connection connection = getConnection();
+        List<AllianceData> list = AllianceJdbc.getRows(getConnection(), alliances.get(0).page, false);
+        if(list.size() == 0)
+        {
+            for(AllianceData data : alliances)
+                AllianceJdbc.insertRow(connection, data, false);
+        }
+        PgBaseDataAccessor.close(connection, null, null, true);
     }
 }
