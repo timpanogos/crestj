@@ -38,8 +38,6 @@ import com.google.gson.JsonParseException;
 @SuppressWarnings("javadoc")
 public class AllianceCollection extends BaseEveData implements JsonDeserializer<AllianceCollection>
 {
-    public static int longestShort = 0;
-    public static int longestName = 0;
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
@@ -56,7 +54,7 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     {
         allianceCollection = new AllianceCollection();
     }
-    
+
     private volatile int currentPage;
     private final AtomicLong totalAlliances;
     private final AtomicInteger countPerPage;
@@ -68,12 +66,12 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
         totalAlliances = new AtomicLong();
         countPerPage = new AtomicInteger();
     }
-    
+
     public static void setAlliances(Alliances alliances)
     {
         allianceCollection.alliances = alliances;
     }
-    
+
     @Override
     public void init()
     {
@@ -83,7 +81,7 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
         }
 //        totalAlliances.set(alliances.get(0).totalCount);
     }
-    
+
     public Alliances getAlliances()
     {
         return alliances;

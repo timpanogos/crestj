@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.alliance;
+package com.ccc.crest.core.cache.crest.corporation;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -30,7 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliance implements JsonDeserializer<Alliance>
+public class Corporation implements JsonDeserializer<Corporation>
 {
     public volatile String idStr;
     public volatile String shortName;
@@ -38,11 +38,11 @@ public class Alliance implements JsonDeserializer<Alliance>
     public volatile long id;
     public volatile String name;
 
-    public Alliance()
+    public Corporation()
     {
     }
 
-    public Alliance(String idStr, String shortName, long id, String name)
+    public Corporation(String idStr, String shortName, long id, String name)
     {
         this.idStr = idStr;
         this.shortName = shortName;
@@ -57,7 +57,7 @@ public class Alliance implements JsonDeserializer<Alliance>
     private static final String IdStrKey = "id_str";
 
     @Override
-    public Alliance deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public Corporation deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
         while (objectIter.hasNext())

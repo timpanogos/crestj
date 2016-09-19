@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.schema.option;
+package com.ccc.crest.core.cache.crest.map;
 
 import java.lang.reflect.Type;
 import java.util.concurrent.Future;
@@ -26,7 +26,6 @@ import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.client.CrestResponseCallback;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -35,31 +34,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestOptions>
+public class Station extends BaseEveData implements JsonDeserializer<Station>
 {
     private static final long serialVersionUID = -2711682230241156568L;
-    private static final AtomicBoolean continueRefresh = new AtomicBoolean(false);
+    private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
-    public static final String GetBase = "application/vnd.ccp.eve.Options";
+    public static final String GetBase = "application/vnd.ccp.eve.Station";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
+    private static final String Uri1 = "";
 
-    public volatile Representations representations;
-    private final boolean doGet;
-
-    public CrestOptions(boolean doGet)
+    public Station()
     {
-        representations = new Representations();
-        this.doGet = doGet;
-    }
-
-    public Representations getRepresentations()
-    {
-        return representations;
     }
 
     public static String getVersion(VersionType type)
@@ -81,34 +71,26 @@ public class CrestOptions extends BaseEveData implements JsonDeserializer<CrestO
 
     public static String getUrl()
     {
-        return CrestClient.getCrestBaseUri();
+        return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
     }
 
-    public static Future<EveData> getFuture(String url, boolean doGet, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
     {
-        if(url == null)
-            url = getUrl();
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(CrestOptions.class, new CrestOptions(doGet));
+        gson.registerTypeAdapter(Station.class, new Station());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, url,
-                        gson.create(), null, CrestOptions.class,
+                        null, getUrl(),
+                        gson.create(), null, Station.class,
                         callback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh);
         //@formatter:on
-        if(doGet)
-            return CrestController.getCrestController().crestClient.getCrest(rdata);
-        return CrestController.getCrestController().crestClient.getOptions(rdata);
+        return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override
-    public CrestOptions deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public Station deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        if(doGet)
-            return this;
-        representations = new Representations();
-        representations.deserialize(json, typeOfT, context);
-        return this;
+        return null;
     }
 }

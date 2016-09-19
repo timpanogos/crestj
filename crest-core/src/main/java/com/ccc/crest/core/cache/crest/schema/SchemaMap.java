@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -30,6 +30,7 @@ import com.ccc.crest.core.cache.EveJsonData;
 import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.crest.schema.option.Representation;
 import com.ccc.crest.core.client.CrestClient;
+import com.ccc.tools.StrH;
 import com.ccc.tools.TabToLevel;
 
 @SuppressWarnings("javadoc")
@@ -59,7 +60,7 @@ public class SchemaMap
             log.warn("Schema initialization failed", e);
         }
     }
-    
+
     public static void init() throws SourceFailureException
     {
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
@@ -71,29 +72,32 @@ public class SchemaMap
             CrestController.getCrestController().fireEndpointDeprecatedEvent(msg);
         }
     }
-    
+
     private void initializeVersions() throws Exception
     {
         AtomicInteger level = new AtomicInteger(0);
-        traverse(rootEndpoint.endpoints.root, level);
+        String path = new String("");
+        traverse(rootEndpoint.endpoints.root, level, path);
     }
-    
-    private void traverse(RootEndpoint.Endpoint endpoint, AtomicInteger level) throws Exception
+
+    private void traverse(RootEndpoint.Endpoint endpoint, AtomicInteger level, String url) throws Exception
     {
+        if(endpoint.relative != null)
+            url = StrH.combinePathSegments(url, endpoint.relative, '/');
         if(level.get() != 0)
         {
             if(endpoint.cuid != null)
-                addElement(endpoint.eveDataClass, endpoint.cuidVersion, endpoint.relative, VersionType.Post);
+                addElement(endpoint.eveDataClass, endpoint.cuidVersion, url.toString(), VersionType.Post);
             if(endpoint.ruid != null)
-                addElement(endpoint.eveDataClass, endpoint.ruidVersion, endpoint.relative, VersionType.Get);
+                addElement(endpoint.eveDataClass, endpoint.ruidVersion, url.toString(), VersionType.Get);
             if(endpoint.uuid != null)
-                addElement(endpoint.eveDataClass, endpoint.uuidVersion, endpoint.relative, VersionType.Put);
+                addElement(endpoint.eveDataClass, endpoint.uuidVersion, url.toString(), VersionType.Put);
             if(endpoint.duid != null)
-                addElement(endpoint.eveDataClass, endpoint.duidVersion, endpoint.relative, VersionType.Delete);
+                addElement(endpoint.eveDataClass, endpoint.duidVersion, url.toString(), VersionType.Delete);
         }
         level.incrementAndGet();
         for (RootEndpoint.Endpoint child : endpoint.children)
-            traverse(child, level);
+            traverse(child, level, url);
         level.decrementAndGet();
     }
 
@@ -152,17 +156,17 @@ public class SchemaMap
         {
             return uid + currentVersion;
         }
-        
+
         public synchronized String getUri()
         {
             return CrestClient.getCrestBaseUri() + currentUri;
         }
-        
+
         public synchronized void setUri(String uri)
         {
             currentUri = uri;
         }
-        
+
         @Override
         public String toString()
         {
@@ -171,7 +175,7 @@ public class SchemaMap
             format.inc();
             return toString(format).toString();
         }
-        
+
         public TabToLevel toString(TabToLevel format)
         {
             format.ttl("clazz: ", clazz);

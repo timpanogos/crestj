@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -53,7 +53,7 @@ public interface CrestInterfaces
     public AllianceCollection getAllianceCollection() throws SourceFailureException;
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public NpcCorporationsCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public NpcCorporationsCollection getCorporationCollection() throws SourceFailureException;
     public DogmaAttributeCollection getDogmaAttributeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public DogmaEffectCollection getDogmaEffectCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public IncursionCollection getIncursionCollection(CrestClientInfo clientInfo) throws SourceFailureException;
@@ -66,7 +66,7 @@ public interface CrestInterfaces
     public MarketGroupCollection getMarketGroupCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public MarketTypeCollection getMarketTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public MarketTypePriceCollection getMarketTypePriceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public NpcCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public NpcCorporationsCollection getNPCCorporationsCollection() throws SourceFailureException;
     public OpportunityGroupsCollection getOpportunityGroupsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public OpportunityTasksCollection getOpportunityTasksCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public RaceCollection getRaceCollection(CrestClientInfo clientInfo) throws SourceFailureException;
@@ -79,5 +79,5 @@ public interface CrestInterfaces
     public TournamentCollection getTournamentCollection() throws SourceFailureException;
     public VirtualGoodStore getVirtualGoodStore(CrestClientInfo clientInfo) throws SourceFailureException;
     public WarsCollection getWarsCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    
+
 }

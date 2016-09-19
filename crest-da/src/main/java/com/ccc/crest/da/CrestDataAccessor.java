@@ -53,7 +53,7 @@ public interface CrestDataAccessor extends DataAccessor
     public List<SharedRight> listSharedRights(String capsuleer) throws Exception;
     
     public List<AllianceData> getAlliances(int page) throws Exception;
-    public AlliancesData getAlliances() throws Exception;
-    public boolean validateAlliances(AlliancesData alliances) throws Exception;
+    public PagingData getAlliances() throws Exception;
+    public boolean validateAlliances(PagingData alliances) throws Exception;
     public void addAlliances(List<AllianceData> alliances) throws Exception;
 }

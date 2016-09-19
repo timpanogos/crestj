@@ -110,7 +110,7 @@ import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.crest.da.AllianceData;
-import com.ccc.crest.da.AlliancesData;
+import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.CrestDataAccessor;
 
 @SuppressWarnings("javadoc")
@@ -604,7 +604,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public NpcCorporationsCollection getCorporationCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public NpcCorporationsCollection getCorporationCollection() throws SourceFailureException
     {
         CacheData data = cache.get(NpcCorporationsCollection.getUrl());
         if (data != null)
@@ -633,14 +633,13 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     public AllianceCollection getAllianceCollection(int page) throws SourceFailureException
     {
         if(page != 0)
-        {
             try
             {
                 CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
                 List<AllianceData> list = da.getAlliances(page);
                 if(list.size() > 0)
                 {
-                    AlliancesData alliances = da.getAlliances();
+                    PagingData alliances = da.getAlliances();
                     Alliances a = new Alliances(alliances, list);
                     AllianceCollection.setAlliances(a);
                     return AllianceCollection.allianceCollection;
@@ -649,7 +648,6 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             {
                 throw new SourceFailureException("data access failure", e);
             }
-        }        
         try
         {
             AllianceCollection epdata = (AllianceCollection) AllianceCollection.getFuture(page, dbCallback).get();
@@ -1165,7 +1163,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public NpcCorporationsCollection getNPCCorporationsCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public NpcCorporationsCollection getNPCCorporationsCollection() throws SourceFailureException
     {
         CacheData data = cache.get(NpcCorporationsCollection.getUrl());
         if (data != null)
@@ -1228,7 +1226,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             if(data instanceof AllianceCollection)
             {
                 Alliances alliances = ((AllianceCollection)data).getAlliances();
-                AlliancesData ad = new AlliancesData(alliances.totalCount, alliances.pageCount, alliances.alliances.size());
+                PagingData ad = new PagingData(alliances.totalCount, alliances.pageCount, alliances.alliances.size());
                 boolean validated = false;
                 try
                 {

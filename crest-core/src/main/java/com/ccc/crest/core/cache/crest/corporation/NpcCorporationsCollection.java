@@ -47,9 +47,17 @@ public class NpcCorporationsCollection extends BaseEveData implements JsonDeseri
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
+    private volatile Corporations corporations;
+
     public NpcCorporationsCollection()
     {
     }
+
+    public Corporations getCorporations()
+    {
+        return corporations;
+    }
+
 
     public static String getVersion(VersionType type)
     {
@@ -82,7 +90,7 @@ public class NpcCorporationsCollection extends BaseEveData implements JsonDeseri
                         null, getUrl(),
                         gson.create(), null, NpcCorporationsCollection.class,
                         callback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
@@ -90,6 +98,8 @@ public class NpcCorporationsCollection extends BaseEveData implements JsonDeseri
     @Override
     public NpcCorporationsCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        return null;
+        corporations = new Corporations();
+        corporations.deserialize(json, typeOfT, context);
+        return this;
     }
 }

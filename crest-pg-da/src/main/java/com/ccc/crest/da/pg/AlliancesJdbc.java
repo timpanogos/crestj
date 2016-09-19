@@ -21,7 +21,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.ccc.crest.da.AlliancesData;
+import com.ccc.crest.da.PagingData;
 import com.ccc.db.NotFoundException;
 import com.ccc.db.postgres.PgBaseDataAccessor;
 
@@ -70,12 +70,12 @@ public class AlliancesJdbc
         }
     }
 
-    public static void insertRow(Connection connection, AlliancesData alliances, boolean close) throws SQLException
+    public static void insertRow(Connection connection, PagingData alliances, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepInsertRow);
         try
         {
-            stmt.setLong(TotalAlliancesIdx, alliances.totalAlliances);
+            stmt.setLong(TotalAlliancesIdx, alliances.total);
             stmt.setLong(PageCountIdx, alliances.pageCount);
             stmt.setInt(CountPerPageIdx, alliances.countPerPage);
             int rows = stmt.executeUpdate();
@@ -87,12 +87,12 @@ public class AlliancesJdbc
         }
     }
 
-    public static void updateRow(Connection connection, long totalAlliances, AlliancesData alliances, boolean close) throws SQLException
+    public static void updateRow(Connection connection, long totalAlliances, PagingData alliances, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepUpdateRow);
         try
         {
-            stmt.setLong(TotalAlliancesIdx, alliances.totalAlliances);
+            stmt.setLong(TotalAlliancesIdx, alliances.total);
             stmt.setLong(PageCountIdx, alliances.pageCount);
             stmt.setInt(CountPerPageIdx, alliances.countPerPage);
             stmt.setLong(CountPerPageIdx + 1, totalAlliances);

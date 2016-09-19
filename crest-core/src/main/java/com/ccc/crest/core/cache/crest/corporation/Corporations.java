@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.alliance;
+package com.ccc.crest.core.cache.crest.corporation;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -36,22 +36,22 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliances implements JsonDeserializer<Alliances>
+public class Corporations implements JsonDeserializer<Corporations>
 {
     public volatile long totalCount;
     public volatile long pageCount;
-    public final List<Alliance> alliances;
+    public final List<Corporation> alliances;
     public volatile ExternalRef next;
     public volatile ExternalRef previous;
     public volatile String pageCountStr;
     public volatile String totalCountStr;
     
-    public Alliances()
+    public Corporations()
     {
         alliances = new ArrayList<>();
     }
 
-    public Alliances(PagingData alliancesData, List<AllianceData> allianceList)
+    public Corporations(PagingData alliancesData, List<AllianceData> allianceList)
     {
         alliances = new ArrayList<>();
         this.totalCount = alliancesData.total;
@@ -72,7 +72,7 @@ public class Alliances implements JsonDeserializer<Alliances>
         this.pageCountStr = ""+pageCount;
         this.totalCountStr = ""+totalCount;
         for(AllianceData data : allianceList)
-            alliances.add(new Alliance(""+data.id, data.shortName, data.id, data.name));
+            alliances.add(new Corporation(""+data.id, data.shortName, data.id, data.name));
     }
 
     private static final String TotalCountStringKey = "totalCount_str";
@@ -84,7 +84,7 @@ public class Alliances implements JsonDeserializer<Alliances>
     private static final String PageCountStringKey = "pageCount_str";
     
     @Override
-    public Alliances deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public Corporations deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
         while (objectIter.hasNext())
@@ -115,7 +115,7 @@ public class Alliances implements JsonDeserializer<Alliances>
                 for (int i = 0; i < size; i++)
                 {
                     JsonElement childElement = ((JsonArray) objectElement).get(i);
-                    Alliance child = new Alliance();
+                    Corporation child = new Corporation();
                     alliances.add(child);
                     child.deserialize(childElement, typeOfT, context);
                 }
@@ -157,7 +157,7 @@ public class Alliances implements JsonDeserializer<Alliances>
         format.dec();
         format.ttl("alliances: ");
         format.inc();
-        for(Alliance alliance : alliances)
+        for(Corporation alliance : alliances)
             alliance.toString(format);
         format.dec();
         format.ttl("pageCountStr: ", pageCountStr);

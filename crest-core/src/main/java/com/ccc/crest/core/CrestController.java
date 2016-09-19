@@ -121,7 +121,7 @@ public class CrestController extends CoreController implements AuthEventListener
     {
         return (CrestDataAccessor) dataAccessor;
     }
-    
+
     public boolean isCrestUp()
     {
         return commsLatch.isCrestUp();
@@ -340,7 +340,7 @@ public class CrestController extends CoreController implements AuthEventListener
                 }
 //FIXME: clean me up
 authenticatedTest((CrestClientInfo)clientInfo);
-                                
+
             } catch (Exception e)
             {
                 log.warn("Database failure getting groups:", e);
@@ -647,12 +647,16 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
 //                dataCache.getContactList(clientInfo);
-                
-                
+
+
 //                dumpSchema();
-                dataCache.getAllianceCollection(0);
-                for(int i=1; i < 13; i++)
-                    dataCache.getAllianceCollection(i).getAlliances().toString();
+//                try{dataCache.getOptions("https://crest-tq.eveonline.com/stations/60000004/");}catch(Exception e){log.error("failed:", e);}
+//                try{dataCache.getOptions("https://crest-tq.eveonline.com/stations/0/");}catch(Exception e){log.error("failed:", e);}
+//                try{
+//                    log.info(dataCache.getOptions(null).representations.toString());
+//                    }catch(Exception e){log.error("failed:", e);}
+                dataCache.getNPCCorporationsCollection();
+
                 dataCache.getTournament(9);
                 dataCache.getTournamentSeries(9);
                 Matches matches = dataCache.getTournamentMatches(9).getMatches();
@@ -682,34 +686,40 @@ authenticatedTest((CrestClientInfo)clientInfo);
     {
         dataCache.getContactList(clientInfo);
     }
-    
+
     //TODO: clean this up
     private void dumpSchema() throws Exception
     {
         String urlBase = CrestClient.getCrestBaseUri();
-        
+
+
+        dataCache.getAllianceCollection(0);
+        for(int i=1; i < 13; i++)
+            dataCache.getAllianceCollection(i).getAlliances().toString();
+
+
         log.info("Host: " + CrestClient.getCrestBaseUri());
         RootEndpoint root = new RootEndpoint();
         root.dumpTree(new File("/tmp/crestj"));
-        
+
         try{dataCache.getOptions(null);}catch(Exception e){log.error("failed:", e);}
 //        https://crest-tq.eveonline.com/characters/1364371482/contacts/
 //        try{dataCache.getOptions(urlBase + "/characters/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/0/");}catch(Exception e){log.error("failed:", e);}
-        
+
 //        try{dataCache.getOptions("https://crest-tq.eveonline.com/characters/0/contacts/");}catch(Exception e){log.error("failed:", e);}
 //        application/vnd.ccp.eve.ContactCollection-v2+json
-        
+
         try{dataCache.getOptions(urlBase + "/characters/0/contacts/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions(urlBase + "/characters/0/fittings/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions(urlBase + "/characters/0/fittings/0/");}catch(Exception e){log.error("failed:", e);}
-        
+
         try{dataCache.getOptions(urlBase + "/characters/0/characterOpportunitiesRead/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions(urlBase + "/characters/0/ui/autopilot/waypoints/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions(urlBase + "/characters/0/location/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions(urlBase + "/characters/0/ui/openwindow/marketdetails/");}catch(Exception e){log.error("failed:", e);}
-        
+
         dataCache.getOptions(urlBase + "/planets/");
         dataCache.getOptions(urlBase + "/planets/", true);
 

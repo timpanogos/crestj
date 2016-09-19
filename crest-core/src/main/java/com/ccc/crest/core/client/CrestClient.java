@@ -89,8 +89,8 @@ public class CrestClient
     {
         log = LoggerFactory.getLogger(getClass());
         this.controller = controller;
-        this.crestUrl = StrH.stripTrailingSeparator(crestUrl);
-        this.xmlUrl = StrH.stripTrailingSeparator(xmlUrl);
+        this.crestUrl = StrH.stripTrailingSeparator(crestUrl, '/');
+        this.xmlUrl = StrH.stripTrailingSeparator(xmlUrl, '/');
         this.userAgent = userAgent;
         refreshQueue = new PriorityQueue<>();
         this.executor = executor;
@@ -157,7 +157,6 @@ public class CrestClient
             do
             {
                 for(ClientElement cliente : from)
-                {
                     if(!cliente.inuse.get())
                     {
                         cliente.inuse.set(true);
@@ -165,7 +164,6 @@ public class CrestClient
                         found = true;
                         break;
                     }
-                }
                 if(found)
                     break;
                 try
@@ -176,11 +174,11 @@ public class CrestClient
                     log.warn("unexpected wakeup", e);
                 }
             }while(true);
-            
+
         }
         return client;
     }
-    
+
     public Future<EveData> getOptions(CrestRequestData requestData)
     {
         ClientElement client = getFreeClient(crestClients);
@@ -335,23 +333,20 @@ public class CrestClient
                 try
                 {
                     body = client.client.execute(get, responseHandler);
-                }finally 
+                }finally
                 {
                     if(rdata.gson != null)
-                    {
                         synchronized (crestClients)
                         {
                             client.inuse.set(false);
                             crestClients.notifyAll();
                         }
-                    }else
-                    {
+                    else
                         synchronized (xmlClients)
                         {
                             client.inuse.set(false);
                             xmlClients.notifyAll();
                         }
-                    }
                 }
                 if(rdata.logJson)
                     log.info("\n" + rdata.url + " returned:\n" + prettyPrintJson(body) + "\n");
@@ -364,7 +359,6 @@ public class CrestClient
                 if (rdata.continueRefresh.get())
                 {
                     if(!rdata.url.contains("?page="))
-                    {
                         synchronized (refreshQueue)
                         {
                             log.debug(rdata.url + " nextRefresh: " + cacheTime.get() + " seconds");
@@ -373,7 +367,6 @@ public class CrestClient
                             data.setNextRefresh(time);
                             refreshQueue.add(rdata);
                         }
-                    }
                 }
                 else
                     data.setNextRefresh(0);

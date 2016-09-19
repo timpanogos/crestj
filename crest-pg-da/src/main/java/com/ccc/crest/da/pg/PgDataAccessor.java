@@ -22,7 +22,7 @@ import java.util.Properties;
 
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.AllianceData;
-import com.ccc.crest.da.AlliancesData;
+import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
@@ -186,15 +186,15 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public boolean validateAlliances(AlliancesData alliances) throws Exception
+    public boolean validateAlliances(PagingData alliances) throws Exception
     {
         Connection connection = getConnection();
         try
         {
             AlliancesRow row = AlliancesJdbc.getRow(connection, false);
-            if(row.totalAlliances != alliances.totalAlliances)
+            if(row.total != alliances.total)
             {    
-                AlliancesJdbc.updateRow(connection, row.totalAlliances, alliances, true);
+                AlliancesJdbc.updateRow(connection, row.total, alliances, true);
                 AllianceJdbc.truncate(connection, true);
                 return false;
             }
@@ -208,7 +208,7 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public AlliancesData getAlliances() throws Exception
+    public PagingData getAlliances() throws Exception
     {
         return AlliancesJdbc.getRow(getConnection(), true);
     }

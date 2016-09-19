@@ -19,10 +19,10 @@ package com.ccc.crest.da.pg;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.ccc.crest.da.AlliancesData;
+import com.ccc.crest.da.PagingData;
 
 @SuppressWarnings("javadoc")
-public class AlliancesRow extends AlliancesData
+public class AlliancesRow extends PagingData
 {
     public AlliancesRow(ResultSet rs) throws SQLException
     {
@@ -47,6 +47,6 @@ public class AlliancesRow extends AlliancesData
     @Override
     public String toString()
     {
-        return "AlliancesRow [totalAlliances=" + totalAlliances + ", pageCount=" + pageCount + ", countPerPage=" + countPerPage + "]";
+        return "AlliancesRow [totalAlliances=" + total + ", pageCount=" + pageCount + ", countPerPage=" + countPerPage + "]";
     }
 }

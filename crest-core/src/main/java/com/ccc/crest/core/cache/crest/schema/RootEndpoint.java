@@ -63,6 +63,7 @@ import com.ccc.crest.core.cache.crest.map.ConstellationCollection;
 import com.ccc.crest.core.cache.crest.map.Planet;
 import com.ccc.crest.core.cache.crest.map.RegionCollection;
 import com.ccc.crest.core.cache.crest.map.Stargate;
+import com.ccc.crest.core.cache.crest.map.Station;
 import com.ccc.crest.core.cache.crest.map.SystemCollection;
 import com.ccc.crest.core.cache.crest.market.MarketGroupCollection;
 import com.ccc.crest.core.cache.crest.market.MarketTypeCollection;
@@ -534,7 +535,7 @@ public class RootEndpoint
                 return uid;
             return uid.substring(idx);
         }
-        
+
         @Override
         public String toString()
         {
@@ -626,7 +627,10 @@ public class RootEndpoint
                                                                         null,                                               rootUrl + "/characters/1364371482/ui/openwindow/marketdetails/", "/ui/openwindow/marketdetails/", DocType.Leaf, MarketDetails.class);
         addChild(                             root, "Constellations",   UidBase + "ConstellationCollection-v1+json",        rootUrl + "/constellations/",                                    "/constellations/", ConstellationCollection.class);
         child = addChild(                     root, "Corporations",     null,                                               rootUrl + "/corporations/",                                      "/corporations/", DocType.PlaceHolder, null);
+        gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/1000004/", NpcCorporationsCollection.class);
+        addChild(                           gchild, "LoyaltyStore",     UidBase + "LoyaltyStoreOffersCollection-v1+json",   rootUrl + "/corporations/1000004/loyaltystore/",                 "/loyaltystore/", NpcCorporationsCollection.class);
         addChild(                            child, "NPCCorporations",  UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/", NpcCorporationsCollection.class);
+
         child = addChild(                     root, "Dogma",            null,                                               rootUrl + "/dogma/",                                             "/dogma/", DocType.PlaceHolder, null);
         addChild(                            child, "Attributes",       UidBase + "DogmaAttributeCollection-v1+json",       rootUrl + "/dogma/attributes/",                                  "/attributes/", DogmaAttributeCollection.class);
         addChild(                            child, "Effects",          UidBase + "DogmaEffectCollection-v1+json",          rootUrl + "/dogma/effects/",                                     "/effects/", DogmaEffectCollection.class);
@@ -669,7 +673,9 @@ public class RootEndpoint
         addChild(                            child, "Campaigns",        UidBase + "SovCampaignsCollection-v1+json",         rootUrl + "/sovereignty/campaigns/",                             "/campaigns/", SovCampaignsCollection.class);
         addChild(                            child, "Structures",       UidBase + "SovStructureCollection-v1+json",         rootUrl + "/sovereignty/structures/",                            "/structures/", SovStructureCollection.class);
         child = addChild(                     root, "Stargates",        null,                                               rootUrl + "/stargates/",                                         "/stargates/", DocType.PlaceHolder, null);
-        addChild(                            child, "Stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                                    "/stargates/0/", Stargate.class);
+        addChild(                            child, "Stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                                    "/3875/", Stargate.class);
+        child = addChild(                     root, "Stations",         null,                                               rootUrl + "/stations/",                                          "/stations/", DocType.PlaceHolder, null);
+        addChild(                            child, "Station",          UidBase + "Station-v1+json",                        rootUrl + "/stations/60000004/",                                 "/60000004/", Station.class);
         addChild(                             root, "Races",            UidBase + "RaceCollection-v3+json",                 rootUrl + "/races/",                                             "/races/", RaceCollection.class);
         addChild(                             root, "Regions",          UidBase + "RegionCollection-v1+json",               rootUrl + "/regions/",                                           "/regions/", RegionCollection.class);
         child = addChild(                     root, "Tournaments",      UidBase + "TournamentCollection-v1+json",           rootUrl + "/tournaments/",                                       "/tournaments/", DocType.Group, TournamentCollection.class);

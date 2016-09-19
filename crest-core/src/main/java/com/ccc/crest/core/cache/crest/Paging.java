@@ -14,17 +14,16 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.alliance;
+package com.ccc.crest.core.cache.crest;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.core.cache.crest.ExternalRef;
+import com.ccc.crest.core.cache.crest.alliance.Alliance;
+import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.da.AllianceData;
 import com.ccc.crest.da.PagingData;
 import com.ccc.tools.TabToLevel;
@@ -36,26 +35,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliances implements JsonDeserializer<Alliances>
+public class Paging implements JsonDeserializer<Paging>
 {
     public volatile long totalCount;
     public volatile long pageCount;
-    public final List<Alliance> alliances;
     public volatile ExternalRef next;
     public volatile ExternalRef previous;
     public volatile String pageCountStr;
     public volatile String totalCountStr;
-    
-    public Alliances()
+    public volatile
+
+    public Paging()
     {
-        alliances = new ArrayList<>();
     }
 
-    public Alliances(PagingData alliancesData, List<AllianceData> allianceList)
+    public Paging(PagingData data)
     {
-        alliances = new ArrayList<>();
-        this.totalCount = alliancesData.total;
-        this.pageCount = alliancesData.pageCount;
+        this.totalCount = data.total;
+        this.pageCount = data.pageCount;
         int page = allianceList.get(0).page;
         if(page == 1)
         {
@@ -66,7 +63,7 @@ public class Alliances implements JsonDeserializer<Alliances>
         {
             next = new ExternalRef(AllianceCollection.getUrl(page + 1), null);
             previous = new ExternalRef(AllianceCollection.getUrl(page - 1), null);
-            if(page * alliancesData.countPerPage >= alliancesData.total)
+            if(page * alliancesData.countPerPage >= alliancesData.totalAlliances)
                 next = null;
         }
         this.pageCountStr = ""+pageCount;
@@ -77,14 +74,14 @@ public class Alliances implements JsonDeserializer<Alliances>
 
     private static final String TotalCountStringKey = "totalCount_str";
     private static final String PageCountKey = "pageCount";
-    private static final String NextKey = "next";           // optional 
+    private static final String NextKey = "next";           // optional
     private static final String PreviousKey = "previous";   // optional
     private static final String ItemsKey = "items";
     private static final String TotalCountKey = "totalCount";
     private static final String PageCountStringKey = "pageCount_str";
-    
+
     @Override
-    public Alliances deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public Paging deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
         while (objectIter.hasNext())
@@ -134,7 +131,7 @@ public class Alliances implements JsonDeserializer<Alliances>
         TabToLevel format = new TabToLevel();
         return toString(format).toString();
     }
-    
+
     public TabToLevel toString(TabToLevel format)
     {
         format.ttl(getClass().getSimpleName());
@@ -164,6 +161,6 @@ public class Alliances implements JsonDeserializer<Alliances>
         format.ttl("totalCountStr: ", totalCountStr);
         format.dec();
         return format;
-        
+
     }
 }
