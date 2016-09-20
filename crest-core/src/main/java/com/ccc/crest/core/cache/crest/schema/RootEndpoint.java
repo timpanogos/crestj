@@ -102,7 +102,7 @@ import ch.qos.logback.core.util.StatusPrinter;
 public class RootEndpoint
 {
     public static final boolean PingOptions = true;
-    public static final boolean PingGets = false;
+    public static final boolean PingGets = true;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
     public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
@@ -113,8 +113,8 @@ public class RootEndpoint
     public static final String DefaultLogPath = "/var/opt/ccc/crestj/log/rootJsonGen.log";
     public static final String LogFilePathKey = "ccc.tools.log-file-path";
     public static final String LogFileBaseKey = "ccc.tools.log-file-base";
-    //    public static final String UidBase = "application/vnd.ccp.eve.";
-    public static final String UidBase = "vnd.ccp.eve.";
+    public static final String UidBase = "application/vnd.ccp.eve.";
+//    public static final String UidBase = "vnd.ccp.eve.";
     public static final String Fixme = "(TBD)";
 
     public volatile Endpoints endpoints;
@@ -227,7 +227,7 @@ public class RootEndpoint
     private void writeLeaf(String parentPath, Endpoint leaf) throws FileNotFoundException
     {
         String[] paths = getLeafPaths(parentPath, leaf);
-        for (int i = 0; i < paths.length; i++)
+        for (int i = 0; i < paths.length; i += 2)
             if (paths[i] != null)
             {
                 String leafStr = leafPage;

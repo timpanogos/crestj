@@ -655,6 +655,12 @@ authenticatedTest((CrestClientInfo)clientInfo);
 //                try{
 //                    log.info(dataCache.getOptions(null).representations.toString());
 //                    }catch(Exception e){log.error("failed:", e);}
+
+                log.info("Host: " + CrestClient.getCrestBaseUri());
+                RootEndpoint root = new RootEndpoint();
+                root.dumpTree(new File("/tmp/crestj"));
+                
+                
                 dataCache.getNPCCorporationsCollection();
 
                 dataCache.getTournament(9);
