@@ -38,7 +38,6 @@ import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.crest.schema.RootEndpoint;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.cache.crest.tournament.Matches;
 import com.ccc.crest.core.client.CrestClient;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
@@ -659,23 +658,11 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 log.info("Host: " + CrestClient.getCrestBaseUri());
                 RootEndpoint root = new RootEndpoint();
                 root.dumpTree(new File("/tmp/crestj"));
-                
-                
+
+
+                dataCache.getAllianceCollection(0);
                 dataCache.getNPCCorporationsCollection();
 
-                dataCache.getTournament(9);
-                dataCache.getTournamentSeries(9);
-                Matches matches = dataCache.getTournamentMatches(9).getMatches();
-                log.info(matches.toString());
-                //                Series series = dataCache.getTournamentSeries(9).getSeries();
-                //                log.info(series.toString());
-                //Series series = dataCache.getTournamentSeries(9).getSeries();
-                //log.info(series.toString());
-                //                EndpointCollection ec = dataCache.getEndpointCollection();
-                //                log.info("\n"+ec.toString());
-                //                series =  dataCache.getTournamentSeries(1);
-                //                log.info("\n"+series.getSeries().toString());
-                dataCache.getTournamentSeries(9);
 
                 //                SchemaMap.schemaMap.checkSchema();
                 dataCache.getTime();

@@ -110,8 +110,8 @@ import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.crest.da.AllianceData;
-import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.CrestDataAccessor;
+import com.ccc.crest.da.PagingData;
 
 @SuppressWarnings("javadoc")
 public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterInterfaces, ApiInterfaces, CorporationInterfaces, EveInterfaces, ServerInterfaces, SchemaInterfaces
@@ -1226,7 +1226,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             if(data instanceof AllianceCollection)
             {
                 Alliances alliances = ((AllianceCollection)data).getAlliances();
-                PagingData ad = new PagingData(alliances.totalCount, alliances.pageCount, alliances.alliances.size());
+                PagingData ad = new PagingData(alliances.totalCount, alliances.pageCount, alliances.alliances.size(), AllianceCollection.GetBase);
                 boolean validated = false;
                 try
                 {
@@ -1261,7 +1261,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
                         page = 1;
                     List<AllianceData> list = new ArrayList<>();
                     for(Alliance a : alliances.alliances)
-                        list.add(new AllianceData(a.id, a.shortName, a.name, a.allianceUrl, page));
+                        list.add(new AllianceData(a.id, a.shortName, a.name, a.allianceUrl.url, page));
                     CrestController.getCrestController().getDataAccessor().addAlliances(list);
                     if(firstAllianceCollection.get())
                     {

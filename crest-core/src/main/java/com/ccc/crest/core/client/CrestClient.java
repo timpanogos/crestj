@@ -62,7 +62,6 @@ import com.google.gson.JsonParser;
 @SuppressWarnings("javadoc")
 public class CrestClient
 {
-    private static final String AccessControlExposeHeader = "Access-Control-Expose-Headers";
     private static final String CrestDeprecatedHeader = "X-DEPRECATED";
     private static final int NoLongerSupported = 406;
     private static final String CacheControlHeader = "Cache-Control";
@@ -283,14 +282,15 @@ public class CrestClient
                             if(rdata.logJson)
                                 log.info("\ncacheTime: " + cacheTime);
 
-                            String deprecatedStr = getHeaderElement(response, AccessControlExposeHeader, CrestDeprecatedHeader);
+                            String deprecatedStr = getHeaderElement(response, CrestDeprecatedHeader, CrestDeprecatedHeader);
                             if(deprecatedStr != null)
-                            {
-                                StringBuilder sb = new StringBuilder();
-                                sb.append(rdata.url).append(" ").append(rdata.version).append(" is deprecated see class: ").append(rdata.clazz);
-                                controller.fireEndpointDeprecatedEvent(sb.toString());
-                                rdata.deprecated.set(true);
-                            }
+                                if(deprecatedStr.equals("1"))
+                                {
+                                    StringBuilder sb = new StringBuilder();
+                                    sb.append(rdata.url).append(" ").append(rdata.version).append(" is deprecated see class: ").append(rdata.clazz);
+                                    controller.fireEndpointDeprecatedEvent(sb.toString());
+                                    rdata.deprecated.set(true);
+                                }
                         }
                         if (status >= 200 && status < 300)
                         {
@@ -326,6 +326,8 @@ public class CrestClient
                                         return headerElements[j].getValue();
                                     }
                             }
+                        if(headers != null && headers.length > 0 && headers[0] != null && headerKey.equals(elementKey))
+                            return headers[0].getValue();
                         return null;
                     }
                 };

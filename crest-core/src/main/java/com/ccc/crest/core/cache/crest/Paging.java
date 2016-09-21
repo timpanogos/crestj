@@ -18,10 +18,12 @@ package com.ccc.crest.core.cache.crest;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
+import com.ccc.crest.core.cache.EveJsonData;
 import com.ccc.crest.core.cache.crest.alliance.Alliance;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.da.AllianceData;
@@ -43,7 +45,7 @@ public class Paging implements JsonDeserializer<Paging>
     public volatile ExternalRef previous;
     public volatile String pageCountStr;
     public volatile String totalCountStr;
-    public volatile
+    public volatile List<EveJsonData> list;
 
     public Paging()
     {
@@ -53,7 +55,7 @@ public class Paging implements JsonDeserializer<Paging>
     {
         this.totalCount = data.total;
         this.pageCount = data.pageCount;
-        int page = allianceList.get(0).page;
+//        int page = list.get(0).page;
         if(page == 1)
         {
             previous = null;

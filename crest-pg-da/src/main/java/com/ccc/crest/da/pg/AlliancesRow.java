@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -30,9 +30,11 @@ public class AlliancesRow extends PagingData
         super(
             rs.getLong(AlliancesJdbc.TotalAlliancesIdx),
             rs.getLong(AlliancesJdbc.PageCountIdx),
-            rs.getInt(AlliancesJdbc.CountPerPageIdx));
+            rs.getInt(AlliancesJdbc.CountPerPageIdx),
+            rs.getString(AlliancesJdbc.UidIdx));
         //@formatter:on
     }
+    public PagingData(long totalAlliances, long pageCount, int countPerPage, String uid)
 
     public AlliancesRow(Object[] columns)
     {
@@ -40,7 +42,9 @@ public class AlliancesRow extends PagingData
         super(
             (long)columns[AlliancesJdbc.TotalAlliancesIdx-1],
             (long)columns[AlliancesJdbc.PageCountIdx-1],
-            (int)columns[AlliancesJdbc.CountPerPageIdx-1]);
+            (int)columns[AlliancesJdbc.CountPerPageIdx-1],
+            (String)columns[AlliancesJdbc.UidtPerPageIdx-1],
+            );
         //@formatter:on
     }
 

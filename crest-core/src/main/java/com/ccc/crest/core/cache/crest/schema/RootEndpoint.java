@@ -101,11 +101,11 @@ import ch.qos.logback.core.util.StatusPrinter;
 @SuppressWarnings("javadoc")
 public class RootEndpoint
 {
-    public static final boolean PingOptions = true;
-    public static final boolean PingGets = true;
+    public static final boolean PingOptions = false;
+    public static final boolean PingGets = false;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
-    public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
+    public static final String TemplateBase = WorkBase + "eveonline-third-party-documentation/docs/crest/root/";
     public static final String TechDocTemplate = TemplateBase + "technicalPage.md";
     public static final String GroupDocTemplate = TemplateBase + "groupPage.md";
     public static final String LeafDocTemplate = TemplateBase + "leafPage.md";
@@ -589,7 +589,7 @@ public class RootEndpoint
         //@formatter:off
         addChild(                             root, "Endpoints",        UidBase + "Api-v5+json",                            rootUrl + "",                                                    "", EndpointCollection.class);
         addChild(                             root, "Options",          UidBase + "Options-v1+json",                        rootUrl + "",                                                    "", CrestOptions.class);
-        addChild(                             root, "Alliances",        UidBase + "AllianceCollection-v2+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
+        addChild(                             root, "Alliances",        UidBase + "AllianceCollection-v1+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
         addChild(                             root, "Bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                        "/bloodlines/", BloodlineCollection.class);
         Endpoint child = addChild(            root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", DocType.Group, CharacterSearch.class);
         Endpoint gchild = addChild(          child, "Contacts",         UidBase + "ContactCreate-v1+json",

@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
+import com.ccc.crest.core.cache.crest.ExternalRef;
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -34,9 +35,10 @@ public class Alliance implements JsonDeserializer<Alliance>
 {
     public volatile String idStr;
     public volatile String shortName;
-    public volatile String allianceUrl;
+    public volatile ExternalRef allianceUrl;
     public volatile long id;
     public volatile String name;
+
 
     public Alliance()
     {
@@ -70,7 +72,10 @@ public class Alliance implements JsonDeserializer<Alliance>
             else if (ShortNameKey.equals(key))
                 shortName = value.getAsString();
             else if (HrefKey.equals(key))
-                allianceUrl = value.getAsString();
+            {
+                allianceUrl = new ExternalRef();
+                allianceUrl.deserialize(value, typeOfT, context);
+            }
             else if (IdKey.equals(key))
                 id = value.getAsLong();
             else if (NameKey.equals(key))
