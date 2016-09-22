@@ -22,35 +22,26 @@ import java.sql.SQLException;
 import com.ccc.crest.da.PagingData;
 
 @SuppressWarnings("javadoc")
-public class AlliancesRow extends PagingData
+public class PagingRow extends PagingData
 {
-    public AlliancesRow(ResultSet rs) throws SQLException
-    {
-        //@formatter:off
-        super(
-            rs.getLong(AlliancesJdbc.TotalAlliancesIdx),
-            rs.getLong(AlliancesJdbc.PageCountIdx),
-            rs.getInt(AlliancesJdbc.CountPerPageIdx),
-            rs.getString(AlliancesJdbc.UidIdx));
-        //@formatter:on
-    }
-    public PagingData(long totalAlliances, long pageCount, int countPerPage, String uid)
+    public final long pid;
 
-    public AlliancesRow(Object[] columns)
+    public PagingRow(ResultSet rs) throws SQLException
     {
         //@formatter:off
         super(
-            (long)columns[AlliancesJdbc.TotalAlliancesIdx-1],
-            (long)columns[AlliancesJdbc.PageCountIdx-1],
-            (int)columns[AlliancesJdbc.CountPerPageIdx-1],
-            (String)columns[AlliancesJdbc.UidtPerPageIdx-1],
-            );
+            rs.getLong(PagingJdbc.TotalItemsIdx),
+            rs.getLong(PagingJdbc.PageCountIdx),
+            rs.getInt(PagingJdbc.ItemsPerPageIdx),
+            rs.getString(PagingJdbc.UidIdx));
         //@formatter:on
+        pid = rs.getLong(PagingJdbc.IdIdx);
     }
 
     @Override
     public String toString()
     {
-        return "AlliancesRow [totalAlliances=" + total + ", pageCount=" + pageCount + ", countPerPage=" + countPerPage + "]";
+        return "PagingRow [pid=" + pid + ", totalItems=" + totalItems + ", pageCount=" + pageCount + ", itemsPerPage=" + itemsPerPage + ", uid=" + uid + "]";
     }
+
 }

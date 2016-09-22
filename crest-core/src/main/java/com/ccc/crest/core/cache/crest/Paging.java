@@ -53,7 +53,7 @@ public class Paging implements JsonDeserializer<Paging>
 
     public Paging(PagingData data)
     {
-        this.totalCount = data.total;
+        this.totalCount = data.totalItems;
         this.pageCount = data.pageCount;
 //        int page = list.get(0).page;
         if(page == 1)

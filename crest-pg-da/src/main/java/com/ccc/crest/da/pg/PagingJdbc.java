@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -26,17 +26,21 @@ import com.ccc.db.NotFoundException;
 import com.ccc.db.postgres.PgBaseDataAccessor;
 
 @SuppressWarnings("javadoc")
-public class AlliancesJdbc
+public class PagingJdbc
 {
     public static final String TableName;
 
-    public static final String ColTotalAlliancesName = "totalAlliances";
+    public static final String ColIdName = "id";
+    public static final String ColTotalItemsName = "totalitems";
     public static final String ColPageCountName = "pagecount";
-    public static final String ColCountPerPageName = "countperpage";
+    public static final String ColItemsPerPageName = "itemsperpage";
+    public static final String ColUidName = "countperpage";
 
-    public static final int TotalAlliancesIdx = 1;
-    public static final int PageCountIdx = 2;
-    public static final int CountPerPageIdx = 3;
+    public static final int IdIdx = 1;
+    public static final int TotalItemsIdx = 2;
+    public static final int PageCountIdx = 3;
+    public static final int ItemsPerPageIdx = 4;
+    public static final int UidIdx = 5;
 
     private static final String PrepGetRow;
     private static final String PrepInsertRow;
@@ -45,24 +49,23 @@ public class AlliancesJdbc
     static
     {
         TableName = "alliances";
-        PrepGetRow = "select * from " + TableName + ";";
-        PrepInsertRow = "insert into " + TableName + " values(?, ?, ?);";
-        PrepUpdateRow = "update " + TableName + " set " + ColTotalAlliancesName + "=?, " + ColPageCountName + "=?, " + ColCountPerPageName + "=? where " + ColTotalAlliancesName + "=?;";
-        
+        PrepGetRow = "select * from " + TableName + " where " + ColUidName + "=?;";
+        PrepInsertRow = "insert into " + TableName + " values(?, ?, ?, ?);";
+        PrepUpdateRow = "update " + TableName + " set " + ColTotalItemsName + "=?, " + ColPageCountName + "=?, " + ColItemsPerPageName + "=?, " + ColUidName + "=? where " + ColIdName + "=?;";
+
     }
 
-    public static AlliancesRow getRow(Connection connection, boolean close) throws NotFoundException, SQLException
+    public static PagingRow getRow(Connection connection, String uid, boolean close) throws NotFoundException, SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepGetRow);
         ResultSet rs = null;
         try
         {
+            stmt.setString(1, uid);
             rs = stmt.executeQuery();
             if (!rs.next())
-                throw new NotFoundException("totalAlliances: not found");
-            AlliancesRow row = new AlliancesRow(rs); 
-            if(rs.next())
-                throw new SQLException("More than one row in alliances table");
+                throw new NotFoundException("getRow for " + uid + " not found");
+            PagingRow row = new PagingRow(rs);
             return row;
         } finally
         {
@@ -70,14 +73,15 @@ public class AlliancesJdbc
         }
     }
 
-    public static void insertRow(Connection connection, PagingData alliances, boolean close) throws SQLException
+    public static void insertRow(Connection connection, PagingData pagingData, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepInsertRow);
         try
         {
-            stmt.setLong(TotalAlliancesIdx, alliances.total);
-            stmt.setLong(PageCountIdx, alliances.pageCount);
-            stmt.setInt(CountPerPageIdx, alliances.countPerPage);
+            stmt.setLong(TotalItemsIdx-1, pagingData.totalItems);
+            stmt.setLong(PageCountIdx-1, pagingData.pageCount);
+            stmt.setInt(ItemsPerPageIdx-1, pagingData.itemsPerPage);
+            stmt.setString(UidIdx-1, pagingData.uid);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("insertRow affected an unexpected number of rows: " + rows);
@@ -87,15 +91,16 @@ public class AlliancesJdbc
         }
     }
 
-    public static void updateRow(Connection connection, long totalAlliances, PagingData alliances, boolean close) throws SQLException
+    public static void updateRow(Connection connection, PagingData pageData, long pid, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepUpdateRow);
         try
         {
-            stmt.setLong(TotalAlliancesIdx, alliances.total);
-            stmt.setLong(PageCountIdx, alliances.pageCount);
-            stmt.setInt(CountPerPageIdx, alliances.countPerPage);
-            stmt.setLong(CountPerPageIdx + 1, totalAlliances);
+            stmt.setLong(TotalItemsIdx-1, pageData.totalItems);
+            stmt.setLong(PageCountIdx-1, pageData.pageCount);
+            stmt.setInt(ItemsPerPageIdx-1, pageData.itemsPerPage);
+            stmt.setString(UidIdx-1, pageData.uid);
+            stmt.setLong(UidIdx, pid);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("updateRow affected an unexpected number of rows: " + rows);

@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -22,10 +22,10 @@ import java.util.Properties;
 
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.AllianceData;
-import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
+import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.SharedRight;
 import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.NotFoundException;
@@ -186,31 +186,32 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public boolean validateAlliances(PagingData alliances) throws Exception
+    public boolean validatePages(PagingData pageData) throws Exception
     {
         Connection connection = getConnection();
         try
         {
-            AlliancesRow row = AlliancesJdbc.getRow(connection, false);
-            if(row.total != alliances.total)
-            {    
-                AlliancesJdbc.updateRow(connection, row.total, alliances, true);
-                AllianceJdbc.truncate(connection, true);
+            PagingRow row = PagingJdbc.getRow(connection, pageData.uid, false);
+            if(row.totalItems != pageData.totalItems)
+            {
+                PagingJdbc.updateRow(connection, row, row.pid, false);
+                //FIXME:
+//                PagingJdbc.truncate(connection, true);
                 return false;
             }
             PgBaseDataAccessor.close(connection, null, null, true);
             return true;
         } catch (NotFoundException e)
         {
-            AlliancesJdbc.insertRow(connection, alliances, true);
+            PagingJdbc.insertRow(connection, pageData, true);
             return true;
         }
     }
 
     @Override
-    public PagingData getAlliances() throws Exception
+    public PagingData getAlliances(String uid) throws Exception
     {
-        return AlliancesJdbc.getRow(getConnection(), true);
+        return PagingJdbc.getRow(getConnection(), uid, true);
     }
 
     @Override
@@ -225,10 +226,8 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
         Connection connection = getConnection();
         List<AllianceData> list = AllianceJdbc.getRows(getConnection(), alliances.get(0).page, false);
         if(list.size() == 0)
-        {
             for(AllianceData data : alliances)
                 AllianceJdbc.insertRow(connection, data, false);
-        }
         PgBaseDataAccessor.close(connection, null, null, true);
     }
 }

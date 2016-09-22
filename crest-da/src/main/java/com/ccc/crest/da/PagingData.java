@@ -19,16 +19,16 @@ package com.ccc.crest.da;
 @SuppressWarnings("javadoc")
 public class PagingData
 {
-    public final long total;
+    public final long totalItems;
     public final long pageCount;
-    public final int countPerPage;
+    public final int itemsPerPage;
     public final String uid;
 
-    public PagingData(long totalAlliances, long pageCount, int countPerPage, String uid)
+    public PagingData(long totalItems, long pageCount, int itemsPerPage, String uid)
     {
-        this.total = totalAlliances;
+        this.totalItems = totalItems;
         this.pageCount = pageCount;
-        this.countPerPage = countPerPage;
+        this.itemsPerPage = itemsPerPage;
         this.uid = uid;
     }
 
@@ -37,9 +37,9 @@ public class PagingData
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + countPerPage;
+        result = prime * result + itemsPerPage;
         result = prime * result + (int) (pageCount ^ pageCount >>> 32);
-        result = prime * result + (int) (total ^ total >>> 32);
+        result = prime * result + (int) (totalItems ^ totalItems >>> 32);
         result = prime * result + (uid == null ? 0 : uid.hashCode());
         return result;
     }
@@ -54,11 +54,11 @@ public class PagingData
         if (getClass() != obj.getClass())
             return false;
         PagingData other = (PagingData) obj;
-        if (countPerPage != other.countPerPage)
+        if (itemsPerPage != other.itemsPerPage)
             return false;
         if (pageCount != other.pageCount)
             return false;
-        if (total != other.total)
+        if (totalItems != other.totalItems)
             return false;
         if (uid == null)
         {
@@ -72,6 +72,7 @@ public class PagingData
     @Override
     public String toString()
     {
-        return "PagingData [total=" + total + ", pageCount=" + pageCount + ", countPerPage=" + countPerPage + ", uid=" + uid + "]";
+        return "PagingData [totalItems=" + totalItems + ", pageCount=" + pageCount + ", itemsPerPage=" + itemsPerPage + ", uid=" + uid + "]";
     }
+
 }

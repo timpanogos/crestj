@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -51,9 +51,9 @@ public interface CrestDataAccessor extends DataAccessor
     public void addSharedRight(SharedRight right) throws AlreadyExistsException, Exception;
     public void deleteSharedRight(String capsuleer) throws Exception;
     public List<SharedRight> listSharedRights(String capsuleer) throws Exception;
-    
+
     public List<AllianceData> getAlliances(int page) throws Exception;
-    public PagingData getAlliances() throws Exception;
-    public boolean validateAlliances(PagingData alliances) throws Exception;
+    public PagingData getAlliances(String uid) throws Exception;
+    public boolean validatePages(PagingData alliances) throws Exception;
     public void addAlliances(List<AllianceData> alliances) throws Exception;
 }

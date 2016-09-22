@@ -4,6 +4,7 @@ select * from entity;
 select * from sharedrights;
 select * from alliances
 select * from alliance
+select * from paging;
 
 select * from entity where isgroup=true;
 insert into entity (name, isgroup) values('aa', true);
