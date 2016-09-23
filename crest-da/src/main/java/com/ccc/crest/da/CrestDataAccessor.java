@@ -52,8 +52,9 @@ public interface CrestDataAccessor extends DataAccessor
     public void deleteSharedRight(String capsuleer) throws Exception;
     public List<SharedRight> listSharedRights(String capsuleer) throws Exception;
 
-    public List<AllianceData> getAlliances(int page) throws Exception;
     public PagingData getPagingData(String uid) throws Exception;
-    public boolean validatePages(PagingData alliances) throws Exception;
-    public void addAlliances(List<AllianceData> alliances) throws Exception;
+    public boolean validatePages(PagingData items, Class<?> itemJdbcClass) throws Exception;
+
+    public void addPage(List<PagedItem> alliances, Class<?> jdbcClass) throws Exception;
+    public List<AllianceData> getAlliances(int page) throws Exception;
 }

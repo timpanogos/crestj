@@ -645,7 +645,7 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
-//                dataCache.getContactList(clientInfo);
+                dataCache.getAllianceCollection();
 
 
 //                dumpSchema();

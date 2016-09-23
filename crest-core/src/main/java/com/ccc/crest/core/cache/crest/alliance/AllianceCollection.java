@@ -17,18 +17,23 @@
 package com.ccc.crest.core.cache.crest.alliance;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
+import com.ccc.crest.core.cache.DataCache.DbPagingCallback;
 import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.client.CrestResponseCallback;
+import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.PagedItem;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -44,42 +49,37 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     public static final String GetBase = "application/vnd.ccp.eve.AllianceCollection";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
+    public static final DbPagingCallback PagingCallback = new AlliancesCallback(GetBase, Alliances.class, AllianceJndi.class);
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 
-    public static final AllianceCollection allianceCollection;
-    static
-    {
-        allianceCollection = new AllianceCollection();
-    }
+//    public static final AllianceCollection allianceCollection;
+//    static
+//    {
+//        allianceCollection = new AllianceCollection();
+//    }
 
-    private volatile int currentPage;
-    private final AtomicLong totalAlliances;
-    private final AtomicInteger countPerPage;
     private volatile Alliances alliances;
 
-    private AllianceCollection()
+    public AllianceCollection()
     {
-//        alliances = new ArrayList<>();
-        totalAlliances = new AtomicLong();
-        countPerPage = new AtomicInteger();
     }
 
-    public static void setAlliances(Alliances alliances)
+    public AllianceCollection(Alliances alliances)
     {
-        allianceCollection.alliances = alliances;
+        this.alliances = alliances;
     }
 
     @Override
     public void init()
     {
-        synchronized (allianceCollection)
+        synchronized (alliances)
         {
-            allianceCollection.alliances.alliances.size();
+            alliances.items.size();
         }
-//        totalAlliances.set(alliances.get(0).totalCount);
+        //        totalAlliances.set(alliances.get(0).totalCount);
     }
 
     public Alliances getAlliances()
@@ -89,7 +89,7 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
 
     public static String getVersion(VersionType type)
     {
-        switch(type)
+        switch (type)
         {
             case Delete:
                 return SchemaMap.schemaMap.getSchemaFromVersionBase(DeleteBase).getVersion();
@@ -107,22 +107,21 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     public static String getUrl(int page)
     {
         StringBuilder sb = new StringBuilder(SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri());
-        if(page != 0)
+        if (page != 0)
             sb.append("?page=").append(page);
-//        ?page=2
+        //        ?page=2
         return sb.toString();
     }
 
-    public static Future<EveData> getFuture(int page, CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(int page) throws Exception
     {
-        allianceCollection.currentPage = page;
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(AllianceCollection.class, allianceCollection);
+        gson.registerTypeAdapter(AllianceCollection.class, new AllianceCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getUrl(page),
                         gson.create(), null, AllianceCollection.class,
-                        callback,
+                        PagingCallback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
@@ -134,5 +133,41 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
         alliances = new Alliances();
         alliances.deserialize(json, typeOfT, context);
         return this;
+    }
+
+    private static AtomicBoolean firstCollection = new AtomicBoolean(true);
+
+    public static class AlliancesCallback extends DbPagingCallback
+    {
+        public AlliancesCallback(String uid, Class<?> pagesClass, Class<?> jndiClass)
+        {
+            super(uid, pagesClass, jndiClass);
+        }
+
+        @Override
+        public void received(EveData data, int page)
+        {
+            Paging alliances = ((AllianceCollection)data).getAlliances();
+            List<AllianceData> list = new ArrayList<>();
+            for(PagedItem item : alliances.items)
+            {
+                Alliance a = (Alliance) item;
+                list.add(new AllianceData(a.id, a.shortName, a.name, a.allianceUrl.url, page));
+            }
+            {
+                firstCollection.set(false);
+                try{getFuture(0);} catch (Exception e){
+                    LoggerFactory.getLogger(getClass()).warn("Alliance failed to fire heartbeat", e);
+                }
+            }
+            try
+            {
+                CrestController.getCrestController().getDataAccessor().addPage(alliances.items);
+            } catch (Exception e)
+            {
+                LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to add alliances to alliance table", e);
+                return;
+            }
+        }
     }
 }

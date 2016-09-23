@@ -34,7 +34,7 @@ public class PagingJdbc
     public static final String ColTotalItemsName = "totalitems";
     public static final String ColPageCountName = "pagecount";
     public static final String ColItemsPerPageName = "itemsperpage";
-    public static final String ColUidName = "countperpage";
+    public static final String ColUidName = "itemsuid";
 
     public static final int IdIdx = 1;
     public static final int TotalItemsIdx = 2;
@@ -48,10 +48,23 @@ public class PagingJdbc
 
     static
     {
-        TableName = "alliances";
+        TableName = "paging";
         PrepGetRow = "select * from " + TableName + " where " + ColUidName + "=?;";
-        PrepInsertRow = "insert into " + TableName + " values(?, ?, ?, ?);";
-        PrepUpdateRow = "update " + TableName + " set " + ColTotalItemsName + "=?, " + ColPageCountName + "=?, " + ColItemsPerPageName + "=?, " + ColUidName + "=? where " + ColIdName + "=?;";
+        //@formatter:off
+        PrepInsertRow = "insert into " + TableName + "(" +
+            ColTotalItemsName + "," +
+            ColPageCountName + "," +
+            ColItemsPerPageName + "," +
+            ColUidName + ")" +
+            " values(?, ?, ?, ?);";
+
+        PrepUpdateRow = "update " + TableName + " set " +
+            ColTotalItemsName + "=?, " +
+            ColPageCountName + "=?, " +
+            ColItemsPerPageName + "=?, " +
+            ColUidName +
+            "=? where " + ColIdName + "=?;";
+        //@formatter:on
 
     }
 

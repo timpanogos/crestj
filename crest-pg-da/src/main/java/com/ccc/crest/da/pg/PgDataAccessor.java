@@ -16,6 +16,7 @@
 */
 package com.ccc.crest.da.pg;
 
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
@@ -25,6 +26,7 @@ import com.ccc.crest.da.AllianceData;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
+import com.ccc.crest.da.PagedItem;
 import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.SharedRight;
 import com.ccc.db.AlreadyExistsException;
@@ -186,7 +188,7 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public boolean validatePages(PagingData pageData) throws Exception
+    public boolean validatePages(PagingData pageData, Class<?> itemJdbcClass) throws Exception
     {
         Connection connection = getConnection();
         try
@@ -195,8 +197,9 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
             if(row.totalItems != pageData.totalItems)
             {
                 PagingJdbc.updateRow(connection, row, row.pid, false);
-                //FIXME:
-//                PagingJdbc.truncate(connection, true);
+
+                Method method = itemJdbcClass.getDeclaredMethod("truncate", new Class<?>[0]);
+                method.invoke(itemJdbcClass, new Object[0]);
                 return false;
             }
             PgBaseDataAccessor.close(connection, null, null, true);
@@ -221,7 +224,7 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public void addAlliances(List<AllianceData> alliances) throws Exception
+    public void addPage(List<PagedItem> items, Class<?> jdbcClass) throws Exception
     {
         Connection connection = getConnection();
         List<AllianceData> list = AllianceJdbc.getRows(getConnection(), alliances.get(0).page, false);

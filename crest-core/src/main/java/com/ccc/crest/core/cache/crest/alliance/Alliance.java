@@ -23,6 +23,7 @@ import java.util.Map.Entry;
 import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.crest.ExternalRef;
+import com.ccc.crest.da.PagedItem;
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -31,7 +32,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliance implements JsonDeserializer<Alliance>
+public class Alliance implements PagedItem, JsonDeserializer<Alliance>
 {
     public volatile String idStr;
     public volatile String shortName;

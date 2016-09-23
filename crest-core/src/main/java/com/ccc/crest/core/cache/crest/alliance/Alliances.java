@@ -17,7 +17,6 @@
 package com.ccc.crest.core.cache.crest.alliance;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
@@ -38,23 +37,19 @@ import com.google.gson.JsonParseException;
 @SuppressWarnings("javadoc")
 public class Alliances extends Paging implements JsonDeserializer<Alliances>
 {
-    public final List<Alliance> alliances;
-    
     public Alliances()
     {
-        alliances = new ArrayList<>();
     }
 
     public Alliances(PagingData pagingData, List<AllianceData> allianceList)
     {
         super(pagingData, allianceList.get(0).page);
-        alliances = new ArrayList<>();
         for(AllianceData data : allianceList)
-            alliances.add(new Alliance(""+data.id, data.shortName, data.id, data.name));
+            items.add(new Alliance(""+data.id, data.shortName, data.id, data.name));
     }
 
     private static final String ItemsKey = "items";
-    
+
     @Override
     public Alliances deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
@@ -76,7 +71,7 @@ public class Alliances extends Paging implements JsonDeserializer<Alliances>
                 {
                     JsonElement childElement = ((JsonArray) objectElement).get(i);
                     Alliance child = new Alliance();
-                    alliances.add(child);
+                    items.add(child);
                     child.deserialize(childElement, typeOfT, context);
                 }
             }
@@ -90,18 +85,5 @@ public class Alliances extends Paging implements JsonDeserializer<Alliances>
     {
         TabToLevel format = new TabToLevel();
         return toString(format).toString();
-    }
-    
-    @Override
-    public TabToLevel toString(TabToLevel format)
-    {
-        super.toString(format);
-        format.ttl("alliances: ");
-        format.inc();
-        for(Alliance alliance : alliances)
-            alliance.toString(format);
-        format.dec();
-        format.dec();
-        return format;
     }
 }

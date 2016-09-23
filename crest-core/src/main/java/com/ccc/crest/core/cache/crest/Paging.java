@@ -16,7 +16,11 @@
 */
 package com.ccc.crest.core.cache.crest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
+import com.ccc.crest.da.PagedItem;
 import com.ccc.crest.da.PagingData;
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonElement;
@@ -29,13 +33,16 @@ public abstract class Paging
     public volatile long pageCount;
     public volatile ExternalRef next;
     public volatile ExternalRef previous;
+    public final List<PagedItem> items;
 
     public Paging()
     {
+        items = new ArrayList<>();
     }
 
     public Paging(PagingData data, int page)
     {
+        items = new ArrayList<>();
         this.totalCount = data.totalItems;
         this.pageCount = data.pageCount;
 //        int page = list.get(0).page;
@@ -90,7 +97,7 @@ public abstract class Paging
             return true;
         return false;
     }
-    
+
     public TabToLevel toString(TabToLevel format)
     {
         format.ttl(getClass().getSimpleName());
@@ -110,6 +117,12 @@ public abstract class Paging
             format.ttl("null");
         else
             previous.toString(format);
+        format.dec();
+        format.ttl("items: ");
+        format.inc();
+        for(PagedItem item : items)
+            item.toString(format);
+        format.dec();
         format.dec();
         return format;
     }
