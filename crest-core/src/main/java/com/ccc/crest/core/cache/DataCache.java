@@ -633,13 +633,14 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     public AllianceCollection getAllianceCollection(int page) throws SourceFailureException
     {
         if(page != 0)
+        {
             try
             {
                 CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
                 List<AllianceData> list = da.getAlliances(page);
                 if(list.size() > 0)
                 {
-                    PagingData alliances = da.getAlliances();
+                    PagingData alliances = da.getPagingData(AllianceCollection.GetBase);
                     Alliances a = new Alliances(alliances, list);
                     AllianceCollection.setAlliances(a);
                     return AllianceCollection.allianceCollection;
@@ -648,6 +649,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             {
                 throw new SourceFailureException("data access failure", e);
             }
+        }
         try
         {
             AllianceCollection epdata = (AllianceCollection) AllianceCollection.getFuture(page, dbCallback).get();
@@ -1230,7 +1232,7 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
                 boolean validated = false;
                 try
                 {
-                    validated = CrestController.getCrestController().getDataAccessor().validateAlliances(ad);
+                    validated = CrestController.getCrestController().getDataAccessor().validatePages(ad);
                 } catch (Exception e)
                 {
                     LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to validate the alliances table", e);

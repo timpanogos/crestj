@@ -24,7 +24,7 @@ import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.core.cache.crest.ExternalRef;
+import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.da.AllianceData;
 import com.ccc.crest.da.PagingData;
 import com.ccc.tools.TabToLevel;
@@ -36,52 +36,24 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliances implements JsonDeserializer<Alliances>
+public class Alliances extends Paging implements JsonDeserializer<Alliances>
 {
-    public volatile long totalCount;
-    public volatile long pageCount;
     public final List<Alliance> alliances;
-    public volatile ExternalRef next;
-    public volatile ExternalRef previous;
-    public volatile String pageCountStr;
-    public volatile String totalCountStr;
     
     public Alliances()
     {
         alliances = new ArrayList<>();
     }
 
-    public Alliances(PagingData alliancesData, List<AllianceData> allianceList)
+    public Alliances(PagingData pagingData, List<AllianceData> allianceList)
     {
+        super(pagingData, allianceList.get(0).page);
         alliances = new ArrayList<>();
-        this.totalCount = alliancesData.total;
-        this.pageCount = alliancesData.pageCount;
-        int page = allianceList.get(0).page;
-        if(page == 1)
-        {
-            previous = null;
-            next = new ExternalRef(AllianceCollection.getUrl(page + 1), null);
-        }
-        else
-        {
-            next = new ExternalRef(AllianceCollection.getUrl(page + 1), null);
-            previous = new ExternalRef(AllianceCollection.getUrl(page - 1), null);
-            if(page * alliancesData.countPerPage >= alliancesData.total)
-                next = null;
-        }
-        this.pageCountStr = ""+pageCount;
-        this.totalCountStr = ""+totalCount;
         for(AllianceData data : allianceList)
             alliances.add(new Alliance(""+data.id, data.shortName, data.id, data.name));
     }
 
-    private static final String TotalCountStringKey = "totalCount_str";
-    private static final String PageCountKey = "pageCount";
-    private static final String NextKey = "next";           // optional 
-    private static final String PreviousKey = "previous";   // optional
     private static final String ItemsKey = "items";
-    private static final String TotalCountKey = "totalCount";
-    private static final String PageCountStringKey = "pageCount_str";
     
     @Override
     public Alliances deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
@@ -92,21 +64,9 @@ public class Alliances implements JsonDeserializer<Alliances>
             Entry<String, JsonElement> objectEntry = objectIter.next();
             String key = objectEntry.getKey();
             JsonElement value = objectEntry.getValue();
-            if (TotalCountStringKey.equals(key))
-                totalCountStr = value.getAsString();
-            else if (PageCountKey.equals(key))
-                pageCount = value.getAsLong();
-            else if (NextKey.equals(key))
-            {
-                next = new ExternalRef();
-                next.deserialize(value, typeOfT, context);
-            }
-            else if (PreviousKey.equals(key))
-            {
-                previous = new ExternalRef();
-                previous.deserialize(value, typeOfT, context);
-            }
-            else if (ItemsKey.equals(key))
+            if(pagingDeserialize(key, value))
+                continue;
+            if (ItemsKey.equals(key))
             {
                 JsonElement objectElement = objectEntry.getValue();
                 if (!objectElement.isJsonArray())
@@ -119,10 +79,7 @@ public class Alliances implements JsonDeserializer<Alliances>
                     alliances.add(child);
                     child.deserialize(childElement, typeOfT, context);
                 }
-            }else if (TotalCountKey.equals(key))
-                totalCount = value.getAsLong();
-            else if (PageCountStringKey.equals(key))
-                pageCountStr = value.getAsString();
+            }
             else
                 LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
@@ -135,35 +92,16 @@ public class Alliances implements JsonDeserializer<Alliances>
         return toString(format).toString();
     }
     
+    @Override
     public TabToLevel toString(TabToLevel format)
     {
-        format.ttl(getClass().getSimpleName());
-        format.inc();
-        format.ttl("totalCount: ", totalCount);
-        format.ttl("pageCount: ", pageCount);
-        format.ttl("next: ");
-        format.inc();
-        if(next == null)
-            format.ttl("null");
-        else
-            next.toString(format);
-        format.dec();
-        format.ttl("previous: ");
-        format.inc();
-        if(previous == null)
-            format.ttl("null");
-        else
-            previous.toString(format);
-        format.dec();
+        super.toString(format);
         format.ttl("alliances: ");
         format.inc();
         for(Alliance alliance : alliances)
             alliance.toString(format);
         format.dec();
-        format.ttl("pageCountStr: ", pageCountStr);
-        format.ttl("totalCountStr: ", totalCountStr);
         format.dec();
         return format;
-        
     }
 }

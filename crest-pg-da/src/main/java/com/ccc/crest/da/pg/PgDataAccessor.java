@@ -209,7 +209,7 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public PagingData getAlliances(String uid) throws Exception
+    public PagingData getPagingData(String uid) throws Exception
     {
         return PagingJdbc.getRow(getConnection(), uid, true);
     }
