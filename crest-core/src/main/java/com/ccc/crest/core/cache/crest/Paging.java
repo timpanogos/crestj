@@ -16,14 +16,22 @@
 */
 package com.ccc.crest.core.cache.crest;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
+
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.da.PagedItem;
 import com.ccc.crest.da.PagingData;
 import com.ccc.tools.TabToLevel;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
@@ -66,8 +74,9 @@ public abstract class Paging
     private static final String PreviousKey = "previous";   // optional
     private static final String TotalCountKey = "totalCount";
     private static final String PageCountStringKey = "pageCount_str";
+    private static final String ItemsKey = "items";
 
-    public boolean pagingDeserialize(String key, JsonElement value) throws JsonParseException
+    private boolean pagingDeserialize(String key, JsonElement value) throws JsonParseException
     {
         if (TotalCountStringKey.equals(key))
             return true;
@@ -98,6 +107,35 @@ public abstract class Paging
         return false;
     }
 
+    protected abstract PagedItem getPagedItem(JsonElement json, Type typeOfT, JsonDeserializationContext context);
+    
+    protected void pagingDeserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    {
+        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
+        while (objectIter.hasNext())
+        {
+            Entry<String, JsonElement> objectEntry = objectIter.next();
+            String key = objectEntry.getKey();
+            JsonElement value = objectEntry.getValue();
+            if(pagingDeserialize(key, value))
+                continue;
+            if (ItemsKey.equals(key))
+            {
+                JsonElement objectElement = objectEntry.getValue();
+                if (!objectElement.isJsonArray())
+                    throw new JsonParseException("Expected " + ItemsKey + " array received json element " + objectElement.toString());
+                int size = ((JsonArray) objectElement).size();
+                for (int i = 0; i < size; i++)
+                {
+                    JsonElement childElement = ((JsonArray) objectElement).get(i);
+                    items.add(getPagedItem(childElement, typeOfT, context));
+                }
+            }
+            else
+                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
+        }
+    }
+    
     public TabToLevel toString(TabToLevel format)
     {
         format.ttl(getClass().getSimpleName());

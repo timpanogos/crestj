@@ -24,14 +24,14 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
-import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.core.cache.crest.alliance.Alliances;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.ContactCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
-import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
+import com.ccc.crest.core.cache.crest.corporation.Corporations;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
@@ -109,6 +109,7 @@ import com.ccc.crest.core.client.CrestResponseCallback;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.CorporationData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.PagingData;
 
@@ -603,35 +604,41 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public NpcCorporationsCollection getCorporationCollection() throws SourceFailureException
+    public NpcCorporationCollection getNpcCorporationCollection(int page) throws SourceFailureException
     {
-        CacheData data = cache.get(NpcCorporationsCollection.getUrl());
-        if (data != null)
+        if(page != 0)
         {
-            data.data.accessed();
-            return (NpcCorporationsCollection) data.data;
+            try
+            {
+                CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
+                List<CorporationData> list = da.getCorporations(page);
+                if(list.size() > 0)
+                {
+                    PagingData pagingData = da.getPagingData(NpcCorporationCollection.GetBase);
+                    Corporations c = new Corporations(pagingData, list);
+                    return new NpcCorporationCollection(c);
+                }
+            }catch(Exception e)
+            {
+                log.debug(getClass().getSimpleName() + ".getNpcCorporationCollection(page " + page + ") not in db");
+            }
         }
         try
         {
-            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(cacheCallback).get();
-            value.accessed();
-            return value;
+            NpcCorporationCollection epdata = (NpcCorporationCollection) NpcCorporationCollection.getFuture(page).get();
+            epdata.accessed();
+            return epdata;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationsCollection.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationCollection.getUrl(page), e);
         }
-    }
-
-    @Override
-    public AllianceCollection getAllianceCollection() throws SourceFailureException
-    {
-        return getAllianceCollection(1);
     }
 
     @Override
     public AllianceCollection getAllianceCollection(int page) throws SourceFailureException
     {
         if(page != 0)
+        {
             try
             {
                 CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
@@ -646,9 +653,10 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             {
                 log.debug(getClass().getSimpleName() + ".getAllianceCollection(page " + page + ") not in db");
             }
+        }
         try
         {
-            AllianceCollection epdata = (AllianceCollection) AllianceCollection.getFuture(page, dbCallback).get();
+            AllianceCollection epdata = (AllianceCollection) AllianceCollection.getFuture(page).get();
             epdata.accessed();
             return epdata;
         } catch (Exception e)
@@ -1161,26 +1169,6 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public NpcCorporationsCollection getNPCCorporationsCollection() throws SourceFailureException
-    {
-        CacheData data = cache.get(NpcCorporationsCollection.getUrl());
-        if (data != null)
-        {
-            data.data.accessed();
-            return (NpcCorporationsCollection) data.data;
-        }
-        try
-        {
-            NpcCorporationsCollection value = (NpcCorporationsCollection) NpcCorporationsCollection.getFuture(cacheCallback).get();
-            value.accessed();
-            return value;
-        } catch (Exception e)
-        {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + NpcCorporationsCollection.getUrl(), e);
-        }
-    }
-
-    @Override
     public MarketTypeCollection getMarketTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
         CacheData data = cache.get(MarketTypeCollection.getUrl());
@@ -1212,73 +1200,6 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
                     controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
                 controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
             }
-        }
-    }
-
-    public static abstract class DbPagingCallback implements CrestResponseCallback
-    {
-        private final String uid;
-        private final Class<?> pagesClass;
-        private final Class<?> jdbcClass;
-
-        public DbPagingCallback(String uid, Class<?> pagesClass, Class<?> jdbcClass)
-        {
-            this.uid = uid;
-            this.pagesClass = pagesClass;
-            this.jdbcClass = jdbcClass;
-        }
-
-        public abstract void received(EveData data, int page);
-
-        @Override
-        public void received(CrestRequestData requestData, EveData data)
-        {
-//            Alliances alliances = ((AllianceCollection)data).getAlliances();
-            Paging pdata = (Paging) data;
-            PagingData pagingData = new PagingData(pdata.totalCount, pdata.pageCount, pdata.items.size(), uid);
-            boolean validated = false;
-            try
-            {
-                validated = CrestController.getCrestController().getDataAccessor().validatePages(pagingData, jdbcClass);
-            } catch (Exception e)
-            {
-                LoggerFactory.getLogger(getClass()).warn("Paging is broken, the database has failed to validate the Paging table", e);
-                return;
-            }
-            try
-            {
-                int page = 0;
-                String segment = "?page=";
-                String base = null;
-                if(pdata.next != null)
-                {
-                    int idx = pdata.next.url.indexOf(segment);
-                    base = pdata.next.url;
-                    String value = base.substring(idx + segment.length());
-                    page = Integer.parseInt(value);
-                    --page;
-                    base = base.substring(0,idx);
-                }else if(pdata.previous != null)
-                {
-                    int idx = pdata.previous.url.indexOf(segment);
-                    base = pdata.previous.url;
-                    String value = base.substring(idx + segment.length());
-                    page = Integer.parseInt(value);
-                    ++page;
-                    base = base.substring(0,idx);
-                }else
-                    page = 1;
-
-                received(data, page);
-            } catch (Exception e)
-            {
-                LoggerFactory.getLogger(getClass()).warn("Paging is broken, the database has failed to add page items to the item table", e);
-                return;
-            }
-            CrestController controller = CrestController.getCrestController();
-            if (!validated)
-                controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Changed);
-            controller.fireCacheEvent(requestData.clientInfo, requestData.url, CacheEventListener.Type.Refreshed);
         }
     }
 }

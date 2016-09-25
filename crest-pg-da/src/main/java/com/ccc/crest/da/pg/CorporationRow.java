@@ -19,26 +19,30 @@ package com.ccc.crest.da.pg;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.CorporationData;
 
 @SuppressWarnings("javadoc")
-public class AllianceRow extends AllianceData
+public class CorporationRow extends CorporationData
 {
-    public AllianceRow(ResultSet rs) throws SQLException
+    public CorporationRow(ResultSet rs) throws SQLException
     {
         //@formatter:off
         super(
-            rs.getLong(AllianceJdbc.IdIdx),
-            rs.getString(AllianceJdbc.ShortIdx),
-            rs.getString(AllianceJdbc.NameIdx),
-            rs.getString(AllianceJdbc.UrlIdx),
-            rs.getInt(AllianceJdbc.PageIdx));
+            rs.getLong(CorporationJdbc.IdIdx),
+            rs.getString(CorporationJdbc.TickerIdx),
+            rs.getString(CorporationJdbc.NameIdx),
+            rs.getString(CorporationJdbc.DescIdx),
+            rs.getString(CorporationJdbc.UrlIdx),
+            rs.getString(CorporationJdbc.HqNameIdx),
+            rs.getString(CorporationJdbc.HqUrldx),
+            rs.getString(CorporationJdbc.LoyaltyUrlIdx),
+            rs.getInt(CorporationJdbc.PageIdx));
         //@formatter:on
     }
 
     @Override
     public String toString()
     {
-        return "AllianceRow [id=" + id + ", shortName=" + shortName + ", name=" + name + ", page=" + page + ", url=" + url + "]";
+        return "CorporationRow [id=" + id + ", ticker=" + ticker + ", name=" + name + ", description=" + description + ", corpUrl=" + corpUrl + ", loyaltyUrl=" + loyaltyUrl + ", headquartersName=" + headquartersName + ", headquartersUrl=" + headquartersUrl + ", page=" + page + "]";
     }
 }

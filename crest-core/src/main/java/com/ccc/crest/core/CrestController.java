@@ -645,7 +645,8 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
-                dataCache.getAllianceCollection();
+//                dataCache.getAllianceCollection(1);
+                dataCache.getNpcCorporationCollection(1);
 
 
 //                dumpSchema();
@@ -655,16 +656,11 @@ authenticatedTest((CrestClientInfo)clientInfo);
 //                    log.info(dataCache.getOptions(null).representations.toString());
 //                    }catch(Exception e){log.error("failed:", e);}
 
-                log.info("Host: " + CrestClient.getCrestBaseUri());
-                RootEndpoint root = new RootEndpoint();
-                root.dumpTree(new File("/tmp/crestj"));
+//                log.info("Host: " + CrestClient.getCrestBaseUri());
+//                RootEndpoint root = new RootEndpoint();
+//                root.dumpTree(new File("/tmp/crestj"));
 
 
-                dataCache.getAllianceCollection(0);
-                dataCache.getNPCCorporationsCollection();
-
-
-                //                SchemaMap.schemaMap.checkSchema();
                 dataCache.getTime();
                 dataAccessor.isUp();
                 dataCache.getServerStatus();

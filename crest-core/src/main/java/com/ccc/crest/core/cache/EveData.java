@@ -16,6 +16,7 @@
 */
 package com.ccc.crest.core.cache;
 
+import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.tools.RequestThrottle;
 
 @SuppressWarnings("javadoc")
@@ -34,4 +35,5 @@ public interface EveData extends EveJsonData
     public void setContinueRefresh(boolean value);
     public boolean isFromCrest();
     public void setFromCrest(boolean value);
+    public Paging getPaging();
 }

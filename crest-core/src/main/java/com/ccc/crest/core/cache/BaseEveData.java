@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.RightsException;
+import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.core.client.xml.EveApiSaxHandler;
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.tools.RequestThrottle;
@@ -145,5 +146,11 @@ public abstract class BaseEveData extends EveApiSaxHandler implements Serializab
         nextRefresh.set(time);
     }
 
+    @Override
+    public Paging getPaging()
+    {
+        return null;
+    }
+    
     public enum VersionType {Post, Get, Put, Delete}
 }

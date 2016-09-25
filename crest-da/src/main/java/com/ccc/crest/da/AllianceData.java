@@ -22,16 +22,16 @@ public class AllianceData
     public final long id;
     public final String shortName;
     public final String name;
-    public final String allianceUrl;
     public final int page;
+    public final String url;
     
-    public AllianceData(long id, String shortName, String name, String allianceUrl, int page)
+    public AllianceData(long id, String shortName, String name, String url, int page)
     {
         this.id = id;
         this.shortName = shortName;
         this.name = name;
         this.page = page;
-        this.allianceUrl = allianceUrl;
+        this.url = url;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class AllianceData
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((allianceUrl == null) ? 0 : allianceUrl.hashCode());
+        result = prime * result + ((url == null) ? 0 : url.hashCode());
         result = prime * result + (int) (id ^ (id >>> 32));
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + page;
@@ -57,11 +57,11 @@ public class AllianceData
         if (getClass() != obj.getClass())
             return false;
         AllianceData other = (AllianceData) obj;
-        if (allianceUrl == null)
+        if (url == null)
         {
-            if (other.allianceUrl != null)
+            if (other.url != null)
                 return false;
-        } else if (!allianceUrl.equals(other.allianceUrl))
+        } else if (!url.equals(other.url))
             return false;
         if (id != other.id)
             return false;
@@ -85,6 +85,6 @@ public class AllianceData
     @Override
     public String toString()
     {
-        return "AllianceData [id=" + id + ", shortName=" + shortName + ", name=" + name + ", page=" + page + ", allianceUrl=" + allianceUrl + "]";
+        return "AllianceData [id=" + id + ", shortName=" + shortName + ", name=" + name + ", page=" + page + ", url=" + url + "]";
     }
 }

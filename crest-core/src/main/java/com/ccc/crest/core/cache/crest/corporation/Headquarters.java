@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.alliance;
+package com.ccc.crest.core.cache.crest.corporation;
 
 import java.lang.reflect.Type;
 import java.util.Iterator;
@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 
 import org.slf4j.LoggerFactory;
 
-import com.ccc.crest.da.PagedItem;
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -31,40 +30,26 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliance implements PagedItem, JsonDeserializer<Alliance>
+public class Headquarters implements JsonDeserializer<Headquarters>
 {
-    public volatile long id;
-    public volatile String shortName;
     public volatile String name;
-    public volatile String url;
-    public transient volatile String idStr;
+    public volatile String stationUrl;
 
-    public Alliance()
+    public Headquarters()
     {
     }
-    
-    public Alliance(long id, String shortName, String name, String url)
+
+    public Headquarters(String name, String stationUrl)
     {
-        this.id = id;
-        this.shortName = shortName;
         this.name = name;
-        this.url = url;
+        this.stationUrl = stationUrl;
     }
-    
-//    public volatile long id;
-//    public volatile String shortName;
-//    public volatile String name;
-//    public volatile ExternalRef allianceUrl;
-//    public volatile String idStr;
 
-    private static final String IdKey = "id";
-    private static final String ShortNameKey = "shortName";
-    private static final String NameKey = "name";
     private static final String HrefKey = "href";
-    private static final String IdStrKey = "id_str";
+    private static final String NameKey = "name";
 
     @Override
-    public Alliance deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public Headquarters deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
         while (objectIter.hasNext())
@@ -72,14 +57,8 @@ public class Alliance implements PagedItem, JsonDeserializer<Alliance>
             Entry<String, JsonElement> objectEntry = objectIter.next();
             String key = objectEntry.getKey();
             JsonElement value = objectEntry.getValue();
-            if (IdStrKey.equals(key))
-                idStr = value.getAsString();
-            else if (ShortNameKey.equals(key))
-                shortName = value.getAsString();
-            else if (HrefKey.equals(key))
-                url = value.getAsString();
-            else if (IdKey.equals(key))
-                id = value.getAsLong();
+            if (HrefKey.equals(key))
+                stationUrl = value.getAsString();
             else if (NameKey.equals(key))
                 name = value.getAsString();
             else
@@ -87,25 +66,20 @@ public class Alliance implements PagedItem, JsonDeserializer<Alliance>
         }
         return this;
     }
-
+    
     @Override
     public String toString()
     {
         TabToLevel format = new TabToLevel();
+        format.ttl(getClass().getSimpleName());
+        format.inc();
         return toString(format).toString();
     }
 
-    @Override
     public TabToLevel toString(TabToLevel format)
     {
-        format.ttl(getClass().getSimpleName());
-        format.inc();
-        format.ttl("id: ", id);
-        format.ttl("shortName: ", shortName);
         format.ttl("name: ", name);
-        format.ttl("url: ", url);
-        format.ttl("idStr: ", idStr);
-        format.dec();
+        format.ttl("stationUrl: ", stationUrl);
         return format;
     }
 }

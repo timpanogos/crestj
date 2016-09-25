@@ -17,16 +17,23 @@
 package com.ccc.crest.core.cache.crest.corporation;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
 import com.ccc.crest.core.cache.CrestRequestData;
+import com.ccc.crest.core.cache.DbPagingCallback;
 import com.ccc.crest.core.cache.EveData;
+import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.core.client.CrestResponseCallback;
+import com.ccc.crest.da.CorporationData;
+import com.ccc.crest.da.PagedItem;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -34,7 +41,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class NpcCorporationsCollection extends BaseEveData implements JsonDeserializer<NpcCorporationsCollection>
+public class NpcCorporationCollection extends BaseEveData implements JsonDeserializer<NpcCorporationCollection>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
@@ -42,18 +49,29 @@ public class NpcCorporationsCollection extends BaseEveData implements JsonDeseri
     public static final String GetBase = "application/vnd.ccp.eve.NPCCorporationsCollection";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
+    public static final DbPagingCallback PagingCallback = new CorporationsCallback(GetBase);
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
-    private static final String WriteScope = null;
 
     private volatile Corporations corporations;
 
-    public NpcCorporationsCollection()
+    public NpcCorporationCollection()
     {
     }
 
+    public NpcCorporationCollection(Corporations corporations)
+    {
+        this.corporations = corporations;
+    }
+
     public Corporations getCorporations()
+    {
+        return corporations;
+    }
+
+    @Override
+    public Paging getPaging()
     {
         return corporations;
     }
@@ -76,30 +94,77 @@ public class NpcCorporationsCollection extends BaseEveData implements JsonDeseri
         }
     }
 
-    public static String getUrl()
+    public static String getUrl(int page)
     {
-        return SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri();
+        StringBuilder sb = new StringBuilder(SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri());
+        if (page != 0)
+            sb.append("?page=").append(page);
+        return sb.toString();
     }
 
-    public static Future<EveData> getFuture(CrestResponseCallback callback) throws Exception
+    public static Future<EveData> getFuture(int page) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(NpcCorporationsCollection.class, new NpcCorporationsCollection());
+        gson.registerTypeAdapter(NpcCorporationCollection.class, new NpcCorporationCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getUrl(),
-                        gson.create(), null, NpcCorporationsCollection.class,
-                        callback,
+                        null, getUrl(page),
+                        gson.create(), null, NpcCorporationCollection.class,
+                        PagingCallback,
                         ReadScope, getVersion(VersionType.Get), continueRefresh, true);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override
-    public NpcCorporationsCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public NpcCorporationCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         corporations = new Corporations();
         corporations.deserialize(json, typeOfT, context);
         return this;
+    }
+    
+    private static AtomicBoolean firstCollection = new AtomicBoolean(true);
+    public static class CorporationsCallback extends DbPagingCallback
+    {
+        public CorporationsCallback(String uid)
+        {
+            super(uid);
+        }
+
+        @Override
+        public void received(EveData data, int page, boolean validated)
+        {
+            try
+            {
+                Paging paging = ((NpcCorporationCollection) data).getCorporations();
+                System.out.println("look here");
+                List<CorporationData> list = new ArrayList<>();
+                for (PagedItem item : paging.items)
+                {
+                    Corporation c = (Corporation) item;
+                    list.add(new CorporationData(c.id, c.ticker, c.name, c.description, c.corpUrl, c.loyaltyUrl, c.headquarters.name, c.headquarters.stationUrl, page));
+                }
+                if (!validated)
+                    CrestController.getCrestController().getDataAccessor().truncateAlliance();
+                CrestController.getCrestController().getDataAccessor().addCorporation(list, page);
+
+                if (firstCollection.get())
+                {
+                    firstCollection.set(false);
+                    try
+                    {
+                        getFuture(0);
+                    } catch (Exception e)
+                    {
+                        LoggerFactory.getLogger(getClass()).warn("Alliance failed to fire heartbeat", e);
+                    }
+                }
+            } catch (Exception e)
+            {
+                LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to add alliances to alliance table", e);
+                return;
+            }
+        }
     }
 }

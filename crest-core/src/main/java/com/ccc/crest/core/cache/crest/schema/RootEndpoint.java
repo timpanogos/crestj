@@ -46,7 +46,7 @@ import com.ccc.crest.core.cache.crest.character.OpportunitiesCollection;
 import com.ccc.crest.core.cache.crest.character.PostWaypoint;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
-import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.fleet.Fleet;
@@ -627,9 +627,9 @@ public class RootEndpoint
                                                                         null,                                               rootUrl + "/characters/1364371482/ui/openwindow/marketdetails/", "/ui/openwindow/marketdetails/", DocType.Leaf, MarketDetails.class);
         addChild(                             root, "Constellations",   UidBase + "ConstellationCollection-v1+json",        rootUrl + "/constellations/",                                    "/constellations/", ConstellationCollection.class);
         child = addChild(                     root, "Corporations",     null,                                               rootUrl + "/corporations/",                                      "/corporations/", DocType.PlaceHolder, null);
-        gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/1000004/", NpcCorporationsCollection.class);
-        addChild(                           gchild, "LoyaltyStore",     UidBase + "LoyaltyStoreOffersCollection-v1+json",   rootUrl + "/corporations/1000004/loyaltystore/",                 "/loyaltystore/", NpcCorporationsCollection.class);
-        addChild(                            child, "NPCCorporations",  UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/", NpcCorporationsCollection.class);
+        gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/1000004/", NpcCorporationCollection.class);
+        addChild(                           gchild, "LoyaltyStore",     UidBase + "LoyaltyStoreOffersCollection-v1+json",   rootUrl + "/corporations/1000004/loyaltystore/",                 "/loyaltystore/", NpcCorporationCollection.class);
+        addChild(                            child, "NPCCorporations",  UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/", NpcCorporationCollection.class);
 
         child = addChild(                     root, "Dogma",            null,                                               rootUrl + "/dogma/",                                             "/dogma/", DocType.PlaceHolder, null);
         addChild(                            child, "Attributes",       UidBase + "DogmaAttributeCollection-v1+json",       rootUrl + "/dogma/attributes/",                                  "/attributes/", DogmaAttributeCollection.class);

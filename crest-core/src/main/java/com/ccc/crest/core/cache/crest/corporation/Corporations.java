@@ -17,74 +17,55 @@
 package com.ccc.crest.core.cache.crest.corporation;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map.Entry;
-
-import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.core.cache.crest.Paging;
-import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.CorporationData;
+import com.ccc.crest.da.PagedItem;
 import com.ccc.crest.da.PagingData;
 import com.ccc.tools.TabToLevel;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
 public class Corporations extends Paging implements JsonDeserializer<Corporations>
 {
-    public final List<Corporation> corporations;
-    
     public Corporations()
     {
-        corporations = new ArrayList<>();
     }
 
-    public Corporations(PagingData pagingData, List<AllianceData> allianceList)
+    public Corporations(PagingData pagingData, List<CorporationData> list)
     {
-        super(pagingData, allianceList.get(0).page);
-        corporations = new ArrayList<>();
-        for(AllianceData data : allianceList)
-            corporations.add(new Corporation(""+data.id, data.shortName, data.id, data.name));
+        super(pagingData, list.get(0).page);
+        for(CorporationData data : list)
+        {
+            //@formatter:off
+            items.add(
+                new Corporation(
+                    data.id, data.ticker, data.name, data.description, data.corpUrl, 
+                    new Headquarters(data.headquartersName, data.headquartersUrl), 
+                    data.loyaltyUrl));
+            //@formatter:on
+        }
     }
 
-    private static final String ItemsKey = "items";
-    
     @Override
     public Corporations deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
-        while (objectIter.hasNext())
-        {
-            Entry<String, JsonElement> objectEntry = objectIter.next();
-            String key = objectEntry.getKey();
-            JsonElement value = objectEntry.getValue();
-            if(super.pagingDeserialize(key, value))
-                continue;
-            else if (ItemsKey.equals(key))
-            {
-                JsonElement objectElement = objectEntry.getValue();
-                if (!objectElement.isJsonArray())
-                    throw new JsonParseException("Expected " + ItemsKey + " array received json element " + objectElement.toString());
-                int size = ((JsonArray) objectElement).size();
-                for (int i = 0; i < size; i++)
-                {
-                    JsonElement childElement = ((JsonArray) objectElement).get(i);
-                    Corporation child = new Corporation();
-                    corporations.add(child);
-                    child.deserialize(childElement, typeOfT, context);
-                }
-            }
-            else
-                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
-        }
+        super.pagingDeserialize(json, typeOfT, context);
         return this;
     }
+    
+    @Override
+    protected PagedItem getPagedItem(JsonElement json, Type typeOfT, JsonDeserializationContext context)
+    {
+        Corporation child = new Corporation();
+        child.deserialize(json, typeOfT, context);
+        return child;
+    }
+    
     @Override
     public String toString()
     {
@@ -98,7 +79,7 @@ public class Corporations extends Paging implements JsonDeserializer<Corporation
         super.toString(format);
         format.ttl("corporations: ");
         format.inc();
-        for(Corporation corp : corporations)
+        for(PagedItem corp : items)
             corp.toString(format);
         format.dec();
         format.dec();

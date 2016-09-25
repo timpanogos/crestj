@@ -16,7 +16,6 @@
 */
 package com.ccc.crest.da.pg;
 
-import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
@@ -24,9 +23,9 @@ import java.util.Properties;
 import com.ccc.crest.da.AccessGroup;
 import com.ccc.crest.da.AllianceData;
 import com.ccc.crest.da.CapsuleerData;
+import com.ccc.crest.da.CorporationData;
 import com.ccc.crest.da.CrestDataAccessor;
 import com.ccc.crest.da.EntityData;
-import com.ccc.crest.da.PagedItem;
 import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.SharedRight;
 import com.ccc.db.AlreadyExistsException;
@@ -188,7 +187,7 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public boolean validatePages(PagingData pageData, Class<?> itemJdbcClass) throws Exception
+    public boolean validatePages(PagingData pageData) throws Exception
     {
         Connection connection = getConnection();
         try
@@ -196,10 +195,7 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
             PagingRow row = PagingJdbc.getRow(connection, pageData.uid, false);
             if(row.totalItems != pageData.totalItems)
             {
-                PagingJdbc.updateRow(connection, row, row.pid, false);
-
-                Method method = itemJdbcClass.getDeclaredMethod("truncate", new Class<?>[0]);
-                method.invoke(itemJdbcClass, new Object[0]);
+                PagingJdbc.updateRow(connection, pageData, row.pid, false);
                 return false;
             }
             PgBaseDataAccessor.close(connection, null, null, true);
@@ -224,13 +220,46 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     }
 
     @Override
-    public void addPage(List<PagedItem> items, Class<?> jdbcClass) throws Exception
+    public void truncateAlliance() throws Exception
+    {
+        AllianceJdbc.truncate(getConnection(), true);
+    }
+
+    @Override
+    public void addAlliance(List<AllianceData> alliances, int page) throws Exception
     {
         Connection connection = getConnection();
-        List<AllianceData> list = AllianceJdbc.getRows(getConnection(), alliances.get(0).page, false);
+        List<AllianceData> list = AllianceJdbc.getRows(connection, page, false);
         if(list.size() == 0)
+        {
             for(AllianceData data : alliances)
                 AllianceJdbc.insertRow(connection, data, false);
+        }
         PgBaseDataAccessor.close(connection, null, null, true);
+    }
+
+    @Override
+    public void addCorporation(List<CorporationData> corporations, int page) throws Exception
+    {
+        Connection connection = getConnection();
+        List<CorporationData> list = CorporationJdbc.getRows(connection, page, false);
+        if(list.size() == 0)
+        {
+            for(CorporationData data : corporations)
+                CorporationJdbc.insertRow(connection, data, false);
+        }
+        PgBaseDataAccessor.close(connection, null, null, true);
+    }
+
+    @Override
+    public List<CorporationData> getCorporations(int page) throws Exception
+    {
+        return CorporationJdbc.getRows(getConnection(), page, true);
+    }
+
+    @Override
+    public void truncateCorporation() throws Exception
+    {
+        CorporationJdbc.truncate(getConnection(), true);
     }
 }

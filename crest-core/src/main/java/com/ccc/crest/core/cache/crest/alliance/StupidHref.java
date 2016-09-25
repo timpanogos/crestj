@@ -31,40 +31,18 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class Alliance implements PagedItem, JsonDeserializer<Alliance>
+public class StupidHref implements PagedItem, JsonDeserializer<StupidHref>
 {
-    public volatile long id;
-    public volatile String shortName;
-    public volatile String name;
-    public volatile String url;
-    public transient volatile String idStr;
+    public volatile Alliance alliance;
 
-    public Alliance()
+    public StupidHref()
     {
     }
     
-    public Alliance(long id, String shortName, String name, String url)
-    {
-        this.id = id;
-        this.shortName = shortName;
-        this.name = name;
-        this.url = url;
-    }
-    
-//    public volatile long id;
-//    public volatile String shortName;
-//    public volatile String name;
-//    public volatile ExternalRef allianceUrl;
-//    public volatile String idStr;
-
-    private static final String IdKey = "id";
-    private static final String ShortNameKey = "shortName";
-    private static final String NameKey = "name";
     private static final String HrefKey = "href";
-    private static final String IdStrKey = "id_str";
 
     @Override
-    public Alliance deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public StupidHref deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
         while (objectIter.hasNext())
@@ -72,16 +50,11 @@ public class Alliance implements PagedItem, JsonDeserializer<Alliance>
             Entry<String, JsonElement> objectEntry = objectIter.next();
             String key = objectEntry.getKey();
             JsonElement value = objectEntry.getValue();
-            if (IdStrKey.equals(key))
-                idStr = value.getAsString();
-            else if (ShortNameKey.equals(key))
-                shortName = value.getAsString();
-            else if (HrefKey.equals(key))
-                url = value.getAsString();
-            else if (IdKey.equals(key))
-                id = value.getAsLong();
-            else if (NameKey.equals(key))
-                name = value.getAsString();
+            if (HrefKey.equals(key))
+            {
+                alliance = new Alliance();
+                alliance.deserialize(value, typeOfT, context);
+            }
             else
                 LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
         }
@@ -100,11 +73,7 @@ public class Alliance implements PagedItem, JsonDeserializer<Alliance>
     {
         format.ttl(getClass().getSimpleName());
         format.inc();
-        format.ttl("id: ", id);
-        format.ttl("shortName: ", shortName);
-        format.ttl("name: ", name);
-        format.ttl("url: ", url);
-        format.ttl("idStr: ", idStr);
+        alliance.toString(format);
         format.dec();
         return format;
     }

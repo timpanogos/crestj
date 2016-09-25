@@ -34,7 +34,7 @@ import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
-import com.ccc.crest.core.cache.crest.corporation.NpcCorporationsCollection;
+import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
@@ -112,7 +112,7 @@ public class SchemaMap1
 //      addElement(AuthenticationEndpoint.class,        "-v1+json", "/oauth/token/",            "authEndpoint.href");
         addElement(BloodlineCollection.class,           "-v2+json", "/bloodlines/",             "bloodlines.href");
         addElement(ConstellationCollection.class,       "-v1+json", "/constellations/",         "constellations.href");
-        addElement(NpcCorporationsCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
+        addElement(NpcCorporationCollection.class,         "-v1+json", "/corporations/",           "corporations.href"); // has options version but not corp 
         addElement(CrestOptions.class,                  "-v1+json", "",                         "");
         addElement(DogmaAttributeCollection.class,      "-v1+json", "/dogma/attributes/",       "dogma.attributes");
         addElement(DogmaEffectCollection.class,         "-v1+json", "/dogma/effects/",          "dogma.effects");
@@ -126,7 +126,7 @@ public class SchemaMap1
         addElement(MarketGroupCollection.class,         "-v1+json", "/market/groups/",          "marketGroups.href");
         addElement(MarketTypePriceCollection.class,     "-v1+json", "/market/prices/",          "marketPrices.href");
         addElement(MarketTypeCollection.class,          "-v1+json", "/market/types/",           "marketTypes.href");
-        addElement(NpcCorporationsCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
+        addElement(NpcCorporationCollection.class,     "-v1+json", "/corporations/npccorps/",  "npcCorporations.href");
         addElement(OpportunityGroupsCollection.class,   "-v1+json", "/opportunities/groups/",   "opportunities.groups");
         addElement(OpportunityTasksCollection.class,    "-v1+json", "/opportunities/tasks/",    "opportunities.tasks");
         addElement(RaceCollection.class,                "-v3+json", "/races/",                  "races.href");
@@ -284,7 +284,7 @@ public class SchemaMap1
                     // FIXME: remove when fixed
                     if (size > 1)
                         list.add("It appears CorporationCollection schema may have been added");
-                    versionBasesSeen.put(NpcCorporationsCollection.GetBase, "-v1+json");
+                    versionBasesSeen.put(NpcCorporationCollection.GetBase, "-v1+json");
                     continue;
                 }
                 if (group.name.equals("decode"))

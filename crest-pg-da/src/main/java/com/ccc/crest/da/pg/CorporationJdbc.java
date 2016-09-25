@@ -23,25 +23,33 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ccc.crest.da.AllianceData;
+import com.ccc.crest.da.CorporationData;
 import com.ccc.db.postgres.PgBaseDataAccessor;
 
 @SuppressWarnings("javadoc")
-public class AllianceJdbc
+public class CorporationJdbc
 {
     public static final String TableName;
 
     public static final String ColIdName = "id";
-    public static final String ColShortName = "shortname";
+    public static final String ColTickerName = "ticker";
     public static final String ColNameName = "name";
-    public static final String ColUrlName = "allianceurl";
+    public static final String ColDescName = "description";
+    public static final String ColUrlName = "corpurl";
+    public static final String ColHqNameName = "hqname";
+    public static final String ColHqUrlName = "hqurl";
+    public static final String ColLoyaltyName = "loyaltyurl";
     public static final String ColPageName = "page";
-
+    
     public static final int IdIdx = 1;
-    public static final int ShortIdx = 2;
+    public static final int TickerIdx = 2;
     public static final int NameIdx = 3;
-    public static final int UrlIdx = 4;
-    public static final int PageIdx = 5;
+    public static final int DescIdx = 4;
+    public static final int UrlIdx = 5;
+    public static final int HqNameIdx = 6;
+    public static final int HqUrldx = 7;
+    public static final int LoyaltyUrlIdx = 8;
+    public static final int PageIdx = 9;
 
     private static final String PrepTruncate;
     private static final String PrepGetRows;
@@ -49,10 +57,10 @@ public class AllianceJdbc
 
     static
     {
-        TableName = "alliance";
+        TableName = "corporation";
         PrepTruncate = "truncate " + TableName + ";";
         PrepGetRows = "select * from " + TableName + " where " + ColPageName + "=?;";
-        PrepInsertRow = "insert into " + TableName + " values(?, ?, ?, ?, ?);";
+        PrepInsertRow = "insert into " + TableName + " values(?, ?, ?, ?, ?, ?, ?, ?, ?);";
     }
 
     public static void truncate(Connection connection, boolean close) throws SQLException
@@ -67,17 +75,17 @@ public class AllianceJdbc
         }
     }
 
-    public static List<AllianceData> getRows(Connection connection, int page, boolean close) throws SQLException
+    public static List<CorporationData> getRows(Connection connection, int page, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepGetRows);
         ResultSet rs = null;
-        List<AllianceData> rows = new ArrayList<>();
+        List<CorporationData> rows = new ArrayList<>();
         try
         {
             stmt.setInt(1, page);
             rs = stmt.executeQuery();
             while (rs.next())
-                rows.add(new AllianceRow(rs));
+                rows.add(new CorporationRow(rs));
             return rows;
         } finally
         {
@@ -85,16 +93,20 @@ public class AllianceJdbc
         }
     }
 
-    public static void insertRow(Connection connection, AllianceData alliance, boolean close) throws SQLException
+    public static void insertRow(Connection connection, CorporationData corporation, boolean close) throws SQLException
     {
         PreparedStatement stmt = connection.prepareStatement(PrepInsertRow);
         try
         {
-            stmt.setLong(IdIdx, alliance.id);
-            stmt.setString(ShortIdx, alliance.shortName);
-            stmt.setString(NameIdx, alliance.name);
-            stmt.setString(UrlIdx, alliance.url);
-            stmt.setInt(PageIdx, alliance.page);
+            stmt.setLong(IdIdx, corporation.id);
+            stmt.setString(TickerIdx, corporation.ticker);
+            stmt.setString(NameIdx, corporation.name);
+            stmt.setString(DescIdx, corporation.description);
+            stmt.setString(UrlIdx, corporation.corpUrl);
+            stmt.setString(HqNameIdx, corporation.headquartersName);
+            stmt.setString(HqUrldx, corporation.headquartersUrl);
+            stmt.setString(LoyaltyUrlIdx, corporation.loyaltyUrl);
+            stmt.setInt(PageIdx, corporation.page);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("insertRow affected an unexpected number of rows: " + rows);
