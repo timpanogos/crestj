@@ -47,6 +47,7 @@ import com.ccc.crest.core.cache.crest.character.OpportunitiesCollection;
 import com.ccc.crest.core.cache.crest.character.PostWaypoint;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
+import com.ccc.crest.core.cache.crest.corporation.CorporationStructuresCollection;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
@@ -590,7 +591,7 @@ public class RootEndpoint
         //@formatter:off
         addChild(                             root, "Endpoints",        UidBase + "Api-v5+json",                            rootUrl + "",                                                    "", EndpointCollection.class);
         addChild(                             root, "Options",          UidBase + "Options-v1+json",                        rootUrl + "",                                                    "", CrestOptions.class);
-        Endpoint child = addChild(            root, "Alliances",        UidBase + "AllianceCollection-v1+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
+        Endpoint child = addChild(            root, "Alliances",        UidBase + "AllianceCollection-v2+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
         addChild(                            child, "Alliance",         UidBase + "Alliance-v1+json",                       rootUrl + "/alliances/99000006/",                                "/0/", AlliancesElement.class);
         addChild(                             root, "Bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                        "/bloodlines/", BloodlineCollection.class);
         child = addChild(                     root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", DocType.Group, CharacterSearch.class);
@@ -631,7 +632,7 @@ public class RootEndpoint
         child = addChild(                     root, "Corporations",     null,                                               rootUrl + "/corporations/",                                      "/corporations/", DocType.PlaceHolder, null);
         gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/0/", NpcCorporationCollection.class);
         ggchild = addChild(                 gchild, "Structures",       UidBase + "CorporationStructuresCollection-v1+json",rootUrl + "/corporations/665335352/structures/",                 "/structures/", CorporationStructuresCollection.class);
-        
+
         addChild(                           gchild, "LoyaltyStore",     UidBase + "LoyaltyStoreOffersCollection-v1+json",   rootUrl + "/corporations/1000004/loyaltystore/",                 "/loyaltystore/", NpcCorporationCollection.class);
         addChild(                            child, "NPCCorporations",  UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/", NpcCorporationCollection.class);
 

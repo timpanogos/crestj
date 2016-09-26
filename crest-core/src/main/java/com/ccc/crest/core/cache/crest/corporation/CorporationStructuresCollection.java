@@ -14,7 +14,7 @@
 **  You should have received copies of the GNU GPLv3 and GNU LGPLv3
 **  licenses along with this program.  If not, see http://www.gnu.org/licenses
 */
-package com.ccc.crest.core.cache.crest.dogma;
+package com.ccc.crest.core.cache.crest.corporation;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import com.ccc.crest.core.cache.DbPagingCallback;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
-import com.ccc.crest.da.DogmaAttributeData;
+import com.ccc.crest.da.CorporationData;
 import com.ccc.crest.da.PagedItem;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -41,40 +41,41 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class DogmaAttributeCollection extends BaseEveData implements JsonDeserializer<DogmaAttributeCollection>
+public class CorporationStructuresCollection extends BaseEveData implements JsonDeserializer<CorporationStructuresCollection>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
-    public static final String GetBase = "application/vnd.ccp.eve.DogmaAttributeCollection";
+    public static final String GetBase = "application/vnd.ccp.eve.NPCCorporationsCollection";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
-    public static final DbPagingCallback PagingCallback = new DogmaAttributeCallback(GetBase);
+    public static final DbPagingCallback PagingCallback = new CorporationsCallback(GetBase);
     public static final String AccessGroup = CrestController.AnonymousGroupName;
     public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
     private static final String ReadScope = null;
 
-    private volatile DogmaAttributes dogmaAttributes;
+    private volatile Corporations corporations;
 
-    public DogmaAttributeCollection()
+    public CorporationStructuresCollection()
     {
     }
 
-    public DogmaAttributeCollection(DogmaAttributes dogmaAttributes)
+    public CorporationStructuresCollection(Corporations corporations)
     {
-        this.dogmaAttributes = dogmaAttributes;
+        this.corporations = corporations;
     }
 
-    public DogmaAttributes getDogmaAttributes()
+    public Corporations getCorporations()
     {
-        return dogmaAttributes;
+        return corporations;
     }
 
     @Override
     public Paging getPaging()
     {
-        return dogmaAttributes;
+        return corporations;
     }
+
 
     public static String getVersion(VersionType type)
     {
@@ -104,29 +105,29 @@ public class DogmaAttributeCollection extends BaseEveData implements JsonDeseria
     public static Future<EveData> getFuture(int page) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(DogmaAttributeCollection.class, new DogmaAttributeCollection());
+        gson.registerTypeAdapter(CorporationStructuresCollection.class, new CorporationStructuresCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
                         null, getUrl(page),
-                        gson.create(), null, DogmaAttributeCollection.class,
+                        gson.create(), null, CorporationStructuresCollection.class,
                         PagingCallback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override
-    public DogmaAttributeCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public CorporationStructuresCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        dogmaAttributes = new DogmaAttributes();
-        dogmaAttributes.deserialize(json, typeOfT, context);
+        corporations = new Corporations();
+        corporations.deserialize(json, typeOfT, context);
         return this;
     }
-
+    
     private static AtomicBoolean firstCollection = new AtomicBoolean(true);
-    public static class DogmaAttributeCallback extends DbPagingCallback
+    public static class CorporationsCallback extends DbPagingCallback
     {
-        public DogmaAttributeCallback(String uid)
+        public CorporationsCallback(String uid)
         {
             super(uid);
         }
@@ -136,16 +137,16 @@ public class DogmaAttributeCollection extends BaseEveData implements JsonDeseria
         {
             try
             {
-                Paging paging = ((DogmaAttributeCollection) data).getDogmaAttributes();
-                List<DogmaAttributeData> list = new ArrayList<>();
+                Paging paging = ((CorporationStructuresCollection) data).getCorporations();
+                List<CorporationData> list = new ArrayList<>();
                 for (PagedItem item : paging.items)
                 {
-                    DogmaAttribute c = (DogmaAttribute) item;
-                    list.add(new DogmaAttributeData(c.id, c.name, c.description, c.corpUrl, c.loyaltyUrl, "hqname", "hqurl", page));
+                    Corporation c = (Corporation) item;
+                    list.add(new CorporationData(c.id, c.ticker, c.name, c.description, c.corpUrl, c.loyaltyUrl, c.headquarters.name, c.headquarters.stationUrl, page));
                 }
                 if (!validated)
-                    CrestController.getCrestController().getDataAccessor().truncateAlliance();
-                CrestController.getCrestController().getDataAccessor().addDogmaAttribute(list, page);
+                    CrestController.getCrestController().getDataAccessor().truncateCorporation();
+                CrestController.getCrestController().getDataAccessor().addCorporation(list, page);
 
                 if (firstCollection.get())
                 {
@@ -155,12 +156,12 @@ public class DogmaAttributeCollection extends BaseEveData implements JsonDeseria
                         getFuture(0);
                     } catch (Exception e)
                     {
-                        LoggerFactory.getLogger(getClass()).warn("Alliance failed to fire heartbeat", e);
+                        LoggerFactory.getLogger(getClass()).warn("NpcCorporation failed to fire heartbeat", e);
                     }
                 }
             } catch (Exception e)
             {
-                LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to add alliances to alliance table", e);
+                LoggerFactory.getLogger(getClass()).warn("NpcCorporation paging is broken, the database has failed to add corporations to alliance table", e);
                 return;
             }
         }

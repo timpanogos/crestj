@@ -17,17 +17,12 @@
 package com.ccc.crest.core.cache.crest.alliance;
 
 import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.Map.Entry;
-
-import org.slf4j.LoggerFactory;
 
 import com.ccc.crest.da.PagedItem;
 import com.ccc.tools.TabToLevel;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
@@ -38,26 +33,14 @@ public class StupidHref implements PagedItem, JsonDeserializer<StupidHref>
     public StupidHref()
     {
     }
-    
+
     private static final String HrefKey = "href";
 
     @Override
     public StupidHref deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
-        Iterator<Entry<String, JsonElement>> objectIter = ((JsonObject) json).entrySet().iterator();
-        while (objectIter.hasNext())
-        {
-            Entry<String, JsonElement> objectEntry = objectIter.next();
-            String key = objectEntry.getKey();
-            JsonElement value = objectEntry.getValue();
-            if (HrefKey.equals(key))
-            {
-                alliance = new Alliance();
-                alliance.deserialize(value, typeOfT, context);
-            }
-            else
-                LoggerFactory.getLogger(getClass()).warn(key + " has a field not currently being handled: \n" + objectEntry.toString());
-        }
+        alliance = new Alliance();
+        alliance.deserialize(json, typeOfT, context);
         return this;
     }
 

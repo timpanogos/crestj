@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -27,11 +27,10 @@ public class DogmaAttributeData
     public final String headquartersName;
     public final String headquartersUrl;
     public final int page;
-    
-    public DogmaAttributeData(long id, String ticker, String name, String description, String corpUrl, String loyaltyUrl, String hqName, String hqUrl, int page)
+
+    public DogmaAttributeData(long id, String name, String description, String corpUrl, String loyaltyUrl, String hqName, String hqUrl, int page)
     {
         this.id = id;
-        this.ticker = ticker;
         this.name = name;
         this.description = description;
         this.corpUrl = corpUrl;

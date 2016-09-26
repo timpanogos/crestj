@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -74,7 +74,6 @@ public abstract class DbPagingCallback implements CrestResponseCallback
                 base = base.substring(0,idx);
             }else
                 page = 1;
-
             received(data, page, validated);
         } catch (Exception e)
         {

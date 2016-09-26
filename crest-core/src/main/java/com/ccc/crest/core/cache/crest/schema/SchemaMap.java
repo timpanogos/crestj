@@ -65,7 +65,7 @@ public class SchemaMap
     {
         DataCache cache = ((CrestController) CrestController.getController()).dataCache;
         Representation rep = cache.getOptions(null).getRepresentations().representations.get(1);
-        if(!rep.acceptType.name.equals("application/"+schemaMap.rootEndpoint.endpoints.root.ruid))
+        if(!rep.acceptType.name.equals(schemaMap.rootEndpoint.endpoints.root.ruid))
         {
             String msg = "This framework is currently coded to " + schemaMap.rootEndpoint.endpoints.root.ruid + " CREST is reporting: " + rep.acceptType.name;
             schemaMap.log.warn(msg);
@@ -115,13 +115,12 @@ public class SchemaMap
         String url = getSchemaFromVersionBase(versionBase).getUri();
         int idx = url.lastIndexOf('/');
         do
-        {
             if(!Character.isDigit(url.charAt(--idx)))
                 break;
-        }while(true);
+        while(true);
         return url.substring(0, idx);
     }
-    
+
     private void addElement(Class<? extends EveJsonData> clazz, String version, String uri, VersionType uidType) throws Exception
     {
         Field field = null;

@@ -40,15 +40,10 @@ public class DogmaAttributes extends Paging implements JsonDeserializer<DogmaAtt
     {
         super(pagingData, list.get(0).page);
         for(DogmaAttributeData data : list)
-        {
             //@formatter:off
             items.add(
-                new DogmaAttribute(
-                    data.id, data.ticker, data.name, data.description, data.corpUrl, 
-                    
-                    data.loyaltyUrl));
+                new DogmaAttribute(data.id, "", data.name, data.description, data.corpUrl,data.loyaltyUrl));
             //@formatter:on
-        }
     }
 
     @Override
@@ -57,7 +52,7 @@ public class DogmaAttributes extends Paging implements JsonDeserializer<DogmaAtt
         super.pagingDeserialize(json, typeOfT, context);
         return this;
     }
-    
+
     @Override
     protected PagedItem getPagedItem(JsonElement json, Type typeOfT, JsonDeserializationContext context)
     {
@@ -65,14 +60,14 @@ public class DogmaAttributes extends Paging implements JsonDeserializer<DogmaAtt
         child.deserialize(json, typeOfT, context);
         return child;
     }
-    
+
     @Override
     public String toString()
     {
         TabToLevel format = new TabToLevel();
         return toString(format).toString();
     }
-    
+
     @Override
     public TabToLevel toString(TabToLevel format)
     {
@@ -84,6 +79,6 @@ public class DogmaAttributes extends Paging implements JsonDeserializer<DogmaAtt
         format.dec();
         format.dec();
         return format;
-        
+
     }
 }

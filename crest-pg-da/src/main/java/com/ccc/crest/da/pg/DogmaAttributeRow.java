@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -29,7 +29,6 @@ public class DogmaAttributeRow extends DogmaAttributeData
         //@formatter:off
         super(
             rs.getLong(CorporationJdbc.IdIdx),
-            rs.getString(CorporationJdbc.TickerIdx),
             rs.getString(CorporationJdbc.NameIdx),
             rs.getString(CorporationJdbc.DescIdx),
             rs.getString(CorporationJdbc.UrlIdx),
@@ -38,11 +37,5 @@ public class DogmaAttributeRow extends DogmaAttributeData
             rs.getString(CorporationJdbc.LoyaltyUrlIdx),
             rs.getInt(CorporationJdbc.PageIdx));
         //@formatter:on
-    }
-
-    @Override
-    public String toString()
-    {
-        return "CorporationRow [id=" + id + ", ticker=" + ticker + ", name=" + name + ", description=" + description + ", corpUrl=" + corpUrl + ", loyaltyUrl=" + loyaltyUrl + ", headquartersName=" + headquartersName + ", headquartersUrl=" + headquartersUrl + ", page=" + page + "]";
     }
 }

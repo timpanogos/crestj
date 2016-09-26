@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -40,7 +40,7 @@ public class DogmaAttributeJdbc
     public static final String ColHqUrlName = "hqurl";
     public static final String ColLoyaltyName = "loyaltyurl";
     public static final String ColPageName = "page";
-    
+
     public static final int IdIdx = 1;
     public static final int TickerIdx = 2;
     public static final int NameIdx = 3;
@@ -99,7 +99,6 @@ public class DogmaAttributeJdbc
         try
         {
             stmt.setLong(IdIdx, attribute.id);
-            stmt.setString(TickerIdx, attribute.ticker);
             stmt.setString(NameIdx, attribute.name);
             stmt.setString(DescIdx, attribute.description);
             stmt.setString(UrlIdx, attribute.corpUrl);

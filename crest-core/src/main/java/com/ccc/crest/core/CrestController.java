@@ -645,9 +645,10 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
+//                dataCache.getAllianceCollection(1);
 //                dataCache.getAlliancesElement(99000006);
-//                dataCache.getNpcCorporationCollection(1);
-//                dataCache.getDogmaAttributeCollection();
+                dataCache.getNpcCorporationCollection(1);
+                dataCache.getDogmaAttributeCollection(1);
 
 
                 dumpSchema();
@@ -686,7 +687,7 @@ authenticatedTest((CrestClientInfo)clientInfo);
         try{dataCache.getOptions("https://api-sisi.testeveonline.com/alliances/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://api-sisi.testeveonline.com/alliances/0/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://api-sisi.testeveonline.com/alliances/99000006/");}catch(Exception e){log.error("failed:", e);}
-        
+
         dataCache.getAllianceCollection(0);
         for(int i=1; i < 13; i++)
             dataCache.getAllianceCollection(i).getAlliances().toString();
@@ -697,7 +698,7 @@ authenticatedTest((CrestClientInfo)clientInfo);
 
 //        https://crest-tq.eveonline.com/characters/1364371482/contacts/
 //        try{dataCache.getOptions(urlBase + "/characters/");}catch(Exception e){log.error("failed:", e);}
-        
+
         try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/0/");}catch(Exception e){log.error("failed:", e);}
 
