@@ -26,6 +26,7 @@ import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
 import com.ccc.crest.core.cache.crest.alliance.Alliances;
+import com.ccc.crest.core.cache.crest.alliance.AlliancesElement;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.ContactCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
@@ -33,6 +34,7 @@ import com.ccc.crest.core.cache.crest.character.TokenDecode;
 import com.ccc.crest.core.cache.crest.corporation.Corporations;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
+import com.ccc.crest.core.cache.crest.dogma.DogmaAttributes;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
 import com.ccc.crest.core.cache.crest.incursion.IncursionCollection;
 import com.ccc.crest.core.cache.crest.industry.IndustryFacilityCollection;
@@ -111,6 +113,7 @@ import com.ccc.crest.core.events.CommsEventListener;
 import com.ccc.crest.da.AllianceData;
 import com.ccc.crest.da.CorporationData;
 import com.ccc.crest.da.CrestDataAccessor;
+import com.ccc.crest.da.DogmaAttributeData;
 import com.ccc.crest.da.PagingData;
 
 @SuppressWarnings("javadoc")
@@ -666,6 +669,26 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
+    public AlliancesElement getAlliancesElement(long id) throws SourceFailureException
+    {
+        CacheData data = cache.get(AlliancesElement.getUrl(id));
+        if (data != null)
+        {
+            data.data.accessed();
+            return (AlliancesElement) data.data;
+        }
+        try
+        {
+            AlliancesElement value = (AlliancesElement) AlliancesElement.getFuture(id, cacheCallback).get();
+            value.accessed();
+            return value;
+        } catch (Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + AlliancesElement.getUrl(id), e);
+        }
+    }
+
+    @Override
     public ItemTypeCollection getItemTypeCollection(CrestClientInfo clientInfo) throws SourceFailureException
     {
         CacheData data = cache.get(ItemTypeCollection.getUrl());
@@ -1049,27 +1072,38 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
     }
 
     @Override
-    public DogmaAttributeCollection getDogmaAttributeCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public DogmaAttributeCollection getDogmaAttributeCollection(int page) throws SourceFailureException
     {
-        CacheData data = cache.get(DogmaAttributeCollection.getUrl());
-        if (data != null)
+        if(page != 0)
         {
-            data.data.accessed();
-            return (DogmaAttributeCollection) data.data;
+            try
+            {
+                CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
+                List<DogmaAttributeData> list = da.getDogmaAttributes(page);
+                if(list.size() > 0)
+                {
+                    PagingData pagingData = da.getPagingData(DogmaAttributeCollection.GetBase);
+                    DogmaAttributes d = new DogmaAttributes(pagingData, list);
+                    return new DogmaAttributeCollection(d);
+                }
+            }catch(Exception e)
+            {
+                log.debug(getClass().getSimpleName() + ".getDogmaAttributeCollection(page " + page + ") not in db");
+            }
         }
         try
         {
-            DogmaAttributeCollection value = (DogmaAttributeCollection) DogmaAttributeCollection.getFuture(cacheCallback).get();
-            value.accessed();
-            return value;
+            DogmaAttributeCollection data = (DogmaAttributeCollection) DogmaAttributeCollection.getFuture(page).get();
+            data.accessed();
+            return data;
         } catch (Exception e)
         {
-            throw new SourceFailureException("Failed to obtain Data from requested url: " + DogmaAttributeCollection.getUrl(), e);
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + DogmaAttributeCollection.getUrl(page), e);
         }
     }
 
     @Override
-    public DogmaEffectCollection getDogmaEffectCollection(CrestClientInfo clientInfo) throws SourceFailureException
+    public DogmaEffectCollection getDogmaEffectCollection(int page) throws SourceFailureException
     {
         CacheData data = cache.get(DogmaEffectCollection.getUrl());
         if (data != null)

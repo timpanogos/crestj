@@ -151,7 +151,7 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
                 List<AllianceData> list = new ArrayList<>();
                 for (PagedItem item : alliances.items)
                 {
-                    Alliance a = (Alliance) item;
+                    Alliance a = ((StupidHref)item).alliance;
                     list.add(new AllianceData(a.id, a.shortName, a.name, a.url, page));
                 }
                 if (!validated)

@@ -62,4 +62,8 @@ public interface CrestDataAccessor extends DataAccessor
     public void addCorporation(List<CorporationData> corporations, int page) throws Exception;
     public List<CorporationData> getCorporations(int page) throws Exception;
     public void truncateCorporation() throws Exception;
+    
+    public void addDogmaAttribute(List<DogmaAttributeData> dogmaAttributes, int page) throws Exception;
+    public List<DogmaAttributeData> getDogmaAttributes(int page) throws Exception;
+    public void truncateDogmaAttribute() throws Exception;
 }

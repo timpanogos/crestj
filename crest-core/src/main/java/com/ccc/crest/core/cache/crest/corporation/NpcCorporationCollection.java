@@ -111,7 +111,7 @@ public class NpcCorporationCollection extends BaseEveData implements JsonDeseria
                         null, getUrl(page),
                         gson.create(), null, NpcCorporationCollection.class,
                         PagingCallback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
@@ -138,7 +138,6 @@ public class NpcCorporationCollection extends BaseEveData implements JsonDeseria
             try
             {
                 Paging paging = ((NpcCorporationCollection) data).getCorporations();
-                System.out.println("look here");
                 List<CorporationData> list = new ArrayList<>();
                 for (PagedItem item : paging.items)
                 {
@@ -146,7 +145,7 @@ public class NpcCorporationCollection extends BaseEveData implements JsonDeseria
                     list.add(new CorporationData(c.id, c.ticker, c.name, c.description, c.corpUrl, c.loyaltyUrl, c.headquarters.name, c.headquarters.stationUrl, page));
                 }
                 if (!validated)
-                    CrestController.getCrestController().getDataAccessor().truncateAlliance();
+                    CrestController.getCrestController().getDataAccessor().truncateCorporation();
                 CrestController.getCrestController().getDataAccessor().addCorporation(list, page);
 
                 if (firstCollection.get())
@@ -157,12 +156,12 @@ public class NpcCorporationCollection extends BaseEveData implements JsonDeseria
                         getFuture(0);
                     } catch (Exception e)
                     {
-                        LoggerFactory.getLogger(getClass()).warn("Alliance failed to fire heartbeat", e);
+                        LoggerFactory.getLogger(getClass()).warn("NpcCorporation failed to fire heartbeat", e);
                     }
                 }
             } catch (Exception e)
             {
-                LoggerFactory.getLogger(getClass()).warn("Alliance paging is broken, the database has failed to add alliances to alliance table", e);
+                LoggerFactory.getLogger(getClass()).warn("NpcCorporation paging is broken, the database has failed to add corporations to alliance table", e);
                 return;
             }
         }

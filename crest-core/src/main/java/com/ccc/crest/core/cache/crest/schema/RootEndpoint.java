@@ -33,6 +33,7 @@ import com.ccc.crest.core.cache.DataCache;
 import com.ccc.crest.core.cache.EveData;
 import com.ccc.crest.core.cache.EveJsonData;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
+import com.ccc.crest.core.cache.crest.alliance.AlliancesElement;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.CharacterSearch;
 import com.ccc.crest.core.cache.crest.character.ContactCollection;
@@ -589,9 +590,10 @@ public class RootEndpoint
         //@formatter:off
         addChild(                             root, "Endpoints",        UidBase + "Api-v5+json",                            rootUrl + "",                                                    "", EndpointCollection.class);
         addChild(                             root, "Options",          UidBase + "Options-v1+json",                        rootUrl + "",                                                    "", CrestOptions.class);
-        addChild(                             root, "Alliances",        UidBase + "AllianceCollection-v1+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
+        Endpoint child = addChild(            root, "Alliances",        UidBase + "AllianceCollection-v1+json",             rootUrl + "/alliances/",                                         "/alliances/", AllianceCollection.class);
+        addChild(                            child, "Alliance",         UidBase + "Alliance-v1+json",                       rootUrl + "/alliances/99000006/",                                "/0/", AlliancesElement.class);
         addChild(                             root, "Bloodlines",       UidBase + "BloodlineCollection-v2+json",            rootUrl + "/bloodlines/",                                        "/bloodlines/", BloodlineCollection.class);
-        Endpoint child = addChild(            root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", DocType.Group, CharacterSearch.class);
+        child = addChild(                     root, "Characters",       UidBase + "CharacterSearch-v1+json",                rootUrl + "/characters/",                                        "/characters/", DocType.Group, CharacterSearch.class);
         Endpoint gchild = addChild(          child, "Contacts",         UidBase + "ContactCreate-v1+json",
                                                                         UidBase + "ContactCollection-v2+json",
                                                                         null,
@@ -627,7 +629,9 @@ public class RootEndpoint
                                                                         null,                                               rootUrl + "/characters/1364371482/ui/openwindow/marketdetails/", "/ui/openwindow/marketdetails/", DocType.Leaf, MarketDetails.class);
         addChild(                             root, "Constellations",   UidBase + "ConstellationCollection-v1+json",        rootUrl + "/constellations/",                                    "/constellations/", ConstellationCollection.class);
         child = addChild(                     root, "Corporations",     null,                                               rootUrl + "/corporations/",                                      "/corporations/", DocType.PlaceHolder, null);
-        gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/1000004/", NpcCorporationCollection.class);
+        gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/0/", NpcCorporationCollection.class);
+        ggchild = addChild(                 gchild, "Structures",       UidBase + "CorporationStructuresCollection-v1+json",rootUrl + "/corporations/665335352/structures/",                 "/structures/", CorporationStructuresCollection.class);
+        
         addChild(                           gchild, "LoyaltyStore",     UidBase + "LoyaltyStoreOffersCollection-v1+json",   rootUrl + "/corporations/1000004/loyaltystore/",                 "/loyaltystore/", NpcCorporationCollection.class);
         addChild(                            child, "NPCCorporations",  UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/", NpcCorporationCollection.class);
 
@@ -673,13 +677,13 @@ public class RootEndpoint
         addChild(                            child, "Campaigns",        UidBase + "SovCampaignsCollection-v1+json",         rootUrl + "/sovereignty/campaigns/",                             "/campaigns/", SovCampaignsCollection.class);
         addChild(                            child, "Structures",       UidBase + "SovStructureCollection-v1+json",         rootUrl + "/sovereignty/structures/",                            "/structures/", SovStructureCollection.class);
         child = addChild(                     root, "Stargates",        null,                                               rootUrl + "/stargates/",                                         "/stargates/", DocType.PlaceHolder, null);
-        addChild(                            child, "Stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                                    "/3875/", Stargate.class);
+        addChild(                            child, "Stargate",         UidBase + "Stargate-v1+json",                       rootUrl + "/stargates/3875/",                                    "/0/", Stargate.class);
         child = addChild(                     root, "Stations",         null,                                               rootUrl + "/stations/",                                          "/stations/", DocType.PlaceHolder, null);
-        addChild(                            child, "Station",          UidBase + "Station-v1+json",                        rootUrl + "/stations/60000004/",                                 "/60000004/", Station.class);
+        addChild(                            child, "Station",          UidBase + "Station-v1+json",                        rootUrl + "/stations/60000004/",                                 "/0/", Station.class);
         addChild(                             root, "Races",            UidBase + "RaceCollection-v3+json",                 rootUrl + "/races/",                                             "/races/", RaceCollection.class);
         addChild(                             root, "Regions",          UidBase + "RegionCollection-v1+json",               rootUrl + "/regions/",                                           "/regions/", RegionCollection.class);
         child = addChild(                     root, "Tournaments",      UidBase + "TournamentCollection-v1+json",           rootUrl + "/tournaments/",                                       "/tournaments/", DocType.Group, TournamentCollection.class);
-        gchild = addChild(                   child, "Tournament",       UidBase + "Tournament-v1+json",                     rootUrl + "/tournaments/7/",                                     "/7/", TournamentTournament.class);
+        gchild = addChild(                   child, "Tournament",       UidBase + "Tournament-v1+json",                     rootUrl + "/tournaments/7/",                                     "/0/", TournamentTournament.class);
         ggchild = addChild(                 gchild, "Series",           UidBase + "TournamentSeriesCollection-v1+json",     rootUrl + "/tournaments/7/series/",                              "/series/", DocType.Group, TournamentSeriesCollection.class);
         gggchild = addChild(               ggchild, "Matches",          UidBase + "TournamentMatchCollection-v1+json",      rootUrl + "/tournaments/7/series/0/matches/",                    "/matches/", DocType.Group, TournamentMatchCollection.class);
         ggggchild = addChild(             gggchild, "Match",            UidBase + "TournamentMatch-v1+json",                rootUrl + "/tournaments/7/series/0/matches/0/",                  "/0/", TournamentMatchElement.class);
@@ -691,14 +695,14 @@ public class RootEndpoint
         ggchild = addChild(                 gchild, "Teams",            null,                                               rootUrl + "/tournaments/7/teams/",                               "/teams/", DocType.PlaceHolder, null);
         addChild(                          ggchild, "Team",             UidBase + "TournamentTeam-v1+json",                 rootUrl + "/tournaments/7/teams/0/",                             "/0/", TournamentTeam.class);
         ggchild = addChild(                 gchild, "Teams",            UidBase + "TournamentTeamCollection-v1+json",       rootUrl + "/tournaments/teams/",                                 "/teams/", DocType.Group, TournamentTeamCollection.class);
-        gggchild = addChild(               ggchild, "Team",             UidBase + "TournamentTeam2-v1+json",                 rootUrl + "/tournaments/teams/0/",                               "/0/", TournamentTeam2.class);  // ccp duplicate bug, fudged uid
+        gggchild = addChild(               ggchild, "Team",             UidBase + "TournamentTeam2-v1+json",                 rootUrl + "/tournaments/teams/0/",                              "/0/", TournamentTeam2.class);  // ccp duplicate bug, fudged uid
         addChild(                         gggchild, "Members",          UidBase + "TournamentTeamMemberCollection-v1+json", rootUrl + "/tournaments/teams/0/members/",                       "/members/", TournamentTeamMemberCollection.class);
         addChild(                             root, "SolarSystems",     UidBase + "SystemCollection-v1+json",               rootUrl + "/solarsystems/",                                      "/solarsystems/", SystemCollection.class);
         addChild(                             root, "Time",             UidBase + "Time-v1+json",                           rootUrl + "/time/",                                              "/time/", CrestTime.class);
         addChild(                             root, "Decode",           UidBase + "TokenDecode-v1+json",                    rootUrl + "/decode/",                                            "/decode/", TokenDecode.class);
 //      addChild(                             root, "virtualGoodStore", UidBase + "VirtualGoodStore"+Fixme,                 rootUrl + "/virtualGoodStore/",                                  "/virtualGoodStore/");
         child = addChild(                     root, "Wars",             UidBase + "WarsCollection-v1+json",                 rootUrl + "/wars/",                                              "/wars/", DocType.Group, WarsCollection.class);
-        addChild(                            child, "war",              UidBase + "War-v1+json",                            rootUrl + "/wars/0/",                                            "/wars/0/", WarsElement.class);
+        addChild(                            child, "war",              UidBase + "War-v1+json",                            rootUrl + "/wars/0/",                                            "/0/", WarsElement.class);
         //@formatter:on
     }
 

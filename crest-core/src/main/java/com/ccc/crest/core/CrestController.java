@@ -645,11 +645,12 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
-//                dataCache.getAllianceCollection(1);
-                dataCache.getNpcCorporationCollection(1);
+//                dataCache.getAlliancesElement(99000006);
+//                dataCache.getNpcCorporationCollection(1);
+//                dataCache.getDogmaAttributeCollection();
 
 
-//                dumpSchema();
+                dumpSchema();
 //                try{dataCache.getOptions("https://crest-tq.eveonline.com/stations/60000004/");}catch(Exception e){log.error("failed:", e);}
 //                try{dataCache.getOptions("https://crest-tq.eveonline.com/stations/0/");}catch(Exception e){log.error("failed:", e);}
 //                try{
@@ -659,7 +660,6 @@ authenticatedTest((CrestClientInfo)clientInfo);
 //                log.info("Host: " + CrestClient.getCrestBaseUri());
 //                RootEndpoint root = new RootEndpoint();
 //                root.dumpTree(new File("/tmp/crestj"));
-
 
                 dataCache.getTime();
                 dataAccessor.isUp();
@@ -681,19 +681,23 @@ authenticatedTest((CrestClientInfo)clientInfo);
     {
         String urlBase = CrestClient.getCrestBaseUri();
 
-
+        try{dataCache.getOptions("https://api-sisi.testeveonline.com/corporations/665335352/structures/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions(null);}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions("https://api-sisi.testeveonline.com/alliances/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions("https://api-sisi.testeveonline.com/alliances/0/");}catch(Exception e){log.error("failed:", e);}
+        try{dataCache.getOptions("https://api-sisi.testeveonline.com/alliances/99000006/");}catch(Exception e){log.error("failed:", e);}
+        
         dataCache.getAllianceCollection(0);
         for(int i=1; i < 13; i++)
             dataCache.getAllianceCollection(i).getAlliances().toString();
-
 
         log.info("Host: " + CrestClient.getCrestBaseUri());
         RootEndpoint root = new RootEndpoint();
         root.dumpTree(new File("/tmp/crestj"));
 
-        try{dataCache.getOptions(null);}catch(Exception e){log.error("failed:", e);}
 //        https://crest-tq.eveonline.com/characters/1364371482/contacts/
 //        try{dataCache.getOptions(urlBase + "/characters/");}catch(Exception e){log.error("failed:", e);}
+        
         try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/");}catch(Exception e){log.error("failed:", e);}
         try{dataCache.getOptions("https://crest-tq.eveonline.com//characters/1364371482/contacts/0/");}catch(Exception e){log.error("failed:", e);}
 

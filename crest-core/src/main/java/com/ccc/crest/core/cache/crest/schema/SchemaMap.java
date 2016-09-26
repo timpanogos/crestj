@@ -109,6 +109,19 @@ public class SchemaMap
         }
     }
 
+    public String getUrlStripId(String versionBase)
+    {
+        // rootUrl + "/alliances/99000006/"
+        String url = getSchemaFromVersionBase(versionBase).getUri();
+        int idx = url.lastIndexOf('/');
+        do
+        {
+            if(!Character.isDigit(url.charAt(--idx)))
+                break;
+        }while(true);
+        return url.substring(0, idx);
+    }
+    
     private void addElement(Class<? extends EveJsonData> clazz, String version, String uri, VersionType uidType) throws Exception
     {
         Field field = null;

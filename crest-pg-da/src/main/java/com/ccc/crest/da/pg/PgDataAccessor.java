@@ -25,6 +25,7 @@ import com.ccc.crest.da.AllianceData;
 import com.ccc.crest.da.CapsuleerData;
 import com.ccc.crest.da.CorporationData;
 import com.ccc.crest.da.CrestDataAccessor;
+import com.ccc.crest.da.DogmaAttributeData;
 import com.ccc.crest.da.EntityData;
 import com.ccc.crest.da.PagingData;
 import com.ccc.crest.da.SharedRight;
@@ -261,5 +262,30 @@ public class PgDataAccessor extends PgBaseDataAccessor implements CrestDataAcces
     public void truncateCorporation() throws Exception
     {
         CorporationJdbc.truncate(getConnection(), true);
+    }
+
+    @Override
+    public void addDogmaAttribute(List<DogmaAttributeData> dogmaAttributes, int page) throws Exception
+    {
+        Connection connection = getConnection();
+        List<DogmaAttributeData> list = DogmaAttributeJdbc.getRows(connection, page, false);
+        if(list.size() == 0)
+        {
+            for(DogmaAttributeData data : dogmaAttributes)
+                DogmaAttributeJdbc.insertRow(connection, data, false);
+        }
+        PgBaseDataAccessor.close(connection, null, null, true);
+    }
+
+    @Override
+    public List<DogmaAttributeData> getDogmaAttributes(int page) throws Exception
+    {
+        return DogmaAttributeJdbc.getRows(getConnection(), page, true);
+    }
+
+    @Override
+    public void truncateDogmaAttribute() throws Exception
+    {
+        DogmaAttributeJdbc.truncate(getConnection(), true);
     }
 }

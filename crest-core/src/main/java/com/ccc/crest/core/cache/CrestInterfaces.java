@@ -18,6 +18,7 @@ package com.ccc.crest.core.cache;
 
 import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.cache.crest.alliance.AllianceCollection;
+import com.ccc.crest.core.cache.crest.alliance.AlliancesElement;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
@@ -50,11 +51,12 @@ import com.ccc.crest.core.cache.crest.war.WarsCollection;
 public interface CrestInterfaces
 {
     public AllianceCollection getAllianceCollection(int page) throws SourceFailureException;
+    public AlliancesElement getAlliancesElement(long id) throws SourceFailureException;
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public NpcCorporationCollection getNpcCorporationCollection(int page) throws SourceFailureException;
-    public DogmaAttributeCollection getDogmaAttributeCollection(CrestClientInfo clientInfo) throws SourceFailureException;
-    public DogmaEffectCollection getDogmaEffectCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public DogmaAttributeCollection getDogmaAttributeCollection(int page) throws SourceFailureException;
+    public DogmaEffectCollection getDogmaEffectCollection(int page) throws SourceFailureException;
     public IncursionCollection getIncursionCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public IndustryFacilityCollection getIndustryFacilityCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public IndustrySystemCollection getIndustrySystemCollection(CrestClientInfo clientInfo) throws SourceFailureException;
