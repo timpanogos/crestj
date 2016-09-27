@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -26,6 +26,7 @@ public class CapsuleerData
     public final long apiKeyId;
     public final String apiCode;
     public final String refreshToken;
+    public final
 
     public CapsuleerData(String name, long capsuleerId, long apiKeyId, String apiCode, String refreshToken)
     {
@@ -41,11 +42,11 @@ public class CapsuleerData
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((apiCode == null) ? 0 : apiCode.hashCode());
-        result = prime * result + (int) (apiKeyId ^ (apiKeyId >>> 32));
-        result = prime * result + ((capsuleer == null) ? 0 : capsuleer.hashCode());
-        result = prime * result + (int) (capsuleerId ^ (capsuleerId >>> 32));
-        result = prime * result + ((refreshToken == null) ? 0 : refreshToken.hashCode());
+        result = prime * result + (apiCode == null ? 0 : apiCode.hashCode());
+        result = prime * result + (int) (apiKeyId ^ apiKeyId >>> 32);
+        result = prime * result + (capsuleer == null ? 0 : capsuleer.hashCode());
+        result = prime * result + (int) (capsuleerId ^ capsuleerId >>> 32);
+        result = prime * result + (refreshToken == null ? 0 : refreshToken.hashCode());
         return result;
     }
 
@@ -88,7 +89,7 @@ public class CapsuleerData
         TabToLevel format = new TabToLevel();
         return toString(format).toString();
     }
-    
+
     public TabToLevel toString(TabToLevel format)
     {
         format.ttl("capsuleer: ", capsuleer);

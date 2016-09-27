@@ -294,7 +294,7 @@ public class CrestController extends CoreController implements AuthEventListener
             CrestDataAccessor da = (CrestDataAccessor) dataAccessor;
             try
             {
-                CapsuleerData userData = da.getCapsuleer(ccinfo.getVerifyData().CharacterName);
+                CapsuleerData userData = da.getCapsuleer(name);
                 CapsuleerData updateData = new CapsuleerData(userData.capsuleer, userData.capsuleerId, userData.apiKeyId, userData.apiCode, ccinfo.getRefreshToken());
                 da.updateCapsuleer(name, updateData);
                 if (userData.apiKeyId == -1)
@@ -317,33 +317,43 @@ public class CrestController extends CoreController implements AuthEventListener
                 log.warn("Database failure:", e1);
             }
 
-            List<AccessGroup> groups;
-            try
+            getGroups(da, ccinfo);
+        }
+    }
+
+    public void getAuthenticatedUserInfo(String capsuleer)
+    {
+
+    }
+
+    private void getGroups(CrestDataAccessor da, CrestClientInfo clientInfo)
+    {
+        List<AccessGroup> groups;
+        try
+        {
+            groups = da.listGroups();
+            for (AccessGroup group : groups)
             {
-                groups = da.listGroups();
-                for (AccessGroup group : groups)
+                if (group.group.equals(AnonymousGroupName))
                 {
-                    if (group.group.equals(AnonymousGroupName))
-                    {
-                        ccinfo.addGroup(group);
-                        continue;
-                    }
-                    if (group.group.equals(UserGroupName))
-                    {
-                        ccinfo.addGroup(group);
-                        continue;
-                    }
-
-                    if (da.isMember(name, group.group))
-                        ccinfo.addGroup(group);
+                    clientInfo.addGroup(group);
+                    continue;
                 }
-//FIXME: clean me up
-authenticatedTest((CrestClientInfo)clientInfo);
+                if (group.group.equals(UserGroupName))
+                {
+                    clientInfo.addGroup(group);
+                    continue;
+                }
 
-            } catch (Exception e)
-            {
-                log.warn("Database failure getting groups:", e);
+                if (da.isMember(clientInfo.getVerifyData().CharacterID, group.group))
+                    clientInfo.addGroup(group);
             }
+//FIXME: clean me up
+authenticatedTest(clientInfo);
+
+        } catch (Exception e)
+        {
+            log.warn("Database failure getting groups:", e);
         }
     }
 
@@ -645,7 +655,7 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
-                
+
                 if(true)
                     return null;
 //                dataCache.getAllianceCollection(1);
