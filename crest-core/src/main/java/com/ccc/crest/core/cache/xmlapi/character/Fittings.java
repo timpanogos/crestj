@@ -25,6 +25,6 @@ import com.ccc.crest.core.cache.BaseEveData;
 public class Fittings  extends BaseEveData
 {
     public static final String AccessGroup = CrestController.UserGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyCharacter;
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnly;
 }
 

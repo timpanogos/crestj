@@ -43,7 +43,7 @@ public class BloodlineCollection extends BaseEveData implements JsonDeserializer
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnly; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 

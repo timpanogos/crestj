@@ -645,6 +645,9 @@ authenticatedTest((CrestClientInfo)clientInfo);
                 //                CrestOptions copts = dataCache.getOptions("https://api-sisi.testeveonline.com/tournaments/teams/1/");
                 //                log.info("\nteam1 options:\n" + copts.getRepresentations().toString());
 
+                
+                if(true)
+                    return null;
 //                dataCache.getAllianceCollection(1);
 //                dataCache.getAlliancesElement(99000006);
                 dataCache.getNpcCorporationCollection(1);
@@ -675,6 +678,7 @@ authenticatedTest((CrestClientInfo)clientInfo);
     private void authenticatedTest(CrestClientInfo clientInfo) throws SourceFailureException
     {
         dataCache.getContactList(clientInfo);
+        dataCache.getCorporationStructureCollection(clientInfo, 98465079, 1);
     }
 
     //TODO: clean this up

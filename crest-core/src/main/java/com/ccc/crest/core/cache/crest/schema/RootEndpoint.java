@@ -47,7 +47,7 @@ import com.ccc.crest.core.cache.crest.character.OpportunitiesCollection;
 import com.ccc.crest.core.cache.crest.character.PostWaypoint;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
-import com.ccc.crest.core.cache.crest.corporation.CorporationStructuresCollection;
+import com.ccc.crest.core.cache.crest.corporation.CorporationStructureCollection;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
@@ -107,7 +107,7 @@ public class RootEndpoint
     public static final boolean PingGets = false;
     public static final String HomeBase = "/wsp/";
     public static final String WorkBase = "/wsc/";
-    public static final String TemplateBase = WorkBase + "eveonline-third-party-documentation/docs/crest/root/";
+    public static final String TemplateBase = HomeBase + "eveonline-third-party-documentation/docs/crest/root/";
     public static final String TechDocTemplate = TemplateBase + "technicalPage.md";
     public static final String GroupDocTemplate = TemplateBase + "groupPage.md";
     public static final String LeafDocTemplate = TemplateBase + "leafPage.md";
@@ -631,7 +631,7 @@ public class RootEndpoint
         addChild(                             root, "Constellations",   UidBase + "ConstellationCollection-v1+json",        rootUrl + "/constellations/",                                    "/constellations/", ConstellationCollection.class);
         child = addChild(                     root, "Corporations",     null,                                               rootUrl + "/corporations/",                                      "/corporations/", DocType.PlaceHolder, null);
         gchild = addChild(                   child, "NPCCorporation",   UidBase + "Corporation-v1+json",                    rootUrl + "/corporations/1000004/",                              "/0/", NpcCorporationCollection.class);
-        ggchild = addChild(                 gchild, "Structures",       UidBase + "CorporationStructuresCollection-v1+json",rootUrl + "/corporations/665335352/structures/",                 "/structures/", CorporationStructuresCollection.class);
+        ggchild = addChild(                 gchild, "Structures",       UidBase + "CorporationStructuresCollection-v1+json",rootUrl + "/corporations/98465079/structures/",                 "/structures/", CorporationStructureCollection.class);
 
         addChild(                           gchild, "LoyaltyStore",     UidBase + "LoyaltyStoreOffersCollection-v1+json",   rootUrl + "/corporations/1000004/loyaltystore/",                 "/loyaltystore/", NpcCorporationCollection.class);
         addChild(                            child, "NPCCorporations",  UidBase + "NPCCorporationsCollection-v1+json",      rootUrl + "/corporations/npccorps/",                             "/npccorps/", NpcCorporationCollection.class);

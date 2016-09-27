@@ -40,7 +40,7 @@ public class VirtualGoodStore extends BaseEveData implements JsonDeserializer<Vi
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String VersionBase = "application/vnd.ccp.eve.VirtualGoodStore";
     public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnly; //?
     private static final String ReadScope = null;
     private static final String WriteScope = null;
 

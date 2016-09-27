@@ -109,7 +109,7 @@ public class SchemaMap
         }
     }
 
-    public String getUrlStripId(String versionBase)
+    public String getUrlStripAtomic(String versionBase)
     {
         // rootUrl + "/alliances/99000006/"
         String url = getSchemaFromVersionBase(versionBase).getUri();

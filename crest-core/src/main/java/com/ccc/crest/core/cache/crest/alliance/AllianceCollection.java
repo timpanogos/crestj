@@ -51,7 +51,7 @@ public class AllianceCollection extends BaseEveData implements JsonDeserializer<
     public static final String DeleteBase = null;
     public static final DbPagingCallback PagingCallback = new AlliancesCallback(GetBase);
     public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnly; //?
     private static final String ReadScope = null;
 
     private volatile Alliances alliances;

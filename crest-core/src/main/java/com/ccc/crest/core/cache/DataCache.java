@@ -31,6 +31,7 @@ import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.ContactCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
+import com.ccc.crest.core.cache.crest.corporation.CorporationStructureCollection;
 import com.ccc.crest.core.cache.crest.corporation.Corporations;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
@@ -605,6 +606,38 @@ public class DataCache implements CrestInterfaces, AccountInterfaces, CharacterI
             throw new SourceFailureException("Failed to obtain Data from requested url: " + ItemGroupCollection.getUrl(), e);
         }
     }
+
+    @Override
+    public CorporationStructureCollection getCorporationStructureCollection(CrestClientInfo clientInfo, long corpId, int page) throws SourceFailureException
+    {
+        if(page != 0)
+        {
+            try
+            {
+                CrestDataAccessor da = CrestController.getCrestController().getDataAccessor();
+                List<CorporationData> list = da.getCorporations(page);
+                if(list.size() > 0)
+                {
+                    PagingData pagingData = da.getPagingData(CorporationStructureCollection.GetBase);
+                    Corporations c = new Corporations(pagingData, list);
+                    return new CorporationStructureCollection(c);
+                }
+            }catch(Exception e)
+            {
+                log.debug(getClass().getSimpleName() + ".getCorporationStructureCollection(page " + page + ") not in db");
+            }
+        }
+        try
+        {
+            CorporationStructureCollection epdata = (CorporationStructureCollection) CorporationStructureCollection.getFuture(clientInfo, corpId, page).get();
+            epdata.accessed();
+            return epdata;
+        } catch (Exception e)
+        {
+            throw new SourceFailureException("Failed to obtain Data from requested url: " + CorporationStructureCollection.getUrl(corpId, page), e);
+        }
+    }
+
 
     @Override
     public NpcCorporationCollection getNpcCorporationCollection(int page) throws SourceFailureException

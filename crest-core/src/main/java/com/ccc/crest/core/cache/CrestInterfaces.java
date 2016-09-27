@@ -22,6 +22,7 @@ import com.ccc.crest.core.cache.crest.alliance.AlliancesElement;
 import com.ccc.crest.core.cache.crest.character.BloodlineCollection;
 import com.ccc.crest.core.cache.crest.character.RaceCollection;
 import com.ccc.crest.core.cache.crest.character.TokenDecode;
+import com.ccc.crest.core.cache.crest.corporation.CorporationStructureCollection;
 import com.ccc.crest.core.cache.crest.corporation.NpcCorporationCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaAttributeCollection;
 import com.ccc.crest.core.cache.crest.dogma.DogmaEffectCollection;
@@ -54,6 +55,7 @@ public interface CrestInterfaces
     public AlliancesElement getAlliancesElement(long id) throws SourceFailureException;
     public BloodlineCollection getBloodlineCollection(CrestClientInfo clientInfo) throws SourceFailureException;
     public ConstellationCollection getConstellationCollection(CrestClientInfo clientInfo) throws SourceFailureException;
+    public CorporationStructureCollection getCorporationStructureCollection(CrestClientInfo clientInfo,long corpId, int page) throws SourceFailureException;
     public NpcCorporationCollection getNpcCorporationCollection(int page) throws SourceFailureException;
     public DogmaAttributeCollection getDogmaAttributeCollection(int page) throws SourceFailureException;
     public DogmaEffectCollection getDogmaEffectCollection(int page) throws SourceFailureException;

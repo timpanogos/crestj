@@ -52,10 +52,7 @@ public class Scope
 
     public void addScope(String scope) throws Exception
     {
-        ScopeToMask stm = ScopeToMask.characterScopes.get(scope);
-        if(stm == null)
-            throw new Exception("Configured scope: " + scope + " is invalid");
-        scopes.add(stm);
+        scopes.add(ScopeToMask.getScopeToMask(scope));
     }
     
     public long getCharacterMask()

@@ -78,11 +78,19 @@ public class ScopeToMask
         this.type = type;
     }
 
+    public static ScopeToMask getScopeToMask(String scope)
+    {
+        ScopeToMask stm = ScopeToMask.characterScopes.get(scope);
+        if(stm == null)
+            return new ScopeToMask(scope, null, Type.CrestOnly);
+        return stm;
+    }
+    
     // characterFittingsRead
     // characterFittingsWrite
 
     public enum Type
     {
-        Public, Character, Corporate, Account, CrestOnlyCharacter, CrestOnlyCorporate, CrestOnlyPublic, XmlOnlyPublic, XmlOnlyCharacter, XmlOnlyCorporate
+        Public, Character, Corporate, Account, CrestOnly, XmlOnlyPublic, XmlOnlyCharacter, XmlOnlyCorporate
     }
 }

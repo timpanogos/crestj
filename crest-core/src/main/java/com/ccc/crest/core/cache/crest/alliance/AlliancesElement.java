@@ -43,7 +43,7 @@ public class AlliancesElement extends BaseEveData implements JsonDeserializer<Al
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnly; //?
     private static final String ReadScope = null;
 
     public AlliancesElement()
@@ -69,7 +69,7 @@ public class AlliancesElement extends BaseEveData implements JsonDeserializer<Al
 
     public static String getUrl(long id)
     {
-        StringBuilder sb = new StringBuilder(SchemaMap.schemaMap.getUrlStripId(GetBase));
+        StringBuilder sb = new StringBuilder(SchemaMap.schemaMap.getUrlStripAtomic(GetBase));
         sb.append("/").append(id).append("/");
         return sb.toString();
     }

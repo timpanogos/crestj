@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.LoggerFactory;
 
+import com.ccc.crest.core.CrestClientInfo;
 import com.ccc.crest.core.CrestController;
 import com.ccc.crest.core.ScopeToMask;
 import com.ccc.crest.core.cache.BaseEveData;
@@ -34,6 +35,7 @@ import com.ccc.crest.core.cache.crest.Paging;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
 import com.ccc.crest.da.CorporationData;
 import com.ccc.crest.da.PagedItem;
+import com.ccc.tools.StrH;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -41,26 +43,26 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 
 @SuppressWarnings("javadoc")
-public class CorporationStructuresCollection extends BaseEveData implements JsonDeserializer<CorporationStructuresCollection>
+public class CorporationStructureCollection extends BaseEveData implements JsonDeserializer<CorporationStructureCollection>
 {
     private static final long serialVersionUID = -2711682230241156568L;
     private static final AtomicBoolean continueRefresh = new AtomicBoolean(true);
     public static final String PostBase = null;
-    public static final String GetBase = "application/vnd.ccp.eve.NPCCorporationsCollection";
+    public static final String GetBase = "application/CorporationStructuresCollection";
     public static final String PutBase = null;
     public static final String DeleteBase = null;
     public static final DbPagingCallback PagingCallback = new CorporationsCallback(GetBase);
     public static final String AccessGroup = CrestController.AnonymousGroupName;
-    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnlyPublic; //?
-    private static final String ReadScope = null;
+    public static final ScopeToMask.Type ScopeType = ScopeToMask.Type.CrestOnly; //?
+    private static final String ReadScope = "corporationStructuresRead";
 
     private volatile Corporations corporations;
 
-    public CorporationStructuresCollection()
+    public CorporationStructureCollection()
     {
     }
 
-    public CorporationStructuresCollection(Corporations corporations)
+    public CorporationStructureCollection(Corporations corporations)
     {
         this.corporations = corporations;
     }
@@ -94,30 +96,31 @@ public class CorporationStructuresCollection extends BaseEveData implements Json
         }
     }
 
-    public static String getUrl(int page)
+    public static String getUrl(long id, int page)
     {
-        StringBuilder sb = new StringBuilder(SchemaMap.schemaMap.getSchemaFromVersionBase(GetBase).getUri());
-        if (page != 0)
-            sb.append("?page=").append(page);
+        String url = SchemaMap.schemaMap.getUrlStripAtomic(GetBase);
+        url = StrH.getPenultimateName(url, '/');
+        StringBuilder sb = new StringBuilder(StrH.getPenultimateName(url, '/'));
+        sb.append("/").append(id).append("/structures/");
         return sb.toString();
     }
 
-    public static Future<EveData> getFuture(int page) throws Exception
+    public static Future<EveData> getFuture(CrestClientInfo clientInfo, long corpId, int page) throws Exception
     {
         GsonBuilder gson = new GsonBuilder();
-        gson.registerTypeAdapter(CorporationStructuresCollection.class, new CorporationStructuresCollection());
+        gson.registerTypeAdapter(CorporationStructureCollection.class, new CorporationStructureCollection());
         //@formatter:off
         CrestRequestData rdata = new CrestRequestData(
-                        null, getUrl(page),
-                        gson.create(), null, CorporationStructuresCollection.class,
+                        clientInfo, getUrl(corpId, page),
+                        gson.create(), null, CorporationStructureCollection.class,
                         PagingCallback,
-                        ReadScope, getVersion(VersionType.Get), continueRefresh, false);
+                        ReadScope, getVersion(VersionType.Get), continueRefresh, true);
         //@formatter:on
         return CrestController.getCrestController().crestClient.getCrest(rdata);
     }
 
     @Override
-    public CorporationStructuresCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
+    public CorporationStructureCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         corporations = new Corporations();
         corporations.deserialize(json, typeOfT, context);
@@ -137,7 +140,7 @@ public class CorporationStructuresCollection extends BaseEveData implements Json
         {
             try
             {
-                Paging paging = ((CorporationStructuresCollection) data).getCorporations();
+                Paging paging = ((CorporationStructureCollection) data).getCorporations();
                 List<CorporationData> list = new ArrayList<>();
                 for (PagedItem item : paging.items)
                 {
@@ -153,7 +156,7 @@ public class CorporationStructuresCollection extends BaseEveData implements Json
                     firstCollection.set(false);
                     try
                     {
-                        getFuture(0);
+                        getFuture(null, 0, 0);
                     } catch (Exception e)
                     {
                         LoggerFactory.getLogger(getClass()).warn("NpcCorporation failed to fire heartbeat", e);
