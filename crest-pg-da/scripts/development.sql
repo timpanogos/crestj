@@ -2,7 +2,7 @@
 select * from capsuleer;
 select * from entity;
 select * from sharedrights;
-select * from alliances;
+
 select * from alliance;
 select * from corporation;
 select * from paging;
