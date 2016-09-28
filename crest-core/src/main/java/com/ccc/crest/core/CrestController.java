@@ -17,6 +17,7 @@
 package com.ccc.crest.core;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 
 // aws windows server Administrator/p6j.;uCGS9e
 
@@ -26,6 +27,7 @@ import java.io.File;
 //This function will give you the distance between two coordinates.
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -39,6 +41,7 @@ import com.ccc.crest.core.cache.SourceFailureException;
 import com.ccc.crest.core.cache.crest.schema.RootEndpoint;
 import com.ccc.crest.core.cache.crest.schema.SchemaMap;
 import com.ccc.crest.core.client.CrestClient;
+import com.ccc.crest.core.client.json.OauthVerify;
 import com.ccc.crest.core.events.ApiKeyEventListener;
 import com.ccc.crest.core.events.CacheEventListener;
 import com.ccc.crest.core.events.CommsEventListener;
@@ -171,7 +174,12 @@ public class CrestController extends CoreController implements AuthEventListener
         try
         {
             CapsuleerData cdata = ((CrestDataAccessor) dataAccessor).getCapsuleer(name);
-            CapsuleerData updatedata = new CapsuleerData(name, cdata.capsuleerId, Long.parseLong(keyId), code, cdata.refreshToken);
+            //@formatter:off
+            CapsuleerData updatedata = new CapsuleerData(
+                            name, cdata.capsuleerId, Long.parseLong(keyId),
+                            code, cdata.refreshToken,
+                            cdata.expiresOn, cdata.scopes, cdata.tokenType, cdata.ownerHash);
+            //@formatter:on
             ((CrestDataAccessor) dataAccessor).updateCapsuleer(name, updatedata);
         } catch (NumberFormatException e)
         {
@@ -295,15 +303,29 @@ public class CrestController extends CoreController implements AuthEventListener
             try
             {
                 CapsuleerData userData = da.getCapsuleer(name);
-                CapsuleerData updateData = new CapsuleerData(userData.capsuleer, userData.capsuleerId, userData.apiKeyId, userData.apiCode, ccinfo.getRefreshToken());
+                //@formatter:off
+                CapsuleerData updateData = new CapsuleerData(
+                                userData.capsuleer, userData.capsuleerId, userData.apiKeyId, userData.apiCode,
+                                ccinfo.getRefreshToken(), userData.expiresOn, userData.scopes,
+                                userData.tokenType, userData.ownerHash);
+                //@formatter:on
                 da.updateCapsuleer(name, updateData);
                 if (userData.apiKeyId == -1)
                     fireApiKeyEvent(ccinfo, ApiKeyEventListener.Type.NeedsApi);
             } catch (NotFoundException e1)
             {
-                CapsuleerData userData = new CapsuleerData(name, id, -1, null, ccinfo.getRefreshToken());
+                OauthVerify user = ccinfo.getVerifyData();
+                SimpleDateFormat sdf = new SimpleDateFormat("");
+                //@formatter:on
+                CapsuleerData userData = null;
                 try
                 {
+                    Date date = sdf.parse(user.ExpiresOn);
+                    //@formatter:off
+                    userData = new CapsuleerData(
+                                    name, id, -1, null,
+                                    ccinfo.getRefreshToken(), date.getTime(),
+                                    user.Scopes, user.TokenType, user.CharacterOwnerHash);
                     da.addCapsuleer(userData);
                     fireApiKeyEvent(ccinfo, ApiKeyEventListener.Type.NeedsApi);
                 } catch (Exception e)

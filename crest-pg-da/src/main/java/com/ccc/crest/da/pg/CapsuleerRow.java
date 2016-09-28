@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -16,7 +16,6 @@
 */
 package com.ccc.crest.da.pg;
 
-import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -29,10 +28,14 @@ public class CapsuleerRow extends CapsuleerData
 
     public CapsuleerRow(CapsuleerRow data, String capsuleer)
     {
-        super(capsuleer, data.capsuleerId, data.apiKeyId, data.apiCode, data.refreshToken);
+        //@formatter:off
+        super(
+            capsuleer, data.capsuleerId, data.apiKeyId, data.apiCode,
+            data.refreshToken, data.expiresOn, data.scopes, data.tokenType, data.ownerHash);
+        //@formatter:on
         this.pid = data.pid;
     }
-    
+
     public CapsuleerRow(ResultSet rs) throws SQLException
     {
         //@formatter:off
@@ -41,21 +44,12 @@ public class CapsuleerRow extends CapsuleerData
             rs.getLong(CapsuleerJdbc.UserIdIdx),
             rs.getLong(CapsuleerJdbc.ApiKeyIdIdx),
             rs.getString(CapsuleerJdbc.ApiCodeIdx),
-            rs.getString(CapsuleerJdbc.RefreshTokenIdx));
+            rs.getString(CapsuleerJdbc.RefreshTokenIdx),
+            rs.getLong(CapsuleerJdbc.ExpiresOnIdx),
+            rs.getString(CapsuleerJdbc.ScopesIdx),
+            rs.getString(CapsuleerJdbc.TokenTypeIdx),
+            rs.getString(CapsuleerJdbc.OwnerHashIdx));
         //@formatter:on
         pid = rs.getLong(CapsuleerJdbc.UserPkIdx);
-    }
-
-    public CapsuleerRow(Object[] columns)
-    {
-        //@formatter:off
-        super(
-            (String)columns[CapsuleerJdbc.NameIdx-1],
-            ((BigInteger)columns[CapsuleerJdbc.ApiKeyIdIdx-1]).longValue(),
-            ((BigInteger)columns[CapsuleerJdbc.ApiKeyIdIdx-1]).longValue(),
-            (String)columns[CapsuleerJdbc.ApiCodeIdx-1],
-            (String)columns[CapsuleerJdbc.RefreshTokenIdx-1]);
-        pid = ((BigInteger)columns[CapsuleerJdbc.UserPkIdx-1]).longValue();
-        //@formatter:on
     }
 }

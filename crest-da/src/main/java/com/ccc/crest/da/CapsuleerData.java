@@ -26,15 +26,27 @@ public class CapsuleerData
     public final long apiKeyId;
     public final String apiCode;
     public final String refreshToken;
-    public final
+    public final long expiresOn;
+    public final String scopes;
+    public final String tokenType;
+    public final String ownerHash;
 
-    public CapsuleerData(String name, long capsuleerId, long apiKeyId, String apiCode, String refreshToken)
+    //@formatter:off
+    public CapsuleerData(
+                    String name, long capsuleerId, long apiKeyId, String apiCode,
+                    String refreshToken, long expiresOn, String scopes,
+                    String tokenType, String ownerHash)
+    //@formatter:on
     {
         this.capsuleer = name;
         this.capsuleerId = capsuleerId;
         this.apiKeyId = apiKeyId;
         this.apiCode = apiCode;
         this.refreshToken = refreshToken;
+        this.expiresOn = expiresOn;
+        this.scopes = scopes;
+        this.tokenType = tokenType;
+        this.ownerHash = ownerHash;
     }
 
     @Override

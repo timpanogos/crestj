@@ -2,8 +2,8 @@
 **  Copyright (c) 2016, Chad Adams.
 **
 **  This program is free software: you can redistribute it and/or modify
-**  it under the terms of the GNU Lesser General Public License as 
-**  published by the Free Software Foundation, either version 3 of the 
+**  it under the terms of the GNU Lesser General Public License as
+**  published by the Free Software Foundation, either version 3 of the
 **  License, or any later version.
 **
 **  This program is distributed in the hope that it will be useful,
@@ -30,7 +30,7 @@ import com.ccc.db.AlreadyExistsException;
 import com.ccc.db.NotFoundException;
 import com.ccc.db.postgres.PgBaseDataAccessor;
 
-@SuppressWarnings("javadoc") 
+@SuppressWarnings("javadoc")
 public class CapsuleerJdbc
 {
     public static final String TableName;
@@ -41,6 +41,10 @@ public class CapsuleerJdbc
     public static final String ColApiKeyIdName = "apiKeyid";
     public static final String ColApiCodeName = "apicode";
     public static final String ColRefreshTokenName = "refreshtoken";
+    public static final String ColExpiresName = "expireson";
+    public static final String ColScopesName = "scopes";
+    public static final String ColTokenTypeName = "tokentype";
+    public static final String ColOwnerHashName = "ownerhash";
 
     public static final int UserPkIdx = 1;
     public static final int NameIdx = 2;
@@ -48,6 +52,10 @@ public class CapsuleerJdbc
     public static final int ApiKeyIdIdx = 4;
     public static final int ApiCodeIdx = 5;
     public static final int RefreshTokenIdx = 6;
+    public static final int ExpiresOnIdx = 7;
+    public static final int ScopesIdx = 8;
+    public static final int TokenTypeIdx = 9;
+    public static final int OwnerHashIdx = 10;
 
     private static final String PrepGetUserPk;
     private static final String PrepGetRow;
@@ -66,22 +74,30 @@ public class CapsuleerJdbc
         PrepListAll = "select * from " + TableName +";";
 
         //@formatter:off
-        PrepInsertRow = 
-            "insert into " + TableName + " (" + 
-            ColCapName + "," + 
-            ColCapIdName + "," + 
-            ColApiKeyIdName + "," + 
-            ColApiCodeName + "," + 
-            ColRefreshTokenName + ")" + 
-            " values(?, ?, ?, ?, ?);";
+        PrepInsertRow =
+            "insert into " + TableName + " (" +
+            ColCapName + "," +
+            ColCapIdName + "," +
+            ColApiKeyIdName + "," +
+            ColApiCodeName + "," +
+            ColRefreshTokenName +
+            ColExpiresName +
+            ColScopesName +
+            ColTokenTypeName +
+            ColOwnerHashName +")" +
+            " values(?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-        PrepUpdateRow = 
-            "update " + TableName + " set " + 
-            ColCapName + "=?," + 
-            ColCapIdName + "=?," + 
-            ColApiKeyIdName + "=?," + 
-            ColApiCodeName + "=?," + 
-            ColRefreshTokenName + "=?" + 
+        PrepUpdateRow =
+            "update " + TableName + " set " +
+            ColCapName + "=?," +
+            ColCapIdName + "=?," +
+            ColApiKeyIdName + "=?," +
+            ColApiCodeName + "=?," +
+            ColRefreshTokenName + "=?" +
+            ColExpiresName + "=?" +
+            ColScopesName + "=?" +
+            ColTokenTypeName + "=?" +
+            ColOwnerHashName + "=?" +
             " where " + ColCapPkName + "=?;";
         //@formatter:on
     }
@@ -170,7 +186,7 @@ public class CapsuleerJdbc
         {
             PgBaseDataAccessor.close(connection, null, null, close);
         }
-        
+
     }
 
     public static long insertRow(Connection connection, long entityPid, CapsuleerData capData, boolean close) throws SQLException
@@ -185,6 +201,10 @@ public class CapsuleerJdbc
             stmt.setLong(ApiKeyIdIdx - 1, capData.apiKeyId);
             stmt.setString(ApiCodeIdx - 1, capData.apiCode);
             stmt.setString(RefreshTokenIdx - 1, capData.refreshToken);
+            stmt.setLong(ExpiresOnIdx - 1, capData.expiresOn);
+            stmt.setString(ScopesIdx - 1, capData.scopes);
+            stmt.setString(TokenTypeIdx - 1, capData.refreshToken);
+            stmt.setString(OwnerHashIdx - 1, capData.refreshToken);
             int rows = stmt.executeUpdate();
             if (rows != 1)
                 throw new SQLException("insertRow affected an unexpected number of rows: " + rows);
@@ -221,6 +241,10 @@ public class CapsuleerJdbc
             stmt.setLong(ApiKeyIdIdx - 1, capData.apiKeyId);
             stmt.setString(ApiCodeIdx - 1, capData.apiCode);
             stmt.setString(RefreshTokenIdx - 1, capData.refreshToken);
+            stmt.setLong(ExpiresOnIdx - 1, capData.expiresOn);
+            stmt.setString(ScopesIdx - 1, capData.scopes);
+            stmt.setString(TokenTypeIdx - 1, capData.refreshToken);
+            stmt.setString(OwnerHashIdx - 1, capData.refreshToken);
             stmt.setLong(6, capPid);
             int rows = stmt.executeUpdate();
             if (rows != 1)
@@ -266,7 +290,7 @@ public class CapsuleerJdbc
             PgBaseDataAccessor.close(connection, stmt, null, close);
         }
     }
-    
+
     public static List<CapsuleerData> listCapsuleers(Connection connection) throws Exception
     {
         PreparedStatement stmt = connection.prepareStatement(PrepListAll);
